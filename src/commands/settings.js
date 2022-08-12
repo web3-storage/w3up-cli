@@ -2,6 +2,27 @@ import ora from 'ora';
 import Inquirer from 'inquirer';
 import fs from 'fs';
 
+export async function resetSettings({ settings }) {
+  const view = ora('reset');
+  view.stopAndPersist({
+    text: `This will delete your settings, are you sure?
+You will lose access to anything created with your previous key/did.
+`,
+  });
+
+  const { reset } = await Inquirer.prompt({
+    name: 'reset',
+    type: 'confirm',
+  });
+
+  if (reset) {
+    settings.clear();
+    console.log('Settings cleared.');
+  } else {
+    console.log('exiting');
+  }
+}
+
 /**
  * @async
  * @param {object} options

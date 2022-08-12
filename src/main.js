@@ -9,7 +9,11 @@ import { pathToFileURL } from 'url';
 import { parseLink } from '@ucanto/server';
 import Conf from 'conf';
 
-import { exportSettings, importSettings } from './commands/settings.js';
+import {
+  resetSettings,
+  exportSettings,
+  importSettings,
+} from './commands/settings.js';
 import { register } from './commands/register.js';
 import { printHelp } from './commands/help.js';
 import { createClient } from './client.js';
@@ -31,9 +35,12 @@ cli
     const [data] = input.positionals(Soly.string().optional(), 0);
     return async () => await register(client, data?.value);
   })
-  .command('import', (input) => {
+  .command('upload', (input) => {
     const [carPath] = input.positionals([Soly.path()]);
     return async () => {
+      if (!carPath.value) {
+        console.log('You must provide the path to a car file to upload.');
+      }
       const response = await client.upload(resolveURL(carPath.value));
       console.log(response);
     };
@@ -54,6 +61,7 @@ cli
     console.log('ID loaded: ' + id.did());
   })
   .command('whoami', () => async () => console.log(await client.whoami()))
+  .command('reset-settings', () => async () => resetSettings({ settings }))
   .command('export-settings', () => async () => exportSettings({ settings }))
   .command('import-settings', (input) => {
     const [data] = input.positionals(Soly.string().optional(), 0);
@@ -83,7 +91,7 @@ cli
       }
     };
   })
-//   .command('help', () => () => printHelp(cli))
+  //   .command('help', () => () => printHelp(cli))
   .action(() => printHelp(cli));
 
 export const main = async () => cli.parse(process.argv);
