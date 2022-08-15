@@ -1,6 +1,6 @@
 import * as CAR from "@ucanto/transport/car";
 import * as CBOR from "@ucanto/transport/cbor";
-
+import { v4 as uuid } from "uuid";
 import fs from "fs";
 import path from "path";
 
@@ -10,7 +10,9 @@ export const generateCar = async (path) => {
   const data = {};
 
   const carData = {
-    roots: [await CBOR.codec.write(data)],
+    roots: [
+      await CBOR.codec.write({ data, id: uuid(), type: "upload-session" }),
+    ],
   };
   const car = await CAR.codec.write(carData);
 
