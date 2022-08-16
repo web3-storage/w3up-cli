@@ -1,9 +1,9 @@
-import { encode } from '../lib/car.js';
+import { buildCar } from '../lib/car.js';
 import fs from 'fs';
 
 export const generateCar = async (path) => {
   console.log('hello', path);
-  return encode(path);
+  return buildCar(path);
 };
 
 export const writeFileLocally = async (car, outPath = 'output.car') => {
