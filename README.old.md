@@ -73,7 +73,7 @@ w3up whoami
 If you have generated the id properly, you'll see your `did:key` printed in the command line. It should look like `did:bafy....`.
 
 ```sh
-w3up register
+w3up register you@example.com
 ```
 
 Register your identity.
