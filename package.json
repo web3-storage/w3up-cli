@@ -19,6 +19,7 @@
   "dependencies": {
     "@ipld/unixfs": "^1.1.0-dev",
     "@ucanto/server": "^0.6.4",
+    "@web-std/stream": "^1.0.1",
     "conf": "^10.1.2",
     "inquirer": "^9.0.0",
     "ora": "^6.1.0",
