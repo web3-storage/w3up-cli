@@ -17,6 +17,7 @@ import {
 import { register } from './commands/register.js';
 import { printHelp } from './commands/help.js';
 import { createClient } from './client.js';
+import { generateCar, writeFileLocally } from './commands/generateCar.js';
 
 // TODO: Extract to some interface.
 const settings = new Conf({
@@ -41,8 +42,25 @@ cli
       if (!carPath.value) {
         console.log('You must provide the path to a car file to upload.');
       }
+      //check to make sure its a CAR here.
       const response = await client.upload(resolveURL(carPath.value));
       console.log(response);
+    };
+  })
+  .command('generate-car', (input) => {
+    const [carPath, outPath] = input.positionals([
+      Soly.path().optional(),
+      Soly.string().optional(),
+    ]);
+
+    return async () => {
+      if (!carPath.value) {
+        console.log('You must provide a path to generate a car from.');
+        return;
+      }
+
+      var data = await generateCar(carPath.value);
+      writeFileLocally(data, outPath.value);
     };
   })
   .command('unlink', (input) => {
