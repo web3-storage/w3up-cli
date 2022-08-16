@@ -117,6 +117,19 @@ Working with your settings:
 
 `import settings` will take your account settings and write them to a .json file in the directory you are in currently, or `export settings` will read a settings.json from a directory you're in an use those for the w3up settings. `reset-settings` will effectively delete your user settings. Go through the registration process again and regenerate an id and register if you want to replenish settings and if you do not have a settings.json to import.
 
+Insights:
+
+1. `insights`
+2. `insights-ws`
+
+usage:
+
+```sh
+w3up insights <cid>
+```
+
+These commands will hit the w3up service and retrieve all known insights for that CID. The `insights-ws` is similar but will set up a websockets-based watch and print any further insights as the are discovered.
+
 ## Run tests
 
 ```sh
