@@ -32,6 +32,45 @@ You can view a list of all available commands with
 w3up
 ```
 
+You should see the following:
+
+```
+register
+upload
+unlink
+list
+id
+whoami
+reset-settings
+export-settings
+import-settings
+insights
+insights-ws
+```
+
+### Registration Commands:
+
+##### Registration
+
+Before you can use most of the commands with the w3up-cli you need to generate an id and register that identity. This is handled in 2 steps:
+
+1. `w3up id`
+2. `w3up register`
+
+```sh
+w3up id
+```
+
+Generate your identity.
+Generates the public and private key pairs necessary to work with the underlying [UCAN ](https://ucan.xyz/) system.
+
+```sh
+w3up register
+```
+
+Register your identity.
+After you've generated an identity, you need to register it with the w3up service. You'll be sent an email with a code you paste into the command line when prompted. If the code matches what the service expects, you're fully registered and can use all the other commands.
+
 ## Run tests
 
 ```sh
