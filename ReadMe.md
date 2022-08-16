@@ -81,6 +81,41 @@ After you've generated an identity, you need to register it with the w3up servic
 
 _Note: Remember to check your spam folder if you suspect you never got the email_
 
+##### General Usage
+
+After creating your identity and registering with w3up, you should be able to start using the service. The main commands you'll use are
+
+1. `upload`
+2. `list`
+3. `unlink`
+
+```sh
+w3up upload <filename>
+```
+
+Uploads a file or directory and link it to your account. The second argument is the path to that file or directory
+
+```sh
+w3up list
+```
+
+Print a list of [CIDs](https://docs.ipfs.tech/concepts/content-addressing/#content-addressing-and-cids) for all files uploaded thusfar.
+
+```sh
+w3up unlink <cid>
+```
+
+This will dis-associate an uploaded asset from your account. If you run `w3up list` after unlinking a file, you should not see it in the list. If you want to re-associate the file with your account, use `w3up upload` and re-upload the file. In situations when a file has been previously uploaded, the upload command will not need to actually upload the file, it will just relink it.
+
+##### Other Commands
+
+Working with your settings:
+
+1. `import settings`
+2. `export settings`
+
+These commands will take your account settings and write them to a .json file in the directory you are in currently, or it will read a settings.json from a directory you're in an use those for the w3up settings.
+
 ## Run tests
 
 ```sh
