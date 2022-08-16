@@ -35,20 +35,20 @@ w3up
 You should see the following:
 
 ```
-register
-upload
-unlink
-list
-id
-whoami
-reset-settings
 export-settings
+id
 import-settings
 insights
 insights-ws
+list
+register
+reset-settings
+unlink
+upload
+whoami
 ```
 
-### Registration Commands:
+### Commands:
 
 ##### Registration
 
@@ -64,12 +64,22 @@ w3up id
 Generate your identity.
 Generates the public and private key pairs necessary to work with the underlying [UCAN ](https://ucan.xyz/) system.
 
+You can validate you are registered!
+
+```sh
+w3up whoami
+```
+
+If you have generated the id properly, you'll see your `did:key` printed in the command line. It should look like `did:bafy....`.
+
 ```sh
 w3up register
 ```
 
 Register your identity.
 After you've generated an identity, you need to register it with the w3up service. You'll be sent an email with a code you paste into the command line when prompted. If the code matches what the service expects, you're fully registered and can use all the other commands.
+
+_Note: Remember to check your spam folder if you suspect you never got the email_
 
 ## Run tests
 
