@@ -48,15 +48,19 @@ cli
     };
   })
   .command('generate-car', (input) => {
-    const [carPath] = input.positionals(Soly.path().optional());
+    const [carPath, outPath] = input.positionals([
+      Soly.path().optional(),
+      Soly.string().optional(),
+    ]);
 
     return async () => {
       if (!carPath.value) {
         console.log('You must provide a path to generate a car from.');
         return;
       }
-      var data = await generateCar(carPath);
-      writeFileLocally(data);
+
+      var data = await generateCar(carPath.value);
+      writeFileLocally(data, outPath.value);
     };
   })
   .command('unlink', (input) => {
