@@ -50,12 +50,14 @@ whoami
 
 ### Commands:
 
-##### Registration
+#### Registration
 
 Before you can use most of the commands with the w3up-cli you need to generate an id and register that identity. This is handled in 2 steps:
 
 1. `w3up id`
 2. `w3up register`
+
+#### `id`
 
 ```sh
 w3up id
@@ -66,11 +68,15 @@ Generates the public and private key pairs necessary to work with the underlying
 
 You can validate you are registered!
 
+#### `whoami`
+
 ```sh
 w3up whoami
 ```
 
 If you have generated the id properly, you'll see your `did:key` printed in the command line. It should look like `did:bafy....`.
+
+#### `register`
 
 ```sh
 w3up register you@example.com
@@ -81,7 +87,7 @@ After you've generated an identity, you need to register it with the w3up servic
 
 _Note: Remember to check your spam folder if you suspect you never got the email_
 
-##### General Usage
+#### General Usage
 
 After creating your identity and registering with w3up, you should be able to start using the service. The main commands you'll use are
 
@@ -89,11 +95,15 @@ After creating your identity and registering with w3up, you should be able to st
 2. `w3up list`
 3. `w3up unlink`
 
+#### `upload`
+
 ```sh
 w3up upload <filename>
 ```
 
 Uploads a file or directory and link it to your account. The second argument is the path to that file or directory
+
+#### `list`
 
 ```sh
 w3up list
@@ -101,13 +111,17 @@ w3up list
 
 Print a list of [CIDs](https://docs.ipfs.tech/concepts/content-addressing/#content-addressing-and-cids) for all files uploaded thusfar.
 
+#### `unlink`
+
 ```sh
 w3up unlink <cid>
 ```
 
 This will dis-associate an uploaded asset from your account. If you run `w3up list` after unlinking a file, you should not see it in the list. If you want to re-associate the file with your account, use `w3up upload` and re-upload the file. In situations when a file has been previously uploaded, the upload command will not need to actually upload the file, it will just relink it.
 
-##### Other Commands
+#### Other Commands
+
+#### `<action>-settings`
 
 Working with your settings:
 
@@ -117,12 +131,10 @@ Working with your settings:
 
 `export-settings` will take your account settings and write them to a .json file in the directory you are in currently, or `import settings` will read a settings.json from a directory you're in an use those for the w3up settings. `reset-settings` will effectively delete your user settings. Go through the registration process again and regenerate an id and register if you want to replenish settings and if you do not have a settings.json to import.
 
-Insights:
+#### `insights`
 
 1. `w3up insights`
 2. `w3up insights-ws`
-
-usage:
 
 ```sh
 w3up insights <cid>
