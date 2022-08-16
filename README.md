@@ -115,7 +115,7 @@ Working with your settings:
 2. `export settings`
 3. `reset-settings`
 
-`import settings` will take your account settings and write them to a .json file in the directory you are in currently, or `export settings` will read a settings.json from a directory you're in an use those for the w3up settings. `reset-settings` will effectively delete your user settings. Go through the registration process again and regenerate an id and register if you want to replenish settings and if you do not have a settings.json to import.
+`export settings` will take your account settings and write them to a .json file in the directory you are in currently, or `import settings` will read a settings.json from a directory you're in an use those for the w3up settings. `reset-settings` will effectively delete your user settings. Go through the registration process again and regenerate an id and register if you want to replenish settings and if you do not have a settings.json to import.
 
 Insights:
 
