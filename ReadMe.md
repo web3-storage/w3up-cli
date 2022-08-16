@@ -55,7 +55,7 @@ insights-ws
 Before you can use most of the commands with the w3up-cli you need to generate an id and register that identity. This is handled in 2 steps:
 
 1. `w3up id`
-2. `w3up register`
+2. `w3up register you@example.com`
 
 ```sh
 w3up id
