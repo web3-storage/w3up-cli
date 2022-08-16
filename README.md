@@ -85,9 +85,9 @@ _Note: Remember to check your spam folder if you suspect you never got the email
 
 After creating your identity and registering with w3up, you should be able to start using the service. The main commands you'll use are
 
-1. `upload`
-2. `list`
-3. `unlink`
+1. `w3up upload`
+2. `w3up list`
+3. `w3up unlink`
 
 ```sh
 w3up upload <filename>
@@ -111,16 +111,16 @@ This will dis-associate an uploaded asset from your account. If you run `w3up li
 
 Working with your settings:
 
-1. `import settings`
-2. `export settings`
-3. `reset-settings`
+1. `w3up import-settings`
+2. `w3up export-settings`
+3. `w3up reset-settings`
 
-`export settings` will take your account settings and write them to a .json file in the directory you are in currently, or `import settings` will read a settings.json from a directory you're in an use those for the w3up settings. `reset-settings` will effectively delete your user settings. Go through the registration process again and regenerate an id and register if you want to replenish settings and if you do not have a settings.json to import.
+`export-settings` will take your account settings and write them to a .json file in the directory you are in currently, or `import settings` will read a settings.json from a directory you're in an use those for the w3up settings. `reset-settings` will effectively delete your user settings. Go through the registration process again and regenerate an id and register if you want to replenish settings and if you do not have a settings.json to import.
 
 Insights:
 
-1. `insights`
-2. `insights-ws`
+1. `w3up insights`
+2. `w3up insights-ws`
 
 usage:
 
