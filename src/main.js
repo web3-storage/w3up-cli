@@ -7,6 +7,7 @@ import { script } from 'subprogram'
 import path from 'path'
 import { pathToFileURL } from 'url'
 import { parseLink } from '@ucanto/server'
+import fs from 'fs'
 import Conf from 'conf'
 
 import {
@@ -43,7 +44,8 @@ cli
         console.log('You must provide the path to a car file to upload.')
       }
       //check to make sure its a CAR here.
-      const response = await client.upload(resolveURL(carPath.value))
+      const buffer = fs.readFileSync(resolveURL(carPath.value));
+      const response = await client.upload(buffer)
       console.log(response)
     }
   })
