@@ -65,7 +65,7 @@ async function createReadableBlockStreamWithWrappingDir(filename) {
   };
 }
 
-async function buildMetaData(writer) {
+async function buildMetaData() {
   const metadata = {
     id: 'some_id',
   };
@@ -80,7 +80,7 @@ async function buildMetaData(writer) {
   };
 }
 
-export async function encode(fileName) {
+export async function buildCar(fileName) {
   const { cid, readable } = await createReadableBlockStreamWithWrappingDir(
     fileName
   );
@@ -92,8 +92,6 @@ export async function encode(fileName) {
     roots: [cid, metadata.cid],
   });
 
-  bw.write(metadata);
-
   const reader = readable.getReader();
 
   function writeBlockToCar({ done, value }) {
@@ -104,5 +102,7 @@ export async function encode(fileName) {
     }
   }
   await reader.read().then(writeBlockToCar);
+
+  bw.write(metadata);
   return bw.close({ resize: true });
 }
