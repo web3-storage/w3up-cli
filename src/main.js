@@ -13,16 +13,20 @@ const list = {
   description: 'List your uploads',
   build: () => {},
   exe: () => {},
-  exampleOutput: `\nbafy...\nbafy...`,
+  exampleOut: `bafy...\nbafy...`,
+  exampleIn: '$0 list',
 }
 
 export const main = async () => {
   const argv = await yargs
     .scriptName('w3up')
     .usage('Usage:\n  $0 <cmd> [args]')
+
     .command('list', list.description, list.build, list.exe)
-    .example('$0 list', list.exampleOutput)
+    .example(list.exampleIn, list.exampleOut)
+
     .command('register', register.description, register.build, register.exe)
+
     .help()
     .showHelpOnFail(true)
     .demandCommand(1, '')
