@@ -1,5 +1,7 @@
-import { buildCar } from '../lib/car.js'
+// import { buildCar } from '../lib/car.js'
 import fs from 'fs'
+
+import { buildCar } from '../lib/car.js'
 
 export const generateCar = async (path) => {
   return buildCar(path)
