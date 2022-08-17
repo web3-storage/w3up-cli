@@ -59,6 +59,22 @@ const resetSettings = {
   exampleIn: '$0 reset-settings',
 }
 
+const insights = {
+  description: 'get insight for cid',
+  build: () => {},
+  exe: () => {},
+  exampleOut: `DID:12345`,
+  exampleIn: '$0 insights bafy...',
+}
+
+const insightsWs = {
+  description: 'Delete all local settings',
+  build: () => {},
+  exe: () => {},
+  exampleOut: `DID:12345`,
+  exampleIn: '$0 insights-ws',
+}
+
 export const main = async () => {
   const argv = await yargs
     .scriptName('w3up')
