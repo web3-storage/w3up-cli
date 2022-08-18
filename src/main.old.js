@@ -64,31 +64,6 @@ cli
     }
   })
 
-  .command('insights', (input) => {
-    const [data] = input.positionals(Soly.string().optional(), 0)
-    return async () => {
-      const cid = data?.value || ''
-      if (cid.length > 0) {
-        const response = await client.insights(cid)
-        console.log('response', response)
-      } else {
-        console.log('You must provide a CID to get insights for.')
-      }
-    }
-  })
-  .command('insights-ws', (input) => {
-    const [data] = input.positionals(Soly.string().optional(), 0)
-    return async () => {
-      const cid = data?.value || ''
-      if (cid.length > 0) {
-        const response = await client.insightsWS(cid)
-        console.log('response', response)
-      } else {
-        console.log('You must provide a CID to get insights for.')
-      }
-    }
-  })
-
 export const main = async () => cli.parse(process.argv)
 
 /**

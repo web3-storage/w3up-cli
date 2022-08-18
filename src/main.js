@@ -20,7 +20,7 @@ const yargs = _yargs(hideBin(process.argv))
 export const main = async () => {
   const argv = await yargs
     .scriptName('w3up')
-    .usage('Usage:\n  $0 <cmd> [args]')
+    .usage('Usage:\n  $0 <cmd> [options]')
 
     //registration
     .command(id.cmd, id.description, id.build, id.exe)
@@ -59,6 +59,7 @@ export const main = async () => {
 
     //insights
     .command(insights.cmd, insights.description, insights.build, insights.exe)
+
     //utilities
 
     .help()
