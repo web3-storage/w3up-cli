@@ -72,7 +72,6 @@ cli
     }
   })
 
-  .command('whoami', () => async () => console.log(await client.whoami()))
   .command('reset-settings', () => async () => resetSettings({ settings }))
   .command('export-settings', () => async () => exportSettings({ settings }))
   .command('import-settings', (input) => {

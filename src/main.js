@@ -7,6 +7,7 @@ import id from './commands/id.js'
 import register from './commands/register.js'
 import list from './commands/list.js'
 import whoami from './commands/whoami.js'
+import remove from './commands/remove.js'
 
 const yargs = _yargs(hideBin(process.argv))
 
@@ -64,6 +65,9 @@ export const main = async () => {
 
     .command(list.cmd, list.description, list.build, list.exe)
     .example(list.exampleIn, list.exampleOut)
+
+    .command(remove.cmd, remove.description, remove.build, remove.exe)
+    .example(remove.exampleIn, remove.exampleOut)
 
     .command(
       'import-settings',
