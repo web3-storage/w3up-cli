@@ -14,7 +14,7 @@ const exe = async (argv) => {
 //TODO allow list of CIDs
 // https://github.com/nftstorage/w3up-cli/issues/20
 const remove = {
-  cmd: 'remove <cid>',
+  cmd: ['remove <cid>', 'unlink <cid>'],
   description: 'Unlink a CID from your account.',
   build: (yargs) => {
     yargs.check((argv) => {

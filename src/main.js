@@ -13,6 +13,8 @@ import importSettings from './commands/importSettings.js'
 import exportSettings from './commands/exportSettings.js'
 import resetSettings from './commands/resetSettings.js'
 
+import insights from './commands/insights.js'
+
 const yargs = _yargs(hideBin(process.argv))
 
 export const main = async () => {
@@ -55,6 +57,8 @@ export const main = async () => {
       resetSettings.exe
     )
 
+    //insights
+    .command(insights.cmd, insights.description, insights.build, insights.exe)
     //utilities
 
     .help()
