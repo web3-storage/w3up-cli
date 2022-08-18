@@ -64,12 +64,6 @@ cli
     }
   })
 
-  .command('reset-settings', () => async () => resetSettings({ settings }))
-  .command('export-settings', () => async () => exportSettings({ settings }))
-  .command('import-settings', (input) => {
-    const [data] = input.positionals(Soly.string().optional(), 0)
-    return async () => importSettings({ settings, fileName: data.value || '' })
-  })
   .command('insights', (input) => {
     const [data] = input.positionals(Soly.string().optional(), 0)
     return async () => {

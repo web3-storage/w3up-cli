@@ -11,6 +11,7 @@ import { settings } from '../client'
  * @returns {Promise<void>}
  */
 const exe = async ({ fileName }) => {
+  //TODO put in build step.
   if (!fs.existsSync(fileName)) {
     console.log(`${fileName} does not exist.`)
     return
