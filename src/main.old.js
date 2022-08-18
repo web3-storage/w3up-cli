@@ -23,10 +23,7 @@ import client from './client.js'
 const cli = Soly.createCLI('w3-cli')
 
 cli
-  .command('register', (input) => {
-    const [data] = input.positionals(Soly.string().optional(), 0)
-    return async () => await register(client, data?.value)
-  })
+
   .command('upload', (input) => {
     const [carPath] = input.positionals([Soly.path()])
     return async () => {

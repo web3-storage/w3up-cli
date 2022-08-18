@@ -1,6 +1,7 @@
 import ora from 'ora'
 import Inquirer from 'inquirer'
 import client from '../client.js'
+import { isEmail } from '../validation'
 
 const exe = async (argv) => {
   const { email } = argv
@@ -43,7 +44,7 @@ const register = {
     yargs.check((argv) => {
       const { email } = argv
       //pretty loose, really just checking typos.
-      if (/(.+)@(.+){2,}\.(.+){2,}/.test(email)) {
+      if (isEmail(email)) {
         return true
       }
       throw new Error(`Error: ${email} is probably not a valid email.`)
