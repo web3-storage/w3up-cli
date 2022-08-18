@@ -3,6 +3,8 @@
 import _yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
 
+import printQuickstart from './quickstart.js'
+
 import id from './commands/id.js'
 import register from './commands/register.js'
 import list from './commands/list.js'
@@ -24,7 +26,7 @@ export const main = async () => {
     .command({
       command: '*',
       handler() {
-        console.log('Welcome to w3up! \n')
+        printQuickstart()
         yargs.showHelp()
       },
     })
