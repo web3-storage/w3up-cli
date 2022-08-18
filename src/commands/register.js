@@ -4,8 +4,10 @@ import client from '../client.js'
 
 const exe = async (argv) => {
   const { email } = argv
-  const view = ora('register')
-  console.log(`${email} is being Registered...`)
+  // TODO: https://github.com/nftstorage/w3up-cli/issues/15
+  // this can hang if there's network disconnectivity.
+  const view = ora(`Registering ${email}`).start()
+
   try {
     let result = await client.register(email)
 
