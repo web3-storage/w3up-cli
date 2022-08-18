@@ -9,31 +9,11 @@ import list from './commands/list.js'
 import whoami from './commands/whoami.js'
 import remove from './commands/remove.js'
 
+import importSettings from './commands/importSettings.js'
+import exportSettings from './commands/exportSettings.js'
+import resetSettings from './commands/resetSettings.js'
+
 const yargs = _yargs(hideBin(process.argv))
-
-const importSettings = {
-  description: 'Import a settings.json file',
-  build: () => {},
-  exe: () => {},
-  exampleOut: `DID:12345`,
-  exampleIn: '$0 import-settings',
-}
-
-const exportSettings = {
-  description: 'Export a settings.json file',
-  build: () => {},
-  exe: () => {},
-  exampleOut: `DID:12345`,
-  exampleIn: '$0 export-settings',
-}
-
-const resetSettings = {
-  description: 'Delete all local settings',
-  build: () => {},
-  exe: () => {},
-  exampleOut: `DID:12345`,
-  exampleIn: '$0 reset-settings',
-}
 
 const insights = {
   description: 'get insight for cid',
@@ -70,19 +50,19 @@ export const main = async () => {
     .example(remove.exampleIn, remove.exampleOut)
 
     .command(
-      'import-settings',
+      importSettings.cmd,
       importSettings.description,
       importSettings.build,
       importSettings.exe
     )
     .command(
-      'export-settings',
+      exportSettings.cmd,
       exportSettings.description,
       exportSettings.build,
       exportSettings.exe
     )
     .command(
-      'reset-settings',
+      resetSettings.cmd,
       resetSettings.description,
       resetSettings.build,
       resetSettings.exe
