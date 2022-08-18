@@ -8,12 +8,6 @@ import { pathToFileURL } from 'url'
 import { parseLink } from '@ucanto/server'
 import fs from 'fs'
 
-import {
-  resetSettings,
-  exportSettings,
-  importSettings,
-} from './commands/settings.js'
-
 import { generateCar, writeFileLocally } from './commands/generateCar.js'
 import { run as carInfo } from './commands/carInfo.js'
 

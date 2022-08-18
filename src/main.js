@@ -21,6 +21,13 @@ export const main = async () => {
   const argv = await yargs
     .scriptName('w3up')
     .usage('Usage:\n  $0 <cmd> [options]')
+    .command({
+      command: '*',
+      handler() {
+        console.log('Welcome to w3up! \n')
+        yargs.showHelp()
+      },
+    })
 
     //registration
     .command(id.cmd, id.description, id.build, id.exe)
@@ -61,7 +68,6 @@ export const main = async () => {
     .command(insights.cmd, insights.description, insights.build, insights.exe)
 
     //utilities
-
     .help()
     .showHelpOnFail(true)
     .demandCommand(1, '')
