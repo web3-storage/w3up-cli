@@ -1,108 +1,107 @@
-// import { TransformStream } from '@web-std/stream';
-import fs from 'fs'
-import 'web-streams-polyfill'
-import * as UnixFS from '@ipld/unixfs'
-import * as CAR from '@ipld/car'
-import * as DAG_CBOR from '@ipld/dag-cbor'
+import path from 'path';
+import fs from 'fs';
+import 'web-streams-polyfill';
+import * as UnixFS from '@ipld/unixfs';
+import * as CAR from '@ipld/car';
 
-import { CID } from 'multiformats/cid'
-import { sha256 } from 'multiformats/hashes/sha2'
+import { fileToBlock } from './file.js';
+import { wrapFilesWithDir } from './dir.js';
+import { buildMetaData } from './metadata.js';
 
-// Create a redable & writable streams with internal queue that can hold around 32 blocks
-const CAPACITY = 1048576 * 32
+// Internal queue capacity that can hold around 32 blocks
+const CAPACITY = UnixFS.BLOCK_SIZE_LIMIT * 32;
 
-// TODO: Pass bytes instead.
-async function fileToBlock({ writer, filename, bytes }) {
-  // make file writer, write to it, and close it to get link/cid
-  const file = UnixFS.createFileWriter(writer)
-  file.write(bytes)
-  const fileLink = await file.close()
+async function walkDir({ writer, pathName, filename }) {
+  const filePath = path.resolve(pathName, filename);
+  const isDir = fs.lstatSync(filePath).isDirectory();
 
-  return {
-    name: filename,
-    link: fileLink,
+  if (isDir) {
+    return wrapFilesWithDir({
+      writer,
+      files: await Promise.all(
+        fs.readdirSync(filePath).map((name) =>
+          walkDir({
+            writer,
+            pathName: pathName + '/' + filename,
+            filename: name,
+          })
+        )
+      ),
+      dirName: filename,
+    });
   }
+  const bytes = fs.readFileSync(filePath);
+  return await fileToBlock({ writer, filename, bytes });
 }
 
-async function wrapFilesWithDir({ writer, files }) {
-  const dir = UnixFS.createDirectoryWriter(writer)
-  files.forEach((file) => dir.set(file.name, file.link))
-  const dirLink = await dir.close()
-
-  return {
-    name: '',
-    link: dirLink,
-  }
-}
-
-async function createReadableBlockStreamWithWrappingDir(filename) {
-  // Create a redable & writable streams with internal queue that can
-  // hold around 32 blocks
+async function createReadableBlockStreamWithWrappingDir(pathName) {
+  // Create a redable & writable streams with internal queue that can hold around 32 blocks
   const { readable, writable } = new TransformStream(
     {},
     UnixFS.withCapacity(CAPACITY)
-  )
+  );
 
   // Next we create a writer with filesystem like API for encoding files and
   // directories into IPLD blocks that will come out on `readable` end.
-  const writer = UnixFS.createWriter({ writable })
+  const writer = UnixFS.createWriter({
+    writable,
+  });
 
-  const file = await fileToBlock({
-    writer,
-    filename,
-    bytes: fs.readFileSync(filename),
-  })
-  const dir = await wrapFilesWithDir({ writer, files: [file] })
+  let files = [];
+
+  const isDir = fs.lstatSync(pathName).isDirectory();
+
+  if(isDir) {
+  //listing all files using forEach
+  files = files.concat((await Promise.all(
+      fs
+        .readdirSync(pathName)
+        .map((filename) => walkDir({ writer, pathName, filename }))
+    )).filter((x) => x != null));
+  } else {
+    const bytes = fs.readFileSync(pathName);
+    files = [
+      await fileToBlock({writer, filename: pathName, bytes})
+    ]
+  }
+
+
+  const parent = await wrapFilesWithDir({ writer, files, dirName: pathName });
 
   // close the writer to close underlying block stream.
-  writer.close()
+  writer.close();
 
   // return the root and the readable stream.
   return {
-    cid: dir.link.cid,
+    cid: parent.link.cid,
     writer,
     readable,
-  }
+  };
 }
 
-async function buildMetaData() {
-  const metadata = {
-    id: 'some_id',
-  }
-
-  const bytes = DAG_CBOR.encode(metadata)
-  const digest = await sha256.digest(bytes)
-  const cid = CID.createV1(DAG_CBOR.code, digest)
-
-  return {
-    cid,
-    bytes,
-  }
-}
-
-export async function buildCar(fileName) {
+export async function buildCar(pathName) {
   const { cid, readable } = await createReadableBlockStreamWithWrappingDir(
-    fileName
-  )
+    pathName
+  );
 
-  const metadata = await buildMetaData()
+  const metadata = await buildMetaData();
 
-  const buffer = new ArrayBuffer(CAPACITY)
+  const buffer = new ArrayBuffer(CAPACITY);
   var bw = CAR.CarBufferWriter.createWriter(buffer, {
     roots: [cid, metadata.cid],
-  })
+  });
+  bw.write(metadata);
 
-  const reader = readable.getReader()
+  const reader = readable.getReader();
 
+  //TODO: detect when buffer overrun, and create new writer, linking new car to prev
   function writeBlockToCar({ done, value }) {
     if (!done) {
-      bw.write(value)
-      //TODO: detect when buffer overrun, and create new writer, linking new car to prev
-      return reader.read().then(writeBlockToCar)
+      bw.write(value);
+      return reader.read().then(writeBlockToCar);
     }
   }
-  await reader.read().then(writeBlockToCar)
+  await reader.read().then(writeBlockToCar);
 
-  bw.write(metadata)
-  return bw.close({ resize: true })
+  return bw.close({ resize: true });
 }

@@ -19,6 +19,7 @@ import { register } from './commands/register.js'
 import { printHelp } from './commands/help.js'
 import { createClient } from './client.js'
 import { generateCar, writeFileLocally } from './commands/generateCar.js'
+import { run as carInfo } from './commands/info.js'
 
 // TODO: Extract to some interface.
 const settings = new Conf({
@@ -47,6 +48,18 @@ cli
       const buffer = fs.readFileSync(resolveURL(carPath.value));
       const response = await client.upload(buffer)
       console.log(response)
+    }
+  })
+  .command('car-to-dot', (input) => {
+    const [carPath] = input.positionals([Soly.path()])
+    return async () => {
+      if (!carPath.value) {
+        console.log('You must provide the path to a car to examine.')
+      }
+
+      const buffer = fs.readFileSync(resolveURL(carPath.value));
+      const info = await carInfo(buffer)
+      console.log(info)
     }
   })
   .command('generate-car', (input) => {
