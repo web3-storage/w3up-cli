@@ -13,7 +13,7 @@ const SERVICE_URL =
   process.env.SERVICE_URL ||
   'https://mk00d0sf0h.execute-api.us-east-1.amazonaws.com/' //staging url
 
-const settings = new Conf({
+export const settings = new Conf({
   projectName: 'w3-cli',
   fileExtension: 'cbor',
   serialize: ({ ...data }) =>

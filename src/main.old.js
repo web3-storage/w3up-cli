@@ -63,13 +63,6 @@ cli
       writeFileLocally(data, outPath.value)
     }
   })
-  .command('unlink', (input) => {
-    const [link] = input.positionals([Z.string().refine(parseLink)])
-    return async () => {
-      const response = await client.remove(parseLink(link.value))
-      console.log(response)
-    }
-  })
 
   .command('reset-settings', () => async () => resetSettings({ settings }))
   .command('export-settings', () => async () => exportSettings({ settings }))
@@ -101,8 +94,6 @@ cli
       }
     }
   })
-  //   .command('help', () => () => printHelp(cli))
-  .action(() => printHelp(cli))
 
 export const main = async () => cli.parse(process.argv)
 
