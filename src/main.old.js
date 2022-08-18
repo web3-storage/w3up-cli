@@ -13,7 +13,6 @@ import {
   exportSettings,
   importSettings,
 } from './commands/settings.js'
-import { register } from './commands/register.js'
 
 import { generateCar, writeFileLocally } from './commands/generateCar.js'
 import { run as carInfo } from './commands/carInfo.js'

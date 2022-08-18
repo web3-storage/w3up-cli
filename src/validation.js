@@ -1,3 +1,5 @@
+import { parseLink } from '@ucanto/server'
+
 /**
  *
  * @param {string} email
@@ -12,4 +14,11 @@ export const isEmail = (email) => /(.+)@(.+){2,}\.(.+){2,}/.test(email)
  * @param {string} cid
  * @returns {boolean}
  */
-export const isCID = (cid) => cid.length > 2
+export const isCID = (cid) => {
+  try {
+    parseLink(cid)
+    return true
+  } catch (err) {
+    throw err
+  }
+}

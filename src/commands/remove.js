@@ -1,15 +1,14 @@
 import client from '../client.js'
 import ora from 'ora'
-import { isCID } from '../validation'
+import { isCID } from '../validation.js'
+import { parseLink } from '@ucanto/server'
 
-const exe = async () => {
-  const view = ora(`Listing Uploads...`).start()
-  const list = await client.list()
+const exe = async (argv) => {
+  const { cid } = argv
+  const view = ora(`Unlinking ${cid}...`).start()
+  const res = await client.remove(parseLink(cid))
 
-  view.succeed(`CIDs:\n${list.join('\n')}`)
-  if (!list.lengh) {
-    console.log(`\tYou don't seem to have any uploads yet!`)
-  }
+  view.succeed(`${res.toString()}`)
 }
 
 //TODO allow list of CIDs
@@ -20,16 +19,17 @@ const remove = {
   build: (yargs) => {
     yargs.check((argv) => {
       const { cid } = argv
-      //pretty loose, really just checking typos.
-      if (isCID(cid)) {
+      try {
+        isCID(cid)
         return true
+      } catch (err) {
+        throw new Error(`${cid} is probably not a valid CID: \n${err}`)
       }
-      throw new Error(`Error: ${cid} is probably not a valid CID.`)
     })
     return yargs
   },
   exe,
-  exampleIn: '$0 remove',
+  exampleIn: '$0 remove bafy...',
   exampleOut: `unlinked bafy...`,
 }
 
