@@ -15,27 +15,12 @@ import resetSettings from './commands/resetSettings.js'
 
 const yargs = _yargs(hideBin(process.argv))
 
-const insights = {
-  description: 'get insight for cid',
-  build: () => {},
-  exe: () => {},
-  exampleOut: `DID:12345`,
-  exampleIn: '$0 insights bafy...',
-}
-
-const insightsWs = {
-  description: 'Delete all local settings',
-  build: () => {},
-  exe: () => {},
-  exampleOut: `DID:12345`,
-  exampleIn: '$0 insights-ws',
-}
-
 export const main = async () => {
   const argv = await yargs
     .scriptName('w3up')
     .usage('Usage:\n  $0 <cmd> [args]')
 
+    //registration
     .command(id.cmd, id.description, id.build, id.exe)
     .example(id.exampleIn, id.exampleOut)
 
@@ -43,12 +28,14 @@ export const main = async () => {
     .command(whoami.cmd, whoami.description, whoami.build, whoami.exe)
     .example(whoami.exampleIn, whoami.exampleOut)
 
+    //general usage
     .command(list.cmd, list.description, list.build, list.exe)
     .example(list.exampleIn, list.exampleOut)
 
     .command(remove.cmd, remove.description, remove.build, remove.exe)
     .example(remove.exampleIn, remove.exampleOut)
 
+    //settings
     .command(
       importSettings.cmd,
       importSettings.description,
@@ -67,6 +54,8 @@ export const main = async () => {
       resetSettings.build,
       resetSettings.exe
     )
+
+    //utilities
 
     .help()
     .showHelpOnFail(true)
