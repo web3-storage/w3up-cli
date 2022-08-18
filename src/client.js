@@ -1,6 +1,6 @@
-import W3Client from 'w3up-client';
-import {config} from 'dotenv';
-config();
+import W3Client from 'w3up-client'
+import { config } from 'dotenv'
+config()
 
 const W3_STORE_DID =
   process.env.W3_STORE_DID ||

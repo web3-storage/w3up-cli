@@ -1,15 +1,15 @@
-import * as UnixFS from '@ipld/unixfs';
+import * as UnixFS from '@ipld/unixfs'
 
 export async function fileToBlock({ writer, filename, bytes }) {
   // make file writer, write to it, and close it to get link/cid
-  const file = UnixFS.createFileWriter(writer);
-  file.write(bytes);
-  const fileLink = await file.close();
+  const file = UnixFS.createFileWriter(writer)
+  file.write(bytes)
+  const fileLink = await file.close()
 
   return {
     name: filename,
     link: fileLink,
-  };
+  }
 }
 
 export async function generateTestFiles({
@@ -18,7 +18,7 @@ export async function generateTestFiles({
   start = 0,
   count = 0,
 }) {
-  let files = [];
+  let files = []
   for (var i = start; i < start + count; i++) {
     files.push(
       await fileToBlock({
@@ -26,7 +26,7 @@ export async function generateTestFiles({
         filename: filename + i,
         bytes: new TextEncoder().encode('this is a test' + i),
       })
-    );
+    )
   }
-  return files;
+  return files
 }
