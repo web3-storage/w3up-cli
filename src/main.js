@@ -4,17 +4,9 @@ import _yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
 
 import id from './commands/id.js'
+import register from './commands/register.js'
 
 const yargs = _yargs(hideBin(process.argv))
-
-const register = {
-  cmd: 'register <email>',
-  description: 'Register your UCAN Identity with w3up',
-  build: (yargs, helpOrVersionSet) => {},
-  exe: (argv) => {
-    console.log(argv)
-  },
-}
 
 const list = {
   description: 'List your uploads',

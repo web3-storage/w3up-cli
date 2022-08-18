@@ -1,10 +1,13 @@
 import ora from 'ora'
 import Inquirer from 'inquirer'
+import client from '../client.js'
 
-export async function register(uploader, value) {
+const exe = async (argv) => {
+  const { email } = argv
   const view = ora('register')
+  console.log(`${email} is being Registered...`)
   try {
-    let result = await uploader.register(value)
+    let result = await client.register(email)
 
     if (result) {
       view.stopAndPersist({
@@ -22,7 +25,7 @@ export async function register(uploader, value) {
       })
 
       if (token) {
-        result = await uploader.validate(token)
+        result = await client.validate(token)
       }
       view.succeed(result)
     }
@@ -30,3 +33,22 @@ export async function register(uploader, value) {
     view.fail(err)
   }
 }
+
+const register = {
+  cmd: 'register <email>',
+  description: 'Register your UCAN Identity with w3up',
+  build: (yargs) => {
+    yargs.check((argv) => {
+      const { email } = argv
+      //pretty loose, really just checking typos.
+      if (/(.+)@(.+){2,}\.(.+){2,}/.test(email)) {
+        return true
+      }
+      throw new Error(`Error: ${email} is probably not a valid email.`)
+    })
+    return yargs
+  },
+  exe,
+}
+
+export default register

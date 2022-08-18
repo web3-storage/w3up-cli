@@ -14,10 +14,9 @@ import {
   importSettings,
 } from './commands/settings.js'
 import { register } from './commands/register.js'
-import { printHelp } from './commands/help.js'
-import { createClient } from './client.js'
+
 import { generateCar, writeFileLocally } from './commands/generateCar.js'
-import { run as carInfo } from './commands/info.js'
+import { run as carInfo } from './commands/carInfo.js'
 
 import client from './client.js'
 
