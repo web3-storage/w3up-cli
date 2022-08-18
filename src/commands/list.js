@@ -2,8 +2,13 @@ import client from '../client.js'
 import ora from 'ora'
 
 const exe = async () => {
+  const view = ora(`Listing Uploads...`).start()
   const list = await client.list()
-  console.log('List of uploaded/linked cars:\n' + list.join('\n'))
+
+  view.succeed(`CIDs:\n${list.join('\n')}`)
+  if (!list.lengh) {
+    console.log(`\tYou don't seem to have any uploads yet!`)
+  }
 }
 
 const list = {
