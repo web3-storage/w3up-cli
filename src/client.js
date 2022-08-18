@@ -1,5 +1,9 @@
+import Conf from 'conf'
 import W3Client from 'w3up-client'
 import { config } from 'dotenv'
+
+import * as CBOR from '@ucanto/transport/cbor'
+
 config()
 
 const W3_STORE_DID =
@@ -9,10 +13,18 @@ const SERVICE_URL =
   process.env.SERVICE_URL ||
   'https://mk00d0sf0h.execute-api.us-east-1.amazonaws.com/' //staging url
 
-export function createClient(settings) {
-  return new W3Client({
-    serviceDID: W3_STORE_DID,
-    serviceURL: SERVICE_URL,
-    settings,
-  })
-}
+const settings = new Conf({
+  projectName: 'w3-cli',
+  fileExtension: 'cbor',
+  serialize: ({ ...data }) =>
+    Buffer.from(CBOR.codec.encode(data)).toString('binary'),
+  deserialize: (text) => CBOR.codec.decode(Buffer.from(text, 'binary')),
+})
+
+const client = new W3Client({
+  serviceDID: W3_STORE_DID,
+  serviceURL: SERVICE_URL,
+  settings,
+})
+
+export default client

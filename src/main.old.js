@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 
-import * as CBOR from '@ucanto/transport/cbor'
 import Z from 'zod'
 import * as Soly from 'soly'
 import { script } from 'subprogram'
@@ -8,7 +7,6 @@ import path from 'path'
 import { pathToFileURL } from 'url'
 import { parseLink } from '@ucanto/server'
 import fs from 'fs'
-import Conf from 'conf'
 
 import {
   resetSettings,
@@ -21,16 +19,8 @@ import { createClient } from './client.js'
 import { generateCar, writeFileLocally } from './commands/generateCar.js'
 import { run as carInfo } from './commands/info.js'
 
-// TODO: Extract to some interface.
-const settings = new Conf({
-  projectName: 'w3-cli',
-  fileExtension: 'cbor',
-  serialize: ({ ...data }) =>
-    Buffer.from(CBOR.codec.encode(data)).toString('binary'),
-  deserialize: (text) => CBOR.codec.decode(Buffer.from(text, 'binary')),
-})
+import client from './client.js'
 
-const client = createClient(settings)
 const cli = Soly.createCLI('w3-cli')
 
 cli
@@ -89,10 +79,7 @@ cli
     const list = await client.list()
     console.log('List of uploaded/linked cars:\n' + list.join('\n'))
   })
-  .command('id', () => async () => {
-    const id = await client.identity()
-    console.log('ID loaded: ' + id.did())
-  })
+
   .command('whoami', () => async () => console.log(await client.whoami()))
   .command('reset-settings', () => async () => resetSettings({ settings }))
   .command('export-settings', () => async () => exportSettings({ settings }))

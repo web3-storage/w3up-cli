@@ -3,28 +3,27 @@
 import _yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
 
+import id from './commands/id.js'
+
 const yargs = _yargs(hideBin(process.argv))
 
 const register = {
+  cmd: 'register <email>',
   description: 'Register your UCAN Identity with w3up',
-  build: () => {},
-  exe: () => {},
+  build: (yargs, helpOrVersionSet) => {},
+  exe: (argv) => {
+    console.log(argv)
+  },
 }
 
 const list = {
   description: 'List your uploads',
-  build: () => {},
-  exe: () => {},
+  build: {},
+  exe: (argv) => {
+    console.log(argv)
+  },
   exampleOut: `bafy...\nbafy...`,
   exampleIn: '$0 list',
-}
-
-const id = {
-  description: 'Generate a UCAN Identity',
-  build: () => {},
-  exe: () => {},
-  exampleOut: `example out`,
-  exampleIn: '$0 id',
 }
 
 const whoami = {
@@ -80,8 +79,10 @@ export const main = async () => {
     .scriptName('w3up')
     .usage('Usage:\n  $0 <cmd> [args]')
 
-    .command('id', id.description, id.build, id.exe)
-    .command('register', register.description, register.build, register.exe)
+    .command(id.cmd, id.description, id.build, id.exe)
+    .example(id.exampleIn, id.exampleOut)
+
+    .command(register.cmd, register.description, register.build, register.exe)
     .command('whoami', whoami.description, whoami.build, whoami.exe)
 
     .command('list', list.description, list.build, list.exe)
