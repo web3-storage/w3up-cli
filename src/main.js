@@ -5,26 +5,10 @@ import { hideBin } from 'yargs/helpers'
 
 import id from './commands/id.js'
 import register from './commands/register.js'
+import list from './commands/list.js'
+import whoami from './commands/whoami.js'
 
 const yargs = _yargs(hideBin(process.argv))
-
-const list = {
-  description: 'List your uploads',
-  build: {},
-  exe: (argv) => {
-    console.log(argv)
-  },
-  exampleOut: `bafy...\nbafy...`,
-  exampleIn: '$0 list',
-}
-
-const whoami = {
-  description: 'Show your current UCAN Identity',
-  build: () => {},
-  exe: () => {},
-  exampleOut: `DID:12345`,
-  exampleIn: '$0 whoami',
-}
 
 const importSettings = {
   description: 'Import a settings.json file',
@@ -75,9 +59,10 @@ export const main = async () => {
     .example(id.exampleIn, id.exampleOut)
 
     .command(register.cmd, register.description, register.build, register.exe)
-    .command('whoami', whoami.description, whoami.build, whoami.exe)
+    .command(whoami.cmd, whoami.description, whoami.build, whoami.exe)
+    .example(whoami.exampleIn, whoami.exampleOut)
 
-    .command('list', list.description, list.build, list.exe)
+    .command(list.cmd, list.description, list.build, list.exe)
     .example(list.exampleIn, list.exampleOut)
 
     .command(

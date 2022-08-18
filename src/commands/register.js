@@ -1,7 +1,7 @@
 import ora from 'ora'
 import Inquirer from 'inquirer'
 import client from '../client.js'
-import { isEmail } from '../validation'
+import { isEmail } from '../validation.js'
 
 const exe = async (argv) => {
   const { email } = argv

@@ -71,10 +71,6 @@ cli
       console.log(response)
     }
   })
-  .command('list', () => async () => {
-    const list = await client.list()
-    console.log('List of uploaded/linked cars:\n' + list.join('\n'))
-  })
 
   .command('whoami', () => async () => console.log(await client.whoami()))
   .command('reset-settings', () => async () => resetSettings({ settings }))
