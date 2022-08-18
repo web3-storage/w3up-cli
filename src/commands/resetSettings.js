@@ -1,7 +1,6 @@
 import ora from 'ora'
 import Inquirer from 'inquirer'
-import fs from 'fs'
-import { settings } from '../client'
+import { settings } from '../client.js'
 
 /**
  * @async

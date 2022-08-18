@@ -1,7 +1,6 @@
 import ora from 'ora'
 import Inquirer from 'inquirer'
-import fs from 'fs'
-import { settings } from '../client'
+import { settings } from '../client.js'
 
 /**
  * @async
@@ -31,7 +30,7 @@ const exe = async () => {
 }
 
 const exportSettings = {
-  cmd: 'export-settings <filename>',
+  cmd: 'export-settings',
   description: 'Export a settings.json file',
   build: {},
   exe,
