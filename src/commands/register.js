@@ -7,14 +7,16 @@ const exe = async (argv) => {
   const { email } = argv
   // TODO: https://github.com/nftstorage/w3up-cli/issues/15
   // this can hang if there's network disconnectivity.
-  const view = ora(`Registering ${email}`).start()
+  const view = ora({ text: `Registering ${email}`, spinner: 'line' }).start()
 
   try {
     let result = await client.register(email)
 
-    if (result) {
+    if (!result?.error) {
       view.stopAndPersist({
-        text: `${result}, check inbox & paste registration token below\n`,
+        text: `${
+          result + '.' || ''
+        } Check inbox & paste registration token below\n`,
       })
       const { token } = await Inquirer.prompt({
         name: 'token',
@@ -33,7 +35,7 @@ const exe = async (argv) => {
       view.succeed(result)
     }
   } catch (err) {
-    view.fail(err)
+    view.fail(err.toString())
   }
 }
 

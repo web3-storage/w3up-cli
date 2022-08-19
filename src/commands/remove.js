@@ -12,11 +12,9 @@ const exe = async (argv) => {
 }
 
 const build = (yargs) => {
-  yargs.check((argv) => {
-    const { cid } = argv
+  yargs.check(({ cid }) => {
     try {
-      isCID(cid)
-      return true
+      return isCID(cid)
     } catch (err) {
       throw new Error(`${cid} is probably not a valid CID: \n${err}`)
     }

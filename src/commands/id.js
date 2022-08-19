@@ -1,22 +1,31 @@
+import ora, { oraPromise } from 'ora'
 import client from '../client.js'
 import { settings } from '../client.js'
 
-const exe = async () => {
-  if(!settings.has('secret')) {
-    console.log('Generating id...')
-  } else {
-    console.log('Loading id...')
+const exe = async ({ reset }) => {
+  const view = ora({ spinner: 'line' })
+
+  if (reset) {
+    settings.clear()
   }
-  const id = await client.identity()
+
+  let text = !settings.has('secret') ? 'Generating id' : 'Loading id'
+  const id = await oraPromise(client.identity(), text)
   if (id) {
-    console.log('ID loaded: ' + id.did())
+    view.succeed('ID: ' + id.did())
   }
 }
 
 const id = {
   cmd: 'id',
   description: 'Generate a UCAN Identity',
-  build: () => {},
+  build: (yargs) =>
+    yargs.option('reset', {
+      type: 'boolean',
+      alias: 'reset',
+      showInHelp: true,
+      describe: 'reset settings and generate id.',
+    }),
   exe,
   exampleOut: `ID loaded: did:key:z6MkiWm...`,
   exampleIn: '$0 id',

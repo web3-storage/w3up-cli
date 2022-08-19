@@ -11,27 +11,33 @@ import { buildMetaData } from './metadata.js'
 // Internal queue capacity that can hold around 32 blocks
 const CAPACITY = UnixFS.BLOCK_SIZE_LIMIT * 32
 
+const isDirectory = (pathName) =>
+  fs.existsSync(pathName) && fs.lstatSync(pathName).isDirectory()
+
 async function walkDir({ writer, pathName, filename }) {
   const filePath = path.resolve(pathName, filename)
-  const isDir = fs.lstatSync(filePath).isDirectory()
 
-  if (isDir) {
+  if (isDirectory(filePath)) {
     return wrapFilesWithDir({
       writer,
-      files: await Promise.all(
-        fs.readdirSync(filePath).map((name) =>
-          walkDir({
-            writer,
-            pathName: pathName + '/' + filename,
-            filename: name,
-          })
+      files: await fs.promises.readdir(filePath).then((names) =>
+        Promise.all(
+          names.map((name) =>
+            walkDir({
+              writer,
+              pathName: pathName + '/' + filename,
+              filename: name,
+            })
+          )
         )
       ),
       dirName: filename,
     })
   }
-  const bytes = fs.readFileSync(filePath)
-  return await fileToBlock({ writer, filename, bytes })
+
+  return fs.promises
+    .readFile(filePath)
+    .then((bytes) => fileToBlock({ writer, filename, bytes }))
 }
 
 async function createReadableBlockStreamWithWrappingDir(_pathName) {
@@ -48,27 +54,23 @@ async function createReadableBlockStreamWithWrappingDir(_pathName) {
   })
 
   let files = []
-  let pathName = path.normalize(path.resolve(_pathName))
-  try {
-    const isDir = fs.lstatSync(pathName).isDirectory()
+  let pathName = path.normalize(_pathName)
 
-    if (isDir) {
-      //listing all files using forEach
-      files = files.concat(
-        (
-          await Promise.all(
-            fs
-              .readdirSync(pathName)
-              .map((filename) => walkDir({ writer, pathName, filename }))
+  if (isDirectory(pathName)) {
+    //listing all files using forEach
+    files = files.concat(
+      (
+        await fs.promises.readdir(pathName).then((filenames) => {
+          return Promise.all(
+            filenames.map((filename) => walkDir({ writer, pathName, filename }))
           )
-        ).filter((x) => x != null)
-      )
-    } else {
-      const bytes = fs.readFileSync(pathName)
-      files = [await fileToBlock({ writer, filename: pathName, bytes })]
-    }
-  } catch (err) {
-    console.log('Error:', err)
+        })
+      ).filter((x) => x != null)
+    )
+  } else {
+    let filename = path.basename(pathName)
+    const bytes = fs.readFileSync(pathName)
+    files = [await fileToBlock({ writer, filename, bytes })]
   }
 
   const parent = await wrapFilesWithDir({ writer, files, dirName: pathName })
@@ -85,13 +87,10 @@ async function createReadableBlockStreamWithWrappingDir(_pathName) {
 }
 
 export async function buildCar(pathName) {
-  console.log('buildCar', pathName)
-
   const { cid, readable } = await createReadableBlockStreamWithWrappingDir(
     pathName
   )
 
-  console.log('Created', cid)
   const metadata = await buildMetaData()
 
   const buffer = new ArrayBuffer(CAPACITY)

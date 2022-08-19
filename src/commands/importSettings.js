@@ -11,8 +11,8 @@ import { isPath } from '../validation.js'
  * @returns {Promise<void>}
  */
 const exe = async ({ fileName }) => {
-  const view = ora('export')
-  view.stopAndPersist({
+  const spinner = ora('export')
+  spinner.stopAndPersist({
     text: 'These values will overwrite your old id/account and you will lose access, are you sure you want to proceed?',
   })
 
@@ -28,38 +28,28 @@ const exe = async ({ fileName }) => {
       if (settings && imported) {
         for (var key of Object.keys(imported)) {
           if (key == 'secret') {
-            const secret = Uint8Array.from(Buffer.from(imported.secret, 'base64'))
+            const secret = Uint8Array.from(
+              Buffer.from(imported.secret, 'base64')
+            )
             settings.set(key, secret)
           } else {
             settings.set(key, imported[key])
           }
         }
       }
+      spinner.succeed(`Imported settings from ${fileName} successfully.`)
     } catch (err) {
-      console.log('err', err)
+      spinner.fail('error:' + err)
     }
   }
-}
-
-/**
- * @param {object} argv
- * @param {string} argv.fileName - The name of the file to import
- * @returns {boolean}
- */
-const validate = ({ fileName }) => {
-  if(!isPath(fileName)) {
-    throw new Error(`Error: ${fileName} does not exist.`);
-  }
-  return true;
 }
 
 const importSettings = {
   cmd: 'import-settings <fileName>',
   description: 'Import a settings.json file',
-  build:{},
-//   build: (yargs) => yargs.check(validate),
+  build: (yargs) => yargs.check(({ fileName }) => isPath(fileName)),
   exe,
-  exampleOut: `You have successffully imported settings.json!`,
+  exampleOut: `You have successfully imported settings.json!`,
   exampleIn: '$0 import-settings settings.json',
 }
 
