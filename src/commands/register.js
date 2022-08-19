@@ -12,9 +12,11 @@ const exe = async (argv) => {
   try {
     let result = await client.register(email)
 
-    if (result) {
+    if (!result?.error) {
       view.stopAndPersist({
-        text: `${result}, check inbox & paste registration token below\n`,
+        text: `${
+          result + '.' || ''
+        } Check inbox & paste registration token below\n`,
       })
       const { token } = await Inquirer.prompt({
         name: 'token',
@@ -33,7 +35,7 @@ const exe = async (argv) => {
       view.succeed(result)
     }
   } catch (err) {
-    view.fail(err)
+    view.fail(err.toString())
   }
 }
 

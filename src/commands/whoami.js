@@ -6,7 +6,11 @@ const exe = async () => {
   const view = ora({ text: 'Checking identity', spinner: 'line' })
   try {
     const iam = await client.whoami()
-    view.succeed(`${iam}`)
+    if (iam.error) {
+      view.succeed(iam.message)
+    } else {
+      view.succeed(`${iam}`)
+    }
   } catch (error) {
     view.fail('Could not check identity, check w3up-failure.log')
     await fs.promises.appendFile(
