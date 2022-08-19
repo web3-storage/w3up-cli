@@ -17,7 +17,8 @@ const exe = async ({ cid, ws, subscribe }) => {
     //
     //     wsView.succeed(`${cid}`)
   } else {
-    spinner.succeed(await client.insights(cid))
+    const insights = await client.insights(cid)
+    spinner.succeed(JSON.stringify(insights?.insight_data, null, 2))
   }
 }
 
