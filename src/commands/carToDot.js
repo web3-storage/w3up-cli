@@ -25,7 +25,7 @@ const build = (yargs) => {
       return true
     } catch (err) {
       throw new Error(
-        `${path} is probably not a valid path to a file or directory: \n${err}`
+        `${path} is probably not a valid path to a CAR file or directory: \n${err}`
       )
     }
   })
@@ -34,7 +34,7 @@ const build = (yargs) => {
 
 const upload = {
   cmd: 'car-to-dot <path>',
-  description: 'Generates a file for CAR examination',
+  description: 'Generate an examination file from a <path> to a CAR ',
   build,
   exe,
   exampleIn: '$0 car-to-dot ../duck.car',

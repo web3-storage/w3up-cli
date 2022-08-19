@@ -35,7 +35,6 @@ export const isPath = (targetPath) => {
     const stat = fs.lstatSync(resolvePath(targetPath))
     return stat.isDirectory() || stat.isFile()
   }
-
   return false
 }
 

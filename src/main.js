@@ -18,6 +18,8 @@ import resetSettings from './commands/resetSettings.js'
 
 import insights from './commands/insights.js'
 
+import carToDot from './commands/carToDot.js'
+
 const yargs = _yargs(hideBin(process.argv))
 
 export const main = async () => {
@@ -74,6 +76,9 @@ export const main = async () => {
     .command(insights.cmd, insights.description, insights.build, insights.exe)
 
     //utilities
+    .command(carToDot.cmd, carToDot.description, carToDot.build, carToDot.exe)
+    .example(carToDot.exampleIn, carToDot.exampleOut)
+
     .help()
     .showHelpOnFail(true)
     .demandCommand(1, '')
