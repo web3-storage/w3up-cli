@@ -11,23 +11,25 @@ const exe = async (argv) => {
   view.succeed(`${res.toString()}`)
 }
 
+const build = (yargs) => {
+  yargs.check((argv) => {
+    const { cid } = argv
+    try {
+      isCID(cid)
+      return true
+    } catch (err) {
+      throw new Error(`${cid} is probably not a valid CID: \n${err}`)
+    }
+  })
+  return yargs
+}
+
 //TODO allow list of CIDs
 // https://github.com/nftstorage/w3up-cli/issues/20
 const remove = {
   cmd: ['remove <cid>', 'unlink <cid>'],
   description: 'Unlink a CID from your account.',
-  build: (yargs) => {
-    yargs.check((argv) => {
-      const { cid } = argv
-      try {
-        isCID(cid)
-        return true
-      } catch (err) {
-        throw new Error(`${cid} is probably not a valid CID: \n${err}`)
-      }
-    })
-    return yargs
-  },
+  build,
   exe,
   exampleIn: '$0 remove bafy...',
   exampleOut: `unlinked bafy...`,

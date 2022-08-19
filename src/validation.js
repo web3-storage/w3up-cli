@@ -1,4 +1,8 @@
 import { parseLink } from '@ucanto/server'
+import fs from 'fs'
+import path from 'path'
+
+import { pathToFileURL } from 'url'
 
 /**
  *
@@ -7,8 +11,6 @@ import { parseLink } from '@ucanto/server'
  */
 export const isEmail = (email) => /(.+)@(.+){2,}\.(.+){2,}/.test(email)
 
-//TODO: implement a CID input validator
-//https://github.com/nftstorage/w3up-cli/issues/21
 /**
  *
  * @param {string} cid
@@ -22,3 +24,25 @@ export const isCID = (cid) => {
     throw err
   }
 }
+
+/**
+ *
+ * @param {string} targetPath
+ * @returns {boolean}
+ */
+export const isPath = (targetPath) => {
+  if (path) {
+    const stat = fs.lstatSync(resolvePath(targetPath))
+    return stat.isDirectory() || stat.isFile()
+  }
+
+  return false
+}
+
+/**
+ *
+ * @param {string} targetPath
+ * @returns {URL}
+ */
+export const resolvePath = (targetPath) =>
+  pathToFileURL(path.resolve(process.cwd(), targetPath))

@@ -4,7 +4,7 @@ import Z from 'zod'
 import * as Soly from 'soly'
 import { script } from 'subprogram'
 import path from 'path'
-import { pathToFileURL } from 'url'
+
 import { parseLink } from '@ucanto/server'
 import fs from 'fs'
 
@@ -17,18 +17,6 @@ const cli = Soly.createCLI('w3-cli')
 
 cli
 
-  .command('upload', (input) => {
-    const [carPath] = input.positionals([Soly.path()])
-    return async () => {
-      if (!carPath.value) {
-        console.log('You must provide the path to a car file to upload.')
-      }
-      //check to make sure its a CAR here.
-      const buffer = fs.readFileSync(resolveURL(carPath.value))
-      const response = await client.upload(buffer)
-      console.log(response)
-    }
-  })
   .command('car-to-dot', (input) => {
     const [carPath] = input.positionals([Soly.path()])
     return async () => {
@@ -59,14 +47,5 @@ cli
   })
 
 export const main = async () => cli.parse(process.argv)
-
-/**
- *
- * @param {string} relativeFilepath
- * @returns {URL}
- */
-
-const resolveURL = (relativeFilepath) =>
-  pathToFileURL(path.resolve(process.cwd(), relativeFilepath))
 
 script({ ...import.meta, main, dotenv: true })

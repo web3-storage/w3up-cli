@@ -9,6 +9,7 @@ import id from './commands/id.js'
 import register from './commands/register.js'
 import list from './commands/list.js'
 import whoami from './commands/whoami.js'
+import upload from './commands/upload.js'
 import remove from './commands/remove.js'
 
 import importSettings from './commands/importSettings.js'
@@ -42,6 +43,9 @@ export const main = async () => {
     //general usage
     .command(list.cmd, list.description, list.build, list.exe)
     .example(list.exampleIn, list.exampleOut)
+
+    .command(upload.cmd, upload.description, upload.build, upload.exe)
+    .example(upload.exampleIn, upload.exampleOut)
 
     .command(remove.cmd, remove.description, remove.build, remove.exe)
     .example(remove.exampleIn, remove.exampleOut)
