@@ -30,6 +30,10 @@ function decode(cid, bytes) {
   return codecs[cid.code].decode(bytes)
 }
 
+/**
+ * @param {object} cid - the CID to format to a short form for output.
+ * @returns {string} The shortned CID.
+ */
 function toShortCID(cid) {
   let str = cid.toString()
   return (
@@ -40,6 +44,27 @@ function toShortCID(cid) {
 const ignoredKeysForLabel = ['blockLength', 'offset', 'blockOffset']
 
 const dirContent = Buffer.from([8, 1])
+
+/**
+ * @param {object} obj
+ * @param {object} value
+ * @returns {boolean}
+ */
+function isUnixFSDirectory(obj, value) {
+  return (
+    obj.type == 'dagPb' &&
+    (value.Links.length > 0 || value?.Data?.toString() == dirContent.toString())
+  )
+}
+
+/**
+ * @param {object} obj
+ * @param {object} value
+ * @returns {boolean}
+ */
+function isUnixFSFile(obj, value) {
+  return obj.type == 'dagPb' && value.Links.length == 0
+}
 
 function buildLabel(obj) {
   let label = Object.entries(obj)
@@ -52,26 +77,19 @@ function buildLabel(obj) {
       }
       if (typeof val == 'object') {
         if (key == 'content') {
-          const isDir =
-            obj.type == 'dagPb' &&
-            (val.Links.length > 0 ||
-              val?.Data?.toString() == dirContent.toString())
-          const isFile = obj.type == 'dagPb' && val.Links.length == 0
-
-          /*           if (!data && obj.type == 'dagCbor') { */
-          /*             data = val?.id; */
-          /*             return `{session_id|${data}}`; */
-          /*           } */
-          if (isDir) {
+          if (isUnixFSDirectory(obj, val)) {
             return '{unixfs|dir}'
           }
-
-          if (isFile) {
+          if (isUnixFSFile(obj, val)) {
             return `{unixfs|file}`
-            /*             return `{unixfs|file}|{content|${data}}`; */
           }
-          /*  */
-          /*           return data ? `{content|${data}}` : `{content|${val}}`; */
+
+          if (obj.type == 'dagCbor') {
+            let data = val?.id // has metadata id
+            if (data) {
+              return `{session_id|${data}}`
+            }
+          }
         }
         return ''
       }
@@ -83,8 +101,12 @@ function buildLabel(obj) {
   return `${label}`
 }
 
+/**
+ * @async
+ * @param {Buffer|Uint8Array} bytes
+ * @returns {Promise<string>} the DOT format output of the DAG in the car.
+ */
 export async function run(bytes) {
-  //   const bytes = fs.readFileSync(filename);
   const indexer = await CarIndexer.fromBytes(bytes)
   const reader = await CarReader.fromBytes(bytes)
   const fixture = {
@@ -92,12 +114,11 @@ export async function run(bytes) {
     blocks: [],
   }
 
-  let dot = `
-    digraph { 
-      graph [nodesep="0.25", ranksep="1" splines=line];
-      labeljust=l;
-      labelloc=c;
-      node [shape=record];
+  let dot = `digraph { 
+\tgraph [nodesep="0.25", ranksep="1" splines=line];
+\tlabeljust=l;
+\tlabelloc=c;
+\tnode [shape=record];
   `
 
   let linkDot = ''
@@ -111,27 +132,30 @@ export async function run(bytes) {
     fixture.blocks[i].content = decode(blockIndex.cid, block.bytes)
 
     const cur = fixture.blocks[i]
-    const links = fixture.blocks[i].content.Links || []
+    const links = cur.content.Links || []
     const scid = toShortCID(cur.cid)
 
     const label = buildLabel(cur)
     if (fixture.header.roots.some((x) => x.toString() == cur.cid.toString())) {
       if (links.length > 0) {
-        dot += `\n"${scid}" [label="{${label}}" style="rounded" labeljust=l]`
+        dot += `\n\t"${scid}" [label="{${label}}" style="rounded" labeljust=l]`
       } else {
-        dot += `\n"${scid}" [label="{${label}}" style="rounded" labeljust=l]`
+        dot += `\n\t"${scid}" [label="{${label}}" style="rounded" labeljust=l]`
       }
     } else {
-      dot += `\n"${scid}" [label="{${label}}" labeljust=l]`
+      dot += `\n\t"${scid}" [label="{${label}}" labeljust=l]`
     }
 
     links.forEach((link) => {
-      /*       console.log('links', link); */
-      linkDot += `\n"${scid}" -> "${toShortCID(link['Hash'])}" `
+      linkDot += `\n\t"${scid}" -> "${toShortCID(link['Hash'])}" `
       linkDot += `[label="${link['Name']}" labeljust=c]`
     })
 
     i++
+  }
+
+  if (linkDot) {
+    linkDot = '\n' + linkDot
   }
 
   dot += linkDot + '\n}'

@@ -3,7 +3,6 @@ import fs from 'fs'
 import path from 'path'
 import { pathToFileURL } from 'url'
 
-
 /**
  *
  * @param {string} email
@@ -26,13 +25,12 @@ export const isCID = (cid) => {
 }
 
 /**
-  *
-  * @param {string} targetPath
-  * @returns {URL}
-  */
+ *
+ * @param {string} targetPath
+ * @returns {URL}
+ */
 export const resolvePath = (targetPath) =>
   pathToFileURL(path.resolve(process.cwd(), targetPath))
-
 
 /**
  *
@@ -40,9 +38,13 @@ export const resolvePath = (targetPath) =>
  * @returns {boolean}
  */
 export const isPath = (targetPath) => {
-  if (path) {
-    const stat = fs.lstatSync(resolvePath(targetPath))
-    return stat.isDirectory() || stat.isFile()
+  try {
+    if (targetPath) {
+      const stat = fs.lstatSync(resolvePath(targetPath))
+      return stat.isDirectory() || stat.isFile()
+    }
+  } catch (err) {
+    throw new Error(`File or directory does not exist: ${targetPath}`)
   }
   return false
 }

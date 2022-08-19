@@ -1,13 +1,17 @@
 import client from '../client.js'
-import ora from 'ora'
+import ora, { oraPromise } from 'ora'
 
 const exe = async () => {
-  const view = ora(`Listing Uploads...`).start()
-  const list = await client.list()
+  const view = ora()
+  const list = await oraPromise(client.list(), {
+    text: `Listing Uploads...`,
+    spinner: 'line',
+  })
 
-  view.succeed(`CIDs:\n${list.join('\n')}`)
-  if (!list.lengh) {
-    console.log(`\tYou don't seem to have any uploads yet!`)
+  if (!list.length) {
+    view.info(`You don't seem to have any uploads yet!`)
+  } else {
+    view.succeed(`CIDs:\n${list.join('\n')}`)
   }
 }
 

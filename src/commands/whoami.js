@@ -1,10 +1,19 @@
 import client from '../client.js'
 import ora from 'ora'
+import fs from 'fs'
 
 const exe = async () => {
-  const view = ora(`whoami?`).start()
-  const iam = await client.whoami()
-  view.succeed(`${iam}`)
+  const view = ora({ text: 'Checking identity', spinner: 'line' })
+  try {
+    const iam = await client.whoami()
+    view.succeed(`${iam}`)
+  } catch (error) {
+    view.fail('Could not check identity, check w3up-failure.log')
+    await fs.promises.appendFile(
+      'w3up-failure.log',
+      'whoami: ' + JSON.stringify(error) + '\n'
+    )
+  }
 }
 
 const whoami = {

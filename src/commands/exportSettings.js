@@ -2,14 +2,17 @@ import ora from 'ora'
 import fs from 'fs'
 import Inquirer from 'inquirer'
 import { settings } from '../client.js'
+import { isPath, resolvePath } from '../validation.js'
 
 /**
+ * Export settings by printing to console or writing to a json file.
  * @async
+ * @param {object} argv
+ * @param {string} [argv.filename] - The file to write the settings to
  * @returns {Promise<void>}
  */
-const exe = async (argv) => {
-  const { filename } = argv
-  const view = ora('export')
+const exe = async ({ filename }) => {
+  const view = ora().start()
 
   view.stopAndPersist({
     text: 'These values give anyone the power to act as you, are you sure you want to print them?',
@@ -26,15 +29,17 @@ const exe = async (argv) => {
       store.secret = Buffer.from(store.secret).toString('base64')
     }
 
-    const settingsJson = JSON.stringify(store, null, 2);
-    if(filename) {
-      fs.writeFileSync(filename, settingsJson)
-      console.log('Settings written to:', filename);
+    const settingsJson = JSON.stringify(store, null, 2)
+    if (filename) {
+      fs.writeFileSync(resolvePath(filename), settingsJson)
+      view.succeed('Settings written to:' + filename)
     } else {
-      console.log('No file name provided, printing config to console:\n', settingsJson);
+      view.succeed(
+        'No file name provided, printing config to console:\n' + settingsJson
+      )
     }
   } else {
-    console.log('exiting')
+    view.info('exiting')
   }
 }
 

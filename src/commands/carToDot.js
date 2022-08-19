@@ -3,33 +3,15 @@ import { isPath, resolvePath } from '../validation.js'
 import fs from 'fs'
 import { run as carInfo } from '../lib/carInfo.js'
 
+// do not use ora for output, so it can be piped to dot/etc for building image.
 const exe = async (argv) => {
   const { path } = argv
-  const view = ora(`Uploading ${path}...`).start()
-
   const buffer = fs.readFileSync(resolvePath(path))
   const info = await carInfo(buffer)
-  if (info) {
-    view.succeed(`${info}`)
-  } else {
-    view.fail('Car To Dot did not complete successfully')
-  }
+  console.log(info)
 }
 
-const build = (yargs) => {
-  yargs.check((argv) => {
-    const { path } = argv
-    try {
-      isPath(path)
-      return true
-    } catch (err) {
-      throw new Error(
-        `${path} is probably not a valid path to a CAR file or directory: \n${err}`
-      )
-    }
-  })
-  return yargs
-}
+const build = (yargs) => yargs.check(({ path }) => isPath(path))
 
 const upload = {
   cmd: 'car-to-dot <path>',

@@ -1,51 +1,41 @@
 import client from '../client.js'
-import ora from 'ora'
+import ora, { oraPromise } from 'ora'
 import { isCID } from '../validation.js'
 
-const exe = async (argv) => {
-  console.log(argv)
-
-  const { cid, ws, subscribe } = argv
-
+const exe = async ({ cid, ws, subscribe }) => {
+  const spinner = ora({ text: `Getting insights for ${cid}`, spinner: 'line' })
   const shouldWS = ws || subscribe
 
-  const view = ora(`Getting Insight for ${cid}...`).start()
-  const res = await client.insights(cid)
-  view.succeed(res)
-
   if (shouldWS) {
-    console.log(`⚠️Subscriptions not yet supported ⚠️`)
+    spinner.fail(`⚠️Subscriptions not yet supported ⚠️`)
 
-    const wsView = ora(`Getting Insight Subscription for ${cid}...`).start()
-    if (client.insightsWS) {
-      const response = await client.insightsWS(cid)
-      console.log('response', response)
-    }
-
-    wsView.succeed(`${cid}`)
+    //     const wsView = ora(`Getting Insight Subscription for ${cid}...`).start()
+    //     if (client.insightsWS) {
+    //       const response = await client.insightsWS(cid)
+    //       console.log('response', response)
+    //     }
+    //
+    //     wsView.succeed(`${cid}`)
+  } else {
+    spinner.succeed(await client.insights(cid))
   }
 }
 
 const build = (yargs) => {
-  yargs.check((argv) => {
-    const { cid } = argv
-
-    try {
-      isCID(cid)
-      return true
-    } catch (err) {
-      throw new Error(`${cid} is probably not a valid CID: \n${err}`)
-    }
-  })
-
-  yargs.option('subscribe', {
-    type: 'boolean',
-    alias: 'ws',
-    showInHelp: true,
-    describe: 'Get a Subscription to incoming insights',
-  })
-
   return yargs
+    .check(({ cid }) => {
+      try {
+        return isCID(cid)
+      } catch (err) {
+        throw new Error(`${cid} is probably not a valid CID: \n${err}`)
+      }
+    })
+    .option('subscribe', {
+      type: 'boolean',
+      alias: 'ws',
+      showInHelp: true,
+      describe: 'Get a Subscription to incoming insights',
+    })
 }
 
 const insights = {

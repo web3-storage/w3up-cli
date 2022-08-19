@@ -90,7 +90,7 @@ export const main = async () => {
     .example(generateCar.exampleIn, generateCar.exampleOut)
 
     .help()
-    .showHelpOnFail(true)
+//     .showHelpOnFail(true)
     .demandCommand(1, '')
     .recommendCommands()
     .strict()

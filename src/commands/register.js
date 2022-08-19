@@ -7,7 +7,7 @@ const exe = async (argv) => {
   const { email } = argv
   // TODO: https://github.com/nftstorage/w3up-cli/issues/15
   // this can hang if there's network disconnectivity.
-  const view = ora(`Registering ${email}`).start()
+  const view = ora({ text: `Registering ${email}`, spinner: 'line' }).start()
 
   try {
     let result = await client.register(email)

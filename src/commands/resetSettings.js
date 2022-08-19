@@ -10,20 +10,22 @@ const exe = async () => {
   const view = ora('reset')
   view.stopAndPersist({
     text: `This will delete your settings, are you sure?
-You will lose access to anything created with your previous key/did.
+  You will lose access to anything created with your previous key/did.
+  If you want to keep the previous settings, use export-settings first.
 `,
   })
 
   const { reset } = await Inquirer.prompt({
     name: 'reset',
     type: 'confirm',
+    default: false,
   })
 
   if (reset) {
     settings.clear()
-    console.log('Settings cleared.')
+    view.succeed('Settings cleared.')
   } else {
-    console.log('exiting')
+    view.info('exiting')
   }
 }
 

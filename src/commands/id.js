@@ -1,15 +1,14 @@
+import ora, { oraPromise } from 'ora'
 import client from '../client.js'
 import { settings } from '../client.js'
 
 const exe = async () => {
-  if(!settings.has('secret')) {
-    console.log('Generating id...')
-  } else {
-    console.log('Loading id...')
-  }
-  const id = await client.identity()
+  const view = ora({ spinner: 'line' })
+
+  let text = !settings.has('secret') ? 'Generating id' : 'Loading id'
+  const id = await oraPromise(client.identity(), text)
   if (id) {
-    console.log('ID loaded: ' + id.did())
+    view.succeed('ID: ' + id.did())
   }
 }
 

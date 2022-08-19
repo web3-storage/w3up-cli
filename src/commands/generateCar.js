@@ -5,43 +5,28 @@ import fs from 'fs'
 import { buildCar } from '../lib/car.js'
 
 export const writeFileLocally = async (car, outPath = 'output.car') => {
-  fs.writeFileSync(outPath, car, { encoding: 'binary' })
+  return fs.promises.writeFile(resolvePath(outPath), car, {
+    encoding: 'binary',
+  })
 }
 
-const exe = async (argv) => {
-  const { filePath, outPath } = argv
-  const view = ora(`Generating Car from ${filePath}...`).start()
+const exe = async ({ filePath, outPath = 'output.car' }) => {
+  const view = ora({
+    text: `Generating Car from ${filePath}...`,
+    spinner: 'line',
+  }).start()
 
-  try {
-    var car = await buildCar(filePath)
-    console.log('writing file')
-    writeFileLocally(car, outPath)
-
-    if (car) {
-      view.succeed(`${car}`)
-      console.log(`CAR created ${filePath} => ${outPath || 'output.car'}`)
-    } else {
-      view.fail('Car generation failed')
-    }
-  } catch (err) {
-    view.fail('Error:', err)
+  const car = await buildCar(filePath)
+  if (car) {
+    await writeFileLocally(car, outPath)
+    view.succeed(`CAR created ${filePath} => ${outPath}`)
+  } else {
+    view.fail('Car generation failed.')
   }
 }
 
-const build = (yargs) => {
-  yargs.check((argv) => {
-    const { filePath, outPath } = argv
-    try {
-      isPath(filePath)
-      return true
-    } catch (err) {
-      throw new Error(
-        `${filePath} is probably not a valid path to a file or directory: \n${err}`
-      )
-    }
-  })
-  return yargs
-}
+const build = (yargs) =>
+  yargs.check(({ filePath, outPath }) => isPath(filePath))
 
 const generateCar = {
   cmd: 'generate-car <filePath> [outPath]',
