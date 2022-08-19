@@ -15,11 +15,7 @@ const exe = async (argv) => {
   try {
     let result = await client.register(email)
     if (result) {
-      let checkres = await client.checkRegistration()
-      if (checkres?.ok) {
-        console.log('checkres', checkres)
-        view.succeed(`Registration succeeded: ${email}`)
-      }
+      view.succeed(`Registration succeeded: ${email}`)
     }
   } catch (err) {
     view.fail(err.toString())
