@@ -9,17 +9,17 @@ export const writeFileLocally = async (car, outPath = 'output.car') => {
 }
 
 const exe = async (argv) => {
-  const { filePath, outputPath } = argv
+  const { filePath, outPath } = argv
   const view = ora(`Generating Car from ${filePath}...`).start()
 
   try {
     var car = await buildCar(filePath)
     console.log('writing file')
-    writeFileLocally(car, outputPath)
+    writeFileLocally(car, outPath)
 
     if (car) {
       view.succeed(`${car}`)
-      console.log(`CAR created ${filePath} => ${outputPath || 'output.car'}`)
+      console.log(`CAR created ${filePath} => ${outPath || 'output.car'}`)
     } else {
       view.fail('Car generation failed')
     }
@@ -30,7 +30,7 @@ const exe = async (argv) => {
 
 const build = (yargs) => {
   yargs.check((argv) => {
-    const { filePath, outputPath } = argv
+    const { filePath, outPath } = argv
     try {
       isPath(filePath)
       return true
@@ -44,7 +44,7 @@ const build = (yargs) => {
 }
 
 const generateCar = {
-  cmd: 'generate-car <filePath> [outputPath]',
+  cmd: 'generate-car <filePath> [outPath]',
   description: 'From an input file, locally generate a CAR file.',
   build,
   exe,
