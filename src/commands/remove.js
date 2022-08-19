@@ -1,6 +1,6 @@
 import client from '../client.js'
 import ora from 'ora'
-import { isCID } from '../validation.js'
+import { hasID, isCID } from '../validation.js'
 import { parseLink } from '@ucanto/server'
 
 const exe = async (argv) => {
@@ -11,16 +11,16 @@ const exe = async (argv) => {
   view.succeed(`${res.toString()}`)
 }
 
-const build = (yargs) => {
-  yargs.check(({ cid }) => {
-    try {
-      return isCID(cid)
-    } catch (err) {
-      throw new Error(`${cid} is probably not a valid CID: \n${err}`)
-    }
-  })
-  return yargs
-}
+const build = (yargs) =>
+  yargs
+    .check(() => hasID())
+    .check(({ cid }) => {
+      try {
+        return isCID(cid)
+      } catch (err) {
+        throw new Error(`${cid} is probably not a valid CID: \n${err}`)
+      }
+    })
 
 //TODO allow list of CIDs
 // https://github.com/nftstorage/w3up-cli/issues/20

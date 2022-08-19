@@ -13,6 +13,11 @@ const SERVICE_URL =
   process.env.SERVICE_URL ||
   'https://mk00d0sf0h.execute-api.us-east-1.amazonaws.com/' //staging url
 
+const ACCESS_URL = process.env.ACCESS_URL || 'https://auth-dev.dag.haus'
+const ACCESS_DID =
+  process.env.ACCESS_DID ||
+  'did:key:z6MksafxoiEHyRF6RsorjrLrEyFQPFDdN6psxtAfEsRcvDqx' // dev/staging did
+
 export const settings = new Conf({
   projectName: 'w3-cli',
   fileExtension: 'cbor',
@@ -24,6 +29,8 @@ export const settings = new Conf({
 const client = new W3Client({
   serviceDID: W3_STORE_DID,
   serviceURL: SERVICE_URL,
+  accessDID: ACCESS_DID,
+  accessURL: ACCESS_URL,
   settings,
 })
 

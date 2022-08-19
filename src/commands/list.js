@@ -1,5 +1,6 @@
 import client from '../client.js'
 import ora, { oraPromise } from 'ora'
+import { hasID } from '../validation.js'
 
 const exe = async () => {
   const view = ora()
@@ -18,7 +19,7 @@ const exe = async () => {
 const list = {
   cmd: 'list',
   description: 'List your uploads',
-  build: {},
+  build: (yargs) => yargs.check(() => hasID()),
   exe,
   exampleOut: `bafy...\nbafy...`,
   exampleIn: '$0 list',

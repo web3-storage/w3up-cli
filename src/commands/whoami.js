@@ -1,6 +1,7 @@
 import client from '../client.js'
 import ora from 'ora'
 import fs from 'fs'
+import { hasID } from '../validation.js'
 
 const exe = async () => {
   const view = ora({ text: 'Checking identity', spinner: 'line' })
@@ -23,7 +24,7 @@ const exe = async () => {
 const whoami = {
   cmd: 'whoami',
   description: 'Show your current UCAN Identity',
-  build: {},
+  build: (yargs) => yargs.check(() => hasID()),
   exe,
   exampleOut: `DID:12345...`,
   exampleIn: '$0 whoami',

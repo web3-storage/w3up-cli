@@ -2,6 +2,7 @@ import { parseLink } from '@ucanto/server'
 import fs from 'fs'
 import path from 'path'
 import { pathToFileURL } from 'url'
+import { settings } from './client.js'
 
 /**
  *
@@ -47,4 +48,19 @@ export const isPath = (targetPath) => {
     throw new Error(`File or directory does not exist: ${targetPath}`)
   }
   return false
+}
+
+export const hasID = () => {
+  if (!settings.has('secret')) {
+    throw new Error(`You have not setup an id, please run w3up id first.`)
+  }
+  return true
+}
+export const hasEmail = () => {
+  if (!settings.has('email')) {
+    throw new Error(
+      `You have not setup an email, please run w3up register <email> first.`
+    )
+  }
+  return true
 }
