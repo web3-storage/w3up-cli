@@ -20,6 +20,7 @@ import resetSettings from './commands/resetSettings.js'
 import insights from './commands/insights.js'
 
 import carToDot from './commands/carToDot.js'
+import generateCar from './commands/generateCar.js'
 
 const yargs = _yargs(hideBin(process.argv))
 
@@ -79,6 +80,14 @@ export const main = async () => {
     //utilities
     .command(carToDot.cmd, carToDot.description, carToDot.build, carToDot.exe)
     .example(carToDot.exampleIn, carToDot.exampleOut)
+
+    .command(
+      generateCar.cmd,
+      generateCar.description,
+      generateCar.build,
+      generateCar.exe
+    )
+    .example(generateCar.exampleIn, generateCar.exampleOut)
 
     .help()
     .showHelpOnFail(true)

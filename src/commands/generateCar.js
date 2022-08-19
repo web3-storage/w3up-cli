@@ -13,17 +13,18 @@ const exe = async (argv) => {
   const view = ora(`Generating Car from ${filePath}...`).start()
 
   try {
-    var car = await buildCar(resolvePath(filePath))
-
+    var car = await buildCar(filePath)
+    console.log('writing file')
     writeFileLocally(car, outputPath)
 
     if (car) {
       view.succeed(`${car}`)
+      console.log(`CAR created ${filePath} => ${outputPath || 'output.car'}`)
     } else {
       view.fail('Car generation failed')
     }
   } catch (err) {
-    view.fail(err)
+    view.fail('Error:', err)
   }
 }
 
@@ -48,7 +49,7 @@ const generateCar = {
   build,
   exe,
   exampleIn: '$0 generate-car ../duck.png duck.car',
-  exampleOut: `generated duck.car from ../duck.png`,
+  exampleOut: `CAR created ../duck.png => duck.car`,
 }
 
 export default generateCar

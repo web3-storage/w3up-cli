@@ -34,7 +34,7 @@ async function walkDir({ writer, pathName, filename }) {
   return await fileToBlock({ writer, filename, bytes })
 }
 
-async function createReadableBlockStreamWithWrappingDir(pathName) {
+async function createReadableBlockStreamWithWrappingDir(_pathName) {
   // Create a redable & writable streams with internal queue that can hold around 32 blocks
   const { readable, writable } = new TransformStream(
     {},
@@ -48,23 +48,27 @@ async function createReadableBlockStreamWithWrappingDir(pathName) {
   })
 
   let files = []
+  let pathName = path.normalize(path.resolve(_pathName))
+  try {
+    const isDir = fs.lstatSync(pathName).isDirectory()
 
-  const isDir = fs.lstatSync(pathName).isDirectory()
-
-  if (isDir) {
-    //listing all files using forEach
-    files = files.concat(
-      (
-        await Promise.all(
-          fs
-            .readdirSync(pathName)
-            .map((filename) => walkDir({ writer, pathName, filename }))
-        )
-      ).filter((x) => x != null)
-    )
-  } else {
-    const bytes = fs.readFileSync(pathName)
-    files = [await fileToBlock({ writer, filename: pathName, bytes })]
+    if (isDir) {
+      //listing all files using forEach
+      files = files.concat(
+        (
+          await Promise.all(
+            fs
+              .readdirSync(pathName)
+              .map((filename) => walkDir({ writer, pathName, filename }))
+          )
+        ).filter((x) => x != null)
+      )
+    } else {
+      const bytes = fs.readFileSync(pathName)
+      files = [await fileToBlock({ writer, filename: pathName, bytes })]
+    }
+  } catch (err) {
+    console.log('Error:', err)
   }
 
   const parent = await wrapFilesWithDir({ writer, files, dirName: pathName })
@@ -81,10 +85,13 @@ async function createReadableBlockStreamWithWrappingDir(pathName) {
 }
 
 export async function buildCar(pathName) {
+  console.log('buildCar', pathName)
+
   const { cid, readable } = await createReadableBlockStreamWithWrappingDir(
     pathName
   )
 
+  console.log('Created', cid)
   const metadata = await buildMetaData()
 
   const buffer = new ArrayBuffer(CAPACITY)
