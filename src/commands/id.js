@@ -1,7 +1,12 @@
 import client from '../client.js'
+import { settings } from '../client.js'
 
 const exe = async () => {
-  console.log('Generating Id')
+  if(!settings.has('secret')) {
+    console.log('Generating id...')
+  } else {
+    console.log('Loading id...')
+  }
   const id = await client.identity()
   if (id) {
     console.log('ID loaded: ' + id.did())
