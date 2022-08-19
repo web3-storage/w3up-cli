@@ -1,7 +1,7 @@
 {
   "name": "w3up-cli",
   "description": "w3up interface",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "main": "./src/main.js",
   "bin": {
     "w3up": "./src/cli.js"
