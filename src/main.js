@@ -1,141 +1,100 @@
 #!/usr/bin/env node
 
-import * as CBOR from '@ucanto/transport/cbor'
-import Z from 'zod'
-import * as Soly from 'soly'
-import { script } from 'subprogram'
-import path from 'path'
-import { pathToFileURL } from 'url'
-import { parseLink } from '@ucanto/server'
-import fs from 'fs'
-import Conf from 'conf'
+import _yargs from 'yargs'
+import { hideBin } from 'yargs/helpers'
 
-import {
-  resetSettings,
-  exportSettings,
-  importSettings,
-} from './commands/settings.js'
-import { register } from './commands/register.js'
-import { printHelp } from './commands/help.js'
-import { createClient } from './client.js'
-import { generateCar, writeFileLocally } from './commands/generateCar.js'
-import { run as carInfo } from './commands/info.js'
+import printQuickstart from './quickstart.js'
 
-// TODO: Extract to some interface.
-const settings = new Conf({
-  projectName: 'w3-cli',
-  fileExtension: 'cbor',
-  serialize: ({ ...data }) =>
-    Buffer.from(CBOR.codec.encode(data)).toString('binary'),
-  deserialize: (text) => CBOR.codec.decode(Buffer.from(text, 'binary')),
-})
+import id from './commands/id.js'
+import register from './commands/register.js'
 
-const client = createClient(settings)
-const cli = Soly.createCLI('w3-cli')
+import list from './commands/list.js'
+import whoami from './commands/whoami.js'
+import upload from './commands/upload.js'
+import remove from './commands/remove.js'
 
-cli
-  .command('register', (input) => {
-    const [data] = input.positionals(Soly.string().optional(), 0)
-    return async () => await register(client, data?.value)
-  })
-  .command('upload', (input) => {
-    const [carPath] = input.positionals([Soly.path()])
-    return async () => {
-      if (!carPath.value) {
-        console.log('You must provide the path to a car file to upload.')
-      }
-      //check to make sure its a CAR here.
-      const buffer = fs.readFileSync(resolveURL(carPath.value));
-      const response = await client.upload(buffer)
-      console.log(response)
-    }
-  })
-  .command('car-to-dot', (input) => {
-    const [carPath] = input.positionals([Soly.path()])
-    return async () => {
-      if (!carPath.value) {
-        console.log('You must provide the path to a car to examine.')
-      }
+import importSettings from './commands/importSettings.js'
+import exportSettings from './commands/exportSettings.js'
+import resetSettings from './commands/resetSettings.js'
 
-      const buffer = fs.readFileSync(resolveURL(carPath.value));
-      const info = await carInfo(buffer)
-      console.log(info)
-    }
-  })
-  .command('generate-car', (input) => {
-    const [carPath, outPath] = input.positionals([
-      Soly.path().optional(),
-      Soly.string().optional(),
-    ])
+import insights from './commands/insights.js'
 
-    return async () => {
-      if (!carPath.value) {
-        console.log('You must provide a path to generate a car from.')
-        return
-      }
+import carToDot from './commands/carToDot.js'
+import generateCar from './commands/generateCar.js'
 
-      var data = await generateCar(carPath.value)
-      writeFileLocally(data, outPath.value)
-    }
-  })
-  .command('unlink', (input) => {
-    const [link] = input.positionals([Z.string().refine(parseLink)])
-    return async () => {
-      const response = await client.remove(parseLink(link.value))
-      console.log(response)
-    }
-  })
-  .command('list', () => async () => {
-    const list = await client.list()
-    console.log('List of uploaded/linked cars:\n' + list.join('\n'))
-  })
-  .command('id', () => async () => {
-    const id = await client.identity()
-    console.log('ID loaded: ' + id.did())
-  })
-  .command('whoami', () => async () => console.log(await client.whoami()))
-  .command('reset-settings', () => async () => resetSettings({ settings }))
-  .command('export-settings', () => async () => exportSettings({ settings }))
-  .command('import-settings', (input) => {
-    const [data] = input.positionals(Soly.string().optional(), 0)
-    return async () => importSettings({ settings, fileName: data.value || '' })
-  })
-  .command('insights', (input) => {
-    const [data] = input.positionals(Soly.string().optional(), 0)
-    return async () => {
-      const cid = data?.value || ''
-      if (cid.length > 0) {
-        const response = await client.insights(cid)
-        console.log('response', response)
-      } else {
-        console.log('You must provide a CID to get insights for.')
-      }
-    }
-  })
-  .command('insights-ws', (input) => {
-    const [data] = input.positionals(Soly.string().optional(), 0)
-    return async () => {
-      const cid = data?.value || ''
-      if (cid.length > 0) {
-        const response = await client.insightsWS(cid)
-        console.log('response', response)
-      } else {
-        console.log('You must provide a CID to get insights for.')
-      }
-    }
-  })
-  //   .command('help', () => () => printHelp(cli))
-  .action(() => printHelp(cli))
+const yargs = _yargs(hideBin(process.argv))
 
-export const main = async () => cli.parse(process.argv)
+export const main = async () => {
+  const argv = await yargs
+    .scriptName('w3up')
+    .usage('Usage:\n  $0 <cmd> [options]')
+    .command({
+      command: '*',
+      handler() {
+        printQuickstart()
+        yargs.showHelp()
+      },
+    })
 
-/**
- *
- * @param {string} relativeFilepath
- * @returns {URL}
- */
+    //registration
+    .command(id.cmd, id.description, id.build, id.exe)
+    .example(id.exampleIn, id.exampleOut)
 
-const resolveURL = (relativeFilepath) =>
-  pathToFileURL(path.resolve(process.cwd(), relativeFilepath))
+    .command(register.cmd, register.description, register.build, register.exe)
+    .command(whoami.cmd, whoami.description, whoami.build, whoami.exe)
+    .example(whoami.exampleIn, whoami.exampleOut)
 
-script({ ...import.meta, main, dotenv: true })
+    //general usage
+    .command(list.cmd, list.description, list.build, list.exe)
+    .example(list.exampleIn, list.exampleOut)
+
+    .command(upload.cmd, upload.description, upload.build, upload.exe)
+    .example(upload.exampleIn, upload.exampleOut)
+
+    .command(remove.cmd, remove.description, remove.build, remove.exe)
+    .example(remove.exampleIn, remove.exampleOut)
+
+    //settings
+    .command(
+      importSettings.cmd,
+      importSettings.description,
+      importSettings.build,
+      importSettings.exe
+    )
+    .command(
+      exportSettings.cmd,
+      exportSettings.description,
+      exportSettings.build,
+      exportSettings.exe
+    )
+    .command(
+      resetSettings.cmd,
+      resetSettings.description,
+      resetSettings.build,
+      resetSettings.exe
+    )
+
+    //insights
+    .command(insights.cmd, insights.description, insights.build, insights.exe)
+
+    //utilities
+    .command(carToDot.cmd, carToDot.description, carToDot.build, carToDot.exe)
+    .example(carToDot.exampleIn, carToDot.exampleOut)
+
+    .command(
+      generateCar.cmd,
+      generateCar.description,
+      generateCar.build,
+      generateCar.exe
+    )
+    .example(generateCar.exampleIn, generateCar.exampleOut)
+
+    .help()
+    .showHelpOnFail(true)
+    .demandCommand(1, '')
+    .recommendCommands()
+    .strict()
+    .epilog('Docs:\n  https://github.com/nftstorage/w3up-cli').argv
+
+  return argv
+}

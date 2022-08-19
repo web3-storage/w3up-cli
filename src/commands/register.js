@@ -1,10 +1,16 @@
 import ora from 'ora'
 import Inquirer from 'inquirer'
+import client from '../client.js'
+import { isEmail } from '../validation.js'
 
-export async function register(uploader, value) {
-  const view = ora('register')
+const exe = async (argv) => {
+  const { email } = argv
+  // TODO: https://github.com/nftstorage/w3up-cli/issues/15
+  // this can hang if there's network disconnectivity.
+  const view = ora(`Registering ${email}`).start()
+
   try {
-    let result = await uploader.register(value)
+    let result = await client.register(email)
 
     if (result) {
       view.stopAndPersist({
@@ -22,7 +28,7 @@ export async function register(uploader, value) {
       })
 
       if (token) {
-        result = await uploader.validate(token)
+        result = await client.validate(token)
       }
       view.succeed(result)
     }
@@ -30,3 +36,22 @@ export async function register(uploader, value) {
     view.fail(err)
   }
 }
+
+const register = {
+  cmd: 'register <email>',
+  description: 'Register your UCAN Identity with w3up',
+  build: (yargs) => {
+    yargs.check((argv) => {
+      const { email } = argv
+      //pretty loose, really just checking typos.
+      if (isEmail(email)) {
+        return true
+      }
+      throw new Error(`Error: ${email} is probably not a valid email.`)
+    })
+    return yargs
+  },
+  exe,
+}
+
+export default register
