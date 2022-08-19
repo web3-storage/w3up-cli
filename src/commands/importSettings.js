@@ -2,6 +2,7 @@ import ora from 'ora'
 import Inquirer from 'inquirer'
 import fs from 'fs'
 import { settings } from '../client.js'
+import { isPath } from '../validation.js'
 
 /**
  * @async
@@ -10,11 +11,6 @@ import { settings } from '../client.js'
  * @returns {Promise<void>}
  */
 const exe = async ({ fileName }) => {
-  //TODO put in build step.
-  if (!fs.existsSync(fileName)) {
-    console.log(`${fileName} does not exist.`)
-    return
-  }
   const view = ora('export')
   view.stopAndPersist({
     text: 'These values will overwrite your old id/account and you will lose access, are you sure you want to proceed?',
@@ -27,17 +23,15 @@ const exe = async ({ fileName }) => {
 
   if (show && fileName) {
     try {
-      const str = fs.readFileSync(fileName, { encoding: 'utf-8' })
-      const obj = JSON.parse(str)
-      console.log(obj)
-
-      if (obj) {
-        for (var key of Object.keys(obj)) {
+      const json = fs.readFileSync(fileName, { encoding: 'utf-8' })
+      const imported = JSON.parse(json)
+      if (settings && imported) {
+        for (var key of Object.keys(imported)) {
           if (key == 'secret') {
-            const secret = Uint8Array.from(Buffer.from(obj.secret, 'base64'))
+            const secret = Uint8Array.from(Buffer.from(imported.secret, 'base64'))
             settings.set(key, secret)
           } else {
-            settings.set(key, obj[key])
+            settings.set(key, imported[key])
           }
         }
       }
@@ -47,10 +41,23 @@ const exe = async ({ fileName }) => {
   }
 }
 
+/**
+ * @param {object} argv
+ * @param {string} argv.fileName - The name of the file to import
+ * @returns {boolean}
+ */
+const validate = ({ fileName }) => {
+  if(!isPath(fileName)) {
+    throw new Error(`Error: ${fileName} does not exist.`);
+  }
+  return true;
+}
+
 const importSettings = {
   cmd: 'import-settings <fileName>',
   description: 'Import a settings.json file',
-  build: {},
+  build:{},
+//   build: (yargs) => yargs.check(validate),
   exe,
   exampleOut: `You have successffully imported settings.json!`,
   exampleIn: '$0 import-settings settings.json',

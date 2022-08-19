@@ -1,8 +1,8 @@
 import { parseLink } from '@ucanto/server'
 import fs from 'fs'
 import path from 'path'
-
 import { pathToFileURL } from 'url'
+
 
 /**
  *
@@ -26,6 +26,15 @@ export const isCID = (cid) => {
 }
 
 /**
+  *
+  * @param {string} targetPath
+  * @returns {URL}
+  */
+export const resolvePath = (targetPath) =>
+  pathToFileURL(path.resolve(process.cwd(), targetPath))
+
+
+/**
  *
  * @param {string} targetPath
  * @returns {boolean}
@@ -37,11 +46,3 @@ export const isPath = (targetPath) => {
   }
   return false
 }
-
-/**
- *
- * @param {string} targetPath
- * @returns {URL}
- */
-export const resolvePath = (targetPath) =>
-  pathToFileURL(path.resolve(process.cwd(), targetPath))
