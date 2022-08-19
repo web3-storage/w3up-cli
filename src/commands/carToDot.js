@@ -1,4 +1,3 @@
-import client from '../client.js'
 import ora from 'ora'
 import { isPath, resolvePath } from '../validation.js'
 import fs from 'fs'
