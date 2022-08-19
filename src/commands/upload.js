@@ -1,6 +1,6 @@
 import client from '../client.js'
 import ora from 'ora'
-import { isPath, resolvePath } from '../validation.js'
+import { hasID, isPath, resolvePath } from '../validation.js'
 import fs from 'fs'
 
 const exe = async (argv) => {
@@ -19,18 +19,18 @@ const exe = async (argv) => {
   }
 }
 
-const build = (yargs) => {
-  yargs.check(({ path }) => {
-    try {
-      return isPath(path)
-    } catch (err) {
-      throw new Error(
-        `${path} is probably not a valid path to a file or directory: \n${err}`
-      )
-    }
-  })
-  return yargs
-}
+const build = (yargs) =>
+  yargs
+    .check(() => hasID())
+    .check(({ path }) => {
+      try {
+        return isPath(path)
+      } catch (err) {
+        throw new Error(
+          `${path} is probably not a valid path to a file or directory: \n${err}`
+        )
+      }
+    })
 
 const upload = {
   cmd: ['upload <path>', 'import <path>'],

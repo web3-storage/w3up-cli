@@ -1,6 +1,6 @@
 import client from '../client.js'
 import ora, { oraPromise } from 'ora'
-import { isCID } from '../validation.js'
+import { hasID, isCID } from '../validation.js'
 
 const exe = async ({ cid, ws, subscribe }) => {
   const spinner = ora({ text: `Getting insights for ${cid}`, spinner: 'line' })
@@ -21,8 +21,9 @@ const exe = async ({ cid, ws, subscribe }) => {
   }
 }
 
-const build = (yargs) => {
-  return yargs
+const build = (yargs) =>
+  yargs
+    .check(() => hasID())
     .check(({ cid }) => {
       try {
         return isCID(cid)
@@ -36,7 +37,6 @@ const build = (yargs) => {
       showInHelp: true,
       describe: 'Get a Subscription to incoming insights',
     })
-}
 
 const insights = {
   cmd: 'insights <cid>',
