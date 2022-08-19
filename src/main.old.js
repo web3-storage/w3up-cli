@@ -9,7 +9,7 @@ import { parseLink } from '@ucanto/server'
 import fs from 'fs'
 
 import { generateCar, writeFileLocally } from './commands/generateCar.js'
-import { run as carInfo } from './commands/carInfo.js'
+import { run as carInfo } from './lib/carInfo.js'
 
 import client from './client.js'
 
