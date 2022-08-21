@@ -99,22 +99,5 @@
     "skipLibCheck": true /* Skip type checking all .d.ts files. */
   },
   "include": ["src", "test"],
-  "references": [
-    { "path": "../../packages/core" },
-    {
-      "path": "../../packages/interface"
-    },
-    {
-      "path": "../../packages/client"
-    },
-    {
-      "path": "../../packages/transport"
-    },
-    {
-      "path": "../../packages/authority"
-    },
-    {
-      "path": "../store"
-    }
-  ]
+  "references": []
 }
