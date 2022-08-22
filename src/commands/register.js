@@ -41,7 +41,6 @@ const build = (yargs) => yargs.check(() => hasID()).check(checkEmail)
 
 /**
  * @param {RegisterArgs} argv
-
  */
 const checkEmail = (argv) => {
   const { email } = argv
