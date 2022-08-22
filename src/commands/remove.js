@@ -14,8 +14,7 @@ import { parseLink } from '@ucanto/server'
  * @param {RemoveArgs} argv
  * @returns {Promise<void>}
  */
-const exe = async (argv) => {
-  const { cid } = argv
+const exe = async ({ cid }) => {
   const view = ora(`Unlinking ${cid}...`).start()
   const res = await client.remove(parseLink(cid))
   view.succeed(`${res.toString()}`)
