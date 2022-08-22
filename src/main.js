@@ -22,6 +22,9 @@ import insights from './commands/insights.js'
 import carToDot from './commands/carToDot.js'
 import generateCar from './commands/generateCar.js'
 
+/**
+ * @type {import('yargs').Argv<{}>} yargs
+ */
 const yargs = _yargs(hideBin(process.argv))
 
 export const main = async () => {

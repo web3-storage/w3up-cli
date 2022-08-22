@@ -15,11 +15,15 @@ const exe = async () => {
     view.succeed(`CIDs:\n${list.join('\n')}`)
   }
 }
+/**
+ * @type {import('yargs').CommandBuilder} yargs
+ */
+const build = (yargs) => yargs.check(() => hasID())
 
 const list = {
   cmd: 'list',
   description: 'List your uploads',
-  build: (yargs) => yargs.check(() => hasID()),
+  build,
   exe,
   exampleOut: `bafy...\nbafy...`,
   exampleIn: '$0 list',

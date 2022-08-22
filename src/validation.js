@@ -1,3 +1,4 @@
+// @ts-ignore
 import { parseLink } from '@ucanto/server'
 import fs from 'fs'
 import path from 'path'
@@ -6,18 +7,24 @@ import { settings } from './client.js'
 
 /**
  *
- * @param {string} email
+ * @param {string|undefined} email
  * @returns {boolean}
  */
-export const isEmail = (email) => /(.+)@(.+){2,}\.(.+){2,}/.test(email)
+export const isEmail = (email) => {
+  if (!email) return false
+  return /(.+)@(.+){2,}\.(.+){2,}/.test(email)
+}
 
 /**
  *
- * @param {string} cid
+ * @param {string|undefined} cid
  * @returns {boolean}
  */
 export const isCID = (cid) => {
   try {
+    if (!cid) {
+      throw 'A CID was not provided'
+    }
     parseLink(cid)
     return true
   } catch (err) {
@@ -35,7 +42,7 @@ export const resolvePath = (targetPath) =>
 
 /**
  *
- * @param {string} targetPath
+ * @param {string|undefined} targetPath
  * @returns {boolean}
  */
 export const isPath = (targetPath) => {

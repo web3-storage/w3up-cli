@@ -21,10 +21,16 @@ const exe = async () => {
   }
 }
 
+/**
+ * @type {import('yargs').CommandBuilder} yargs
+ * @returns {import('yargs').Argv<{}>}
+ */
+const build = (yargs) => yargs.check(() => hasID())
+
 const whoami = {
   cmd: 'whoami',
   description: 'Show your current UCAN Identity',
-  build: (yargs) => yargs.check(() => hasID()),
+  build,
   exe,
   exampleOut: `DID:12345...`,
   exampleIn: '$0 whoami',

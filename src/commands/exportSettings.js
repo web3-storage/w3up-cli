@@ -2,7 +2,7 @@ import ora from 'ora'
 import fs from 'fs'
 import Inquirer from 'inquirer'
 import { settings } from '../client.js'
-import { isPath, resolvePath } from '../validation.js'
+import { resolvePath } from '../validation.js'
 
 /**
  * Export settings by printing to console or writing to a json file.

@@ -5,9 +5,13 @@ import { settings } from '../client.js'
 import { isPath } from '../validation.js'
 
 /**
+ * @typedef {{fileName?:string}} ImportSettings
+ * @typedef {import('yargs').Arguments<ImportSettings>} ImportSettingsArgs
+ */
+
+/**
  * @async
- * @param {object} argv
- * @param {string} argv.fileName - The name of the file to import
+ * @param {ImportSettingsArgs} argv
  * @returns {Promise<void>}
  */
 const exe = async ({ fileName }) => {
@@ -44,10 +48,23 @@ const exe = async ({ fileName }) => {
   }
 }
 
+/**
+ * @type {import('yargs').CommandBuilder} yargs
+ * @returns {import('yargs').Argv<{}>}
+ */
+const build = (yargs) => yargs.check(checkFileName)
+
+/**
+ *
+ * @param {ImportSettingsArgs} argv
+ * @returns
+ */
+const checkFileName = ({ fileName }) => isPath(fileName)
+
 const importSettings = {
   cmd: 'import-settings <fileName>',
   description: 'Import a settings.json file',
-  build: (yargs) => yargs.check(({ fileName }) => isPath(fileName)),
+  build,
   exe,
   exampleOut: `You have successfully imported settings.json!`,
   exampleIn: '$0 import-settings settings.json',

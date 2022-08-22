@@ -3,13 +3,30 @@ import { isPath, resolvePath } from '../validation.js'
 import fs from 'fs'
 
 import { buildCar } from '../lib/car.js'
+import { check } from 'yargs'
 
+/**
+ * @typedef {{filePath?:string, outPath?:string }} GenerateCar
+ * @typedef {import('yargs').Arguments<GenerateCar>} GenerateCarArgs
+ */
+
+/**
+ *
+ * @param {any} car
+ * @param {string} outPath
+ * @returns {Promise<any>}
+ */
 export const writeFileLocally = async (car, outPath = 'output.car') => {
   return fs.promises.writeFile(resolvePath(outPath), car, {
     encoding: 'binary',
   })
 }
 
+/**
+ * @async
+ * @param {GenerateCarArgs} argv
+ * @returns {Promise<void>}
+ */
 const exe = async ({ filePath, outPath = 'output.car' }) => {
   const view = ora({
     text: `Generating Car from ${filePath}...`,
@@ -24,9 +41,16 @@ const exe = async ({ filePath, outPath = 'output.car' }) => {
     view.fail('Car generation failed.')
   }
 }
+/**
+ * @type {import('yargs').CommandBuilder} yargs
+ * @returns {import('yargs').Argv<{}>}
+ */
+const build = (yargs) => yargs.check(checkPath)
 
-const build = (yargs) =>
-  yargs.check(({ filePath, outPath }) => isPath(filePath))
+/**
+ * @param {GenerateCarArgs} argv
+ */
+const checkPath = ({ filePath, outPath }) => isPath(filePath)
 
 const generateCar = {
   cmd: 'generate-car <filePath> [outPath]',

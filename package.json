@@ -1,7 +1,7 @@
 {
   "name": "w3up-cli",
   "description": "w3up interface",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "main": "./src/main.js",
   "bin": {
     "w3up": "./src/cli.js"
@@ -21,23 +21,23 @@
     "@ipld/unixfs": "^1.1.0-dev",
     "@ucanto/server": "^0.6.4",
     "@web-std/stream": "^1.0.1",
-    "conf": "^10.1.2",
+    "conf": "^10.2.0",
     "dotenv": "^16.0.1",
-    "inquirer": "^9.0.0",
-    "ora": "^6.1.0",
+    "inquirer": "^9.1.0",
+    "ora": "^6.1.2",
     "uuid": "^8.3.2",
     "w3up-client": "nftstorage/w3up-client",
     "yargs": "^17.5.1"
   },
   "devDependencies": {
-    "@types/inquirer": "^8.2.1",
+    "@types/inquirer": "^9.0.1",
     "@types/yargs": "^17.0.11",
     "chai": "^4.3.6",
     "chai-subset": "^1.6.0",
-    "mocha": "^9.2.2",
-    "playwright-test": "^7.3.0",
+    "mocha": "^10.0.0",
+    "playwright-test": "^8.1.1",
     "prettier": "^2.7.1",
-    "typescript": "^4.7.2"
+    "typescript": "^4.7.4"
   },
   "exports": {
     ".": {
