@@ -2,6 +2,12 @@ import ora, { oraPromise } from 'ora'
 import client from '../client.js'
 import { settings } from '../client.js'
 
+/**
+ * @async
+ * @param {object} argv
+ * @param {string} argv.reset
+ * @returns {Promise<void>}
+ */
 const exe = async ({ reset }) => {
   const view = ora({ spinner: 'line' })
 

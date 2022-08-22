@@ -2,7 +2,12 @@ import ora from 'ora'
 import Inquirer from 'inquirer'
 import client from '../client.js'
 import { isEmail, hasID } from '../validation.js'
-
+/**
+ * @async
+ * @param {object} argv
+ * @param {string} argv.email
+ * @returns {Promise<void>}
+ */
 const exe = async (argv) => {
   const { email } = argv
   // TODO: https://github.com/nftstorage/w3up-cli/issues/15
@@ -25,11 +30,13 @@ const exe = async (argv) => {
 /**
  * @type {import('yargs').CommandBuilder} yargs
  */
-const build = (yargs) => {
-  yargs.check(() => hasID()).check(checkEmail)
-  return yargs
-}
+const build = (yargs) => yargs.check(() => hasID()).check(checkEmail)
 
+/**
+ * @param {object} argv
+ * @param {string} argv.email
+ * @returns {boolean | undefined}
+ */
 const checkEmail = (argv) => {
   const { email } = argv
   if (isEmail(email)) {
