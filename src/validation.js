@@ -1,3 +1,4 @@
+// @ts-ignore
 import { parseLink } from '@ucanto/server'
 import fs from 'fs'
 import path from 'path'
@@ -16,11 +17,14 @@ export const isEmail = (email) => {
 
 /**
  *
- * @param {string} cid
+ * @param {string|undefined} cid
  * @returns {boolean}
  */
 export const isCID = (cid) => {
   try {
+    if (!cid) {
+      throw 'A CID was not provided'
+    }
     parseLink(cid)
     return true
   } catch (err) {
