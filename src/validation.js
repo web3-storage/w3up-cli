@@ -6,10 +6,13 @@ import { settings } from './client.js'
 
 /**
  *
- * @param {string} email
+ * @param {string|undefined} email
  * @returns {boolean}
  */
-export const isEmail = (email) => /(.+)@(.+){2,}\.(.+){2,}/.test(email)
+export const isEmail = (email) => {
+  if (!email) return false
+  return /(.+)@(.+){2,}\.(.+){2,}/.test(email)
+}
 
 /**
  *
@@ -35,7 +38,7 @@ export const resolvePath = (targetPath) =>
 
 /**
  *
- * @param {string} targetPath
+ * @param {string|undefined} targetPath
  * @returns {boolean}
  */
 export const isPath = (targetPath) => {

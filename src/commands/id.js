@@ -3,9 +3,13 @@ import client from '../client.js'
 import { settings } from '../client.js'
 
 /**
+ * @typedef {{reset?:boolean}} Id
+ * @typedef {import('yargs').Arguments<Id>} IdArgs
+ */
+
+/**
  * @async
- * @param {object} argv
- * @param {string} argv.reset
+ * @param {IdArgs} argv
  * @returns {Promise<void>}
  */
 const exe = async ({ reset }) => {
@@ -23,6 +27,7 @@ const exe = async ({ reset }) => {
 }
 /**
  * @type {import('yargs').CommandBuilder} yargs
+ * @returns {import('yargs').Argv<{}>}
  */
 const build = (yargs) =>
   yargs.option('reset', {

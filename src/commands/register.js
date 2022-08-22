@@ -2,10 +2,15 @@ import ora from 'ora'
 import Inquirer from 'inquirer'
 import client from '../client.js'
 import { isEmail, hasID } from '../validation.js'
+
+/**
+ * @typedef {{email?:string}} Register
+ * @typedef {import('yargs').Arguments<Register>} RegisterArgs
+ */
+
 /**
  * @async
- * @param {object} argv
- * @param {string} argv.email
+ * @param {RegisterArgs} argv
  * @returns {Promise<void>}
  */
 const exe = async (argv) => {
@@ -29,13 +34,14 @@ const exe = async (argv) => {
 }
 /**
  * @type {import('yargs').CommandBuilder} yargs
+ * @returns {import('yargs').Argv<{}>}
  */
+
 const build = (yargs) => yargs.check(() => hasID()).check(checkEmail)
 
 /**
- * @param {object} argv
- * @param {string} argv.email
- * @returns {boolean | undefined}
+ * @param {RegisterArgs} argv
+
  */
 const checkEmail = (argv) => {
   const { email } = argv
