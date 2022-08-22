@@ -4,12 +4,17 @@ import 'web-streams-polyfill'
 import * as UnixFS from '@ipld/unixfs'
 import * as CAR from '@ipld/car'
 
+import * as FixedChunker from '@ipld/unixfs/file/chunker/fixed'
+
 import { fileToBlock } from './file.js'
 import { wrapFilesWithDir } from './dir.js'
-import { buildMetaData } from './metadata.js'
 
 // Internal queue capacity that can hold around 32 blocks
 const CAPACITY = UnixFS.BLOCK_SIZE_LIMIT * 32
+// const CAPACITY = 8192 + 128
+// const CAR_SIZE = CAPACITY
+// const CAR_SIZE = CAPACITY
+const CAR_SIZE = CAPACITY
 
 const isDirectory = (pathName) =>
   fs.existsSync(pathName) && fs.lstatSync(pathName).isDirectory()
@@ -40,18 +45,14 @@ async function walkDir({ writer, pathName, filename }) {
     .then((bytes) => fileToBlock({ writer, filename, bytes }))
 }
 
-async function createReadableBlockStreamWithWrappingDir(_pathName) {
-  // Create a redable & writable streams with internal queue that can hold around 32 blocks
-  const { readable, writable } = new TransformStream(
-    {},
-    UnixFS.withCapacity(CAPACITY)
-  )
-
+async function createReadableBlockStreamWithWrappingDir(_pathName, writable) {
   // Next we create a writer with filesystem like API for encoding files and
   // directories into IPLD blocks that will come out on `readable` end.
   const writer = UnixFS.createWriter({
     writable,
   })
+
+  writer.settings.chunker = FixedChunker.withMaxChunkSize(8192)
 
   let files = []
   let pathName = path.normalize(_pathName)
@@ -73,42 +74,59 @@ async function createReadableBlockStreamWithWrappingDir(_pathName) {
     files = [await fileToBlock({ writer, filename, bytes })]
   }
 
-  const parent = await wrapFilesWithDir({ writer, files, dirName: pathName })
+  await wrapFilesWithDir({ writer, files, dirName: pathName })
 
   // close the writer to close underlying block stream.
   writer.close()
-
-  // return the root and the readable stream.
-  return {
-    cid: parent.link.cid,
-    writer,
-    readable,
-  }
 }
 
-export async function buildCar(pathName) {
-  const { cid, readable } = await createReadableBlockStreamWithWrappingDir(
-    pathName
+function createBuffer(carsize) {
+  const buffer = new ArrayBuffer(carsize)
+  return CAR.CarBufferWriter.createWriter(buffer, {
+    roots: [],
+  })
+}
+
+export async function buildCar(pathName, carsize = CAR_SIZE) {
+  // Create a redable & writable streams with internal queue that can hold around 32 blocks
+  const { readable, writable } = new TransformStream(
+    {},
+    UnixFS.withCapacity(CAPACITY)
   )
 
-  const metadata = await buildMetaData()
-
-  const buffer = new ArrayBuffer(CAPACITY)
-  var bw = CAR.CarBufferWriter.createWriter(buffer, {
-    roots: [cid, metadata.cid],
-  })
-  bw.write(metadata)
-
+  // Start filling the stream async
+  createReadableBlockStreamWithWrappingDir(pathName, writable)
   const reader = readable.getReader()
 
-  //TODO: detect when buffer overrun, and create new writer, linking new car to prev
+  let buffer = createBuffer(carsize)
+  let buffers = []
+  //   let buffers = new TransformStream()
+  //   let bw = buffers.writable.getWriter()
+
+  /**
+   * @param {ReadableStreamDefaultReadResult<any>} block
+   * @returns {Promise<void>|undefined}
+   */
   function writeBlockToCar({ done, value }) {
     if (!done) {
-      bw.write(value)
+      try {
+        buffer.write(value)
+      } catch (err) {
+        buffers.push(buffer)
+        //         bw.write(buffer)
+        buffer = createBuffer(carsize)
+        buffer.write(value)
+      }
       return reader.read().then(writeBlockToCar)
+    } else {
+      buffers.push(buffer)
+      //       bw.write(buffer)
+      //       return bw.close()
     }
   }
-  await reader.read().then(writeBlockToCar)
 
-  return bw.close({ resize: true })
+  await reader.read().then(writeBlockToCar)
+  //   buffers.push(buffer)
+  //   bw.write(buffer)
+  return { buffers, max_car_size: carsize }
 }

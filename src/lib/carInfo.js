@@ -36,9 +36,7 @@ function decode(cid, bytes) {
  */
 function toShortCID(cid) {
   let str = cid.toString()
-  return (
-    str.substring(0, 4) + '...' + str.substring(str.length - 5, str.length - 1)
-  )
+  return str.substring(0, 4) + '...' + str.substring(str.length - 4, str.length)
 }
 
 const ignoredKeysForLabel = ['blockLength', 'offset', 'blockOffset']

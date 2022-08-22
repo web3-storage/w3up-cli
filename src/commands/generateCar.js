@@ -3,6 +3,10 @@ import { isPath, resolvePath } from '../validation.js'
 import fs from 'fs'
 import { buildCar } from '../lib/car.js'
 
+import * as DAG_PB from '@ipld/dag-pb'
+import { CID } from 'multiformats/cid'
+import { sha256 } from 'multiformats/hashes/sha2'
+
 /**
  * @typedef {{filePath?:string, outPath?:string }} GenerateCar
  * @typedef {import('yargs').Arguments<GenerateCar>} GenerateCarArgs
@@ -20,6 +24,12 @@ export const writeFileLocally = async (car, outPath = 'output.car') => {
   })
 }
 
+async function bytesToDAGPBCID(bytes) {
+  // this CID represents the byte content, but doesn't 'link' with the blocks inside
+  const digest = await sha256.digest(bytes)
+  return CID.createV1(DAG_PB.code, digest)
+}
+
 /**
  * @async
  * @param {GenerateCarArgs} argv
@@ -31,12 +41,33 @@ const exe = async ({ filePath, outPath = 'output.car' }) => {
     spinner: 'line',
   }).start()
 
-  const car = await buildCar(filePath)
-  if (car) {
-    await writeFileLocally(car, outPath)
-    view.succeed(`CAR created ${filePath} => ${outPath}`)
-  } else {
-    view.fail('Car generation failed.')
+  const { buffers, max_car_size } = await buildCar(filePath)
+
+  //   const reader = buffers.readable.getReader()
+
+  //   function writeBufferToFile({ done, value }) {
+  //     if (!done) {
+  //       console.log('read', value)
+  //       reader.read().then(writeBufferToFile)
+  //     } else {
+  //       console.log('done')
+  //     }
+  //   }
+  //   await reader.read().then(writeBufferToFile)
+
+  if (buffers && buffers.length) {
+    console.log(
+      `writing to ${buffers.length} files, max car size is ${max_car_size}`
+    )
+    await Promise.all(
+      buffers.map(async (b, i) => {
+        const bytes = await b.close()
+        const cid = await bytesToDAGPBCID(bytes)
+        await writeFileLocally(bytes, `${cid}.car.${i}`)
+
+        view.succeed(`CAR created ${filePath} => ${cid}.car.${i}`)
+      })
+    )
   }
 }
 /**
