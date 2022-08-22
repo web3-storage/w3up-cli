@@ -1,7 +1,8 @@
 import Conf from 'conf'
+// @ts-ignore
 import W3Client from 'w3up-client'
 import { config } from 'dotenv'
-
+// @ts-ignore
 import * as CBOR from '@ucanto/transport/cbor'
 
 config()
@@ -18,12 +19,20 @@ const ACCESS_DID =
   process.env.ACCESS_DID ||
   'did:key:z6MksafxoiEHyRF6RsorjrLrEyFQPFDdN6psxtAfEsRcvDqx' // dev/staging did
 
+const serialize = ({ ...data }) =>
+  Buffer.from(CBOR.codec.encode(data)).toString('binary')
+
+/**
+ * @param {string} text
+ */
+const deserialize = (text) => CBOR.codec.decode(Buffer.from(text, 'binary'))
+
+// @ts-ignore
 export const settings = new Conf({
   projectName: 'w3-cli',
   fileExtension: 'cbor',
-  serialize: ({ ...data }) =>
-    Buffer.from(CBOR.codec.encode(data)).toString('binary'),
-  deserialize: (text) => CBOR.codec.decode(Buffer.from(text, 'binary')),
+  serialize,
+  deserialize,
 })
 
 const client = new W3Client({
