@@ -2,6 +2,16 @@ import client from '../client.js'
 import ora, { oraPromise } from 'ora'
 import { hasID, isCID } from '../validation.js'
 
+/**
+ * @typedef {{cid?:string, ws?:boolean, subscribe?:boolean}} Insights
+ * @typedef {import('yargs').Arguments<Insights>} InsightsArgs
+ */
+
+/**
+ * @async
+ * @param {InsightsArgs} argv
+ * @returns {Promise<void>}
+ */
 const exe = async ({ cid, ws, subscribe }) => {
   const spinner = ora({ text: `Getting insights for ${cid}`, spinner: 'line' })
   const shouldWS = ws || subscribe
@@ -27,19 +37,24 @@ const exe = async ({ cid, ws, subscribe }) => {
 const build = (yargs) =>
   yargs
     .check(() => hasID())
-    .check(({ cid }) => {
-      try {
-        return isCID(cid)
-      } catch (err) {
-        throw new Error(`${cid} is probably not a valid CID: \n${err}`)
-      }
-    })
+    .check(checkCID)
     .option('subscribe', {
       type: 'boolean',
       alias: 'ws',
       showInHelp: true,
       describe: 'Get a Subscription to incoming insights',
     })
+
+/**
+ * @param {InsightsArgs} argv
+ */
+const checkCID = ({ cid }) => {
+  try {
+    return isCID(cid)
+  } catch (err) {
+    throw new Error(`${cid} is probably not a valid CID: \n${err}`)
+  }
+}
 
 const insights = {
   cmd: 'insights <cid>',
