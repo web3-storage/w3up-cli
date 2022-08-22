@@ -19,6 +19,9 @@ const exe = async (argv) => {
   }
 }
 
+/**
+ * @type {import('yargs').CommandBuilder} yargs
+ */
 const build = (yargs) =>
   yargs
     .check(() => hasID())

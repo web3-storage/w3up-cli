@@ -21,7 +21,9 @@ const exe = async ({ cid, ws, subscribe }) => {
     spinner.succeed(JSON.stringify(insights?.insight_data, null, 2))
   }
 }
-
+/**
+ * @type {import('yargs').CommandBuilder} yargs
+ */
 const build = (yargs) =>
   yargs
     .check(() => hasID())

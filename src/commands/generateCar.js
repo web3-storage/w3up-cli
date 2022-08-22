@@ -24,7 +24,9 @@ const exe = async ({ filePath, outPath = 'output.car' }) => {
     view.fail('Car generation failed.')
   }
 }
-
+/**
+ * @type {import('yargs').CommandBuilder} yargs
+ */
 const build = (yargs) =>
   yargs.check(({ filePath, outPath }) => isPath(filePath))
 

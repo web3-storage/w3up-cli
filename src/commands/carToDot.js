@@ -10,7 +10,9 @@ const exe = async (argv) => {
   const info = await carInfo(buffer)
   console.log(info)
 }
-
+/**
+ * @type {import('yargs').CommandBuilder} yargs
+ */
 const build = (yargs) => yargs.check(({ path }) => isPath(path))
 
 const upload = {

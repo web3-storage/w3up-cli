@@ -44,10 +44,15 @@ const exe = async ({ fileName }) => {
   }
 }
 
+/**
+ * @type {import('yargs').CommandBuilder} yargs
+ */
+const build = (yargs) => yargs.check(({ fileName }) => isPath(fileName))
+
 const importSettings = {
   cmd: 'import-settings <fileName>',
   description: 'Import a settings.json file',
-  build: (yargs) => yargs.check(({ fileName }) => isPath(fileName)),
+  build,
   exe,
   exampleOut: `You have successfully imported settings.json!`,
   exampleIn: '$0 import-settings settings.json',
