@@ -1,9 +1,7 @@
 import ora from 'ora'
 import { isPath, resolvePath } from '../validation.js'
 import fs from 'fs'
-
 import { buildCar } from '../lib/car.js'
-import { check } from 'yargs'
 
 /**
  * @typedef {{filePath?:string, outPath?:string }} GenerateCar
