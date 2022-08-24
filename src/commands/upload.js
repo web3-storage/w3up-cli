@@ -20,12 +20,13 @@ async function generateCarUploads(filePath, view) {
     let roots = []
 
     _reader.catch((err) => {
-      throw new Error(
+      view.fail(
         err.toString() +
           '\n current max size is: ' +
           (MAX_CAR_SIZE / 1000000).toFixed(2) +
           'MB'
       )
+      process.exit(1)
     })
 
     /**
@@ -72,6 +73,15 @@ const exe = async (argv) => {
     await generateCarUploads(_path, view)
   } else {
     try {
+      const { size } = await fs.promises.stat(_path)
+      if (size > MAX_CAR_SIZE) {
+        const maxSizeMB = (MAX_CAR_SIZE / 1000000).toFixed(2)
+        const sizeMB = (size / 1000000).toFixed(2)
+
+        const text = `Attempted to upload a file of size ${sizeMB}MB, max size is ${maxSizeMB}MB`
+        view.fail(text)
+        throw new Error(text)
+      }
       const buffer = await fs.promises.readFile(resolvePath(_path))
 
       const response = await client.upload(buffer)

@@ -7,8 +7,8 @@ import { buildCar } from '../lib/car.js'
 import { CID } from 'multiformats/cid'
 import { sha256 } from 'multiformats/hashes/sha2'
 
-// const MAX_CAR_SIZE = 32000000 //32MB
-// const MAX_CAR_SIZE= 256000000 //256MB
+// export const MAX_CAR_SIZE = 32000000 //32MB
+// export const MAX_CAR_SIZE= 256000000 //256MB
 export const MAX_CAR_SIZE = 3800000000 //3.8GB
 
 /**
