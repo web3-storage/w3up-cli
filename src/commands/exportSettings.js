@@ -5,10 +5,14 @@ import { settings } from '../client.js'
 import { resolvePath } from '../validation.js'
 
 /**
+ * @typedef {{filename?:string}} ExportSettings
+ * @typedef {import('yargs').Arguments<ExportSettings>} ExportSettingsArgs
+ */
+
+/**
  * Export settings by printing to console or writing to a json file.
  * @async
- * @param {object} argv
- * @param {string} [argv.filename] - The file to write the settings to
+ * @param {ExportSettingsArgs} args
  * @returns {Promise<void>}
  */
 const exe = async ({ filename }) => {

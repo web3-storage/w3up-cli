@@ -19,7 +19,7 @@ const exe = async ({ reset }) => {
     settings.clear()
   }
 
-  let text = !settings.has('secret') ? 'Generating id' : 'Loading id'
+  let text = !settings.has('secret') ? 'Generating new id' : 'Loading id'
   const id = await oraPromise(client.identity(), text)
   if (id) {
     view.succeed('ID: ' + id.did())

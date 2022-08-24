@@ -109,12 +109,13 @@ export async function run(bytes, vertical) {
   }
 
   let dot = `digraph { 
-\tgraph [nodesep="0.25", ranksep="1" splines=line rankdir="LR"];
+\tgraph [nodesep="0.25", ranksep="1.5" splines=line rankdir="${
+    vertical ? 'LR' : 'TB'
+  }"];
 \tlabeljust=l;
-\tlabelloc=c;
+\tlabelloc=b;
 \tnode [shape=record];
 `
-
   let linkDot = ''
 
   let i = 0
@@ -145,7 +146,11 @@ export async function run(bytes, vertical) {
       const name = link?.name || link?.Name
       //       console.log('link', link, cid, name)
       linkDot += `\n\t"${scid}" -> "${toShortCID(cid)}" `
-      linkDot += `[label="${name}" labeljust=c]`
+      const ports = vertical
+        ? 'tailport="e" headport="w"'
+        : 'tailport="s" headport="n"'
+
+      linkDot += `[headlabel="${name}" ${ports}]`
     })
 
     i++

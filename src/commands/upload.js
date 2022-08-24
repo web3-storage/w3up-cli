@@ -4,14 +4,23 @@ import { hasID, isPath, resolvePath } from '../validation.js'
 import fs from 'fs'
 import path from 'path'
 import { buildCar } from '../lib/car.js'
+// @ts-ignore
 import { CID } from 'multiformats/cid'
 import { MAX_CAR_SIZE } from './generateCar.js'
+
+import { logToFile } from '../lib/logging.js'
 
 /**
  * @typedef {{path?:string}} Upload
  * @typedef {import('yargs').Arguments<Upload>} UploadArgs
  */
 
+/**
+ * @async
+ * @param {string} filePath - The path to generate car uploads for.
+ * @param {import('ora').Ora} view
+ * @returns {Promise<void>}
+ */
 async function generateCarUploads(filePath, view) {
   const resolvedPath = path.resolve('.', filePath)
   try {
@@ -49,7 +58,36 @@ async function generateCarUploads(filePath, view) {
     await stream.read().then(uploadBuffer)
   } catch (err) {
     view.fail('Upload did not complete successfully, check w3up-failure.log')
-    await fs.promises.appendFile('w3up-failure.log', JSON.stringify(err) + '\n')
+    logToFile('upload', err)
+  }
+}
+
+/**
+ * @async
+ * @param {string} filePath - The path to generate car uploads for.
+ * @param {import('ora').Ora} view
+ * @returns {Promise<void>}
+ */
+async function uploadExistingCar(filePath, view) {
+  try {
+    const { size } = await fs.promises.stat(_path)
+    if (size > MAX_CAR_SIZE) {
+      const maxSizeMB = (MAX_CAR_SIZE / 1000000).toFixed(2)
+      const sizeMB = (size / 1000000).toFixed(2)
+
+      const text = `Attempted to upload a file of size ${sizeMB}MB, max size is ${maxSizeMB}MB`
+      view.fail(text)
+      throw new Error(text)
+    }
+    const buffer = await fs.promises.readFile(resolvePath(filePath))
+
+    const response = await client.upload(buffer)
+    if (response) {
+      view.succeed(`${response}`)
+    }
+  } catch (err) {
+    view.fail('Upload did not complete successfully, check w3up-failure.log')
+    logToFile('upload', err)
   }
 }
 
@@ -58,43 +96,18 @@ async function generateCarUploads(filePath, view) {
  * @param {UploadArgs} argv
  * @returns {Promise<void>}
  */
-
 const exe = async (argv) => {
   const _path = argv.path
-
   const view = ora({ text: `Uploading ${_path}...`, spinner: 'line' }).start()
 
   if (!_path) {
     return Promise.reject('You must Specify a Path')
   }
 
-  //TODO: automatically convert to a car
   if (path.extname(_path) !== '.car') {
     await generateCarUploads(_path, view)
   } else {
-    try {
-      const { size } = await fs.promises.stat(_path)
-      if (size > MAX_CAR_SIZE) {
-        const maxSizeMB = (MAX_CAR_SIZE / 1000000).toFixed(2)
-        const sizeMB = (size / 1000000).toFixed(2)
-
-        const text = `Attempted to upload a file of size ${sizeMB}MB, max size is ${maxSizeMB}MB`
-        view.fail(text)
-        throw new Error(text)
-      }
-      const buffer = await fs.promises.readFile(resolvePath(_path))
-
-      const response = await client.upload(buffer)
-      if (response) {
-        view.succeed(`${response}`)
-      }
-    } catch (err) {
-      view.fail('Upload did not complete successfully, check w3up-failure.log')
-      await fs.promises.appendFile(
-        'w3up-failure.log',
-        JSON.stringify(err) + '\n'
-      )
-    }
+    await uploadExistingCar(_path, view)
   }
 }
 

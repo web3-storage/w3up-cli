@@ -3,6 +3,8 @@ import Inquirer from 'inquirer'
 import client from '../client.js'
 import { isEmail, hasID } from '../validation.js'
 
+import { logToFile } from '../lib/logging.js'
+
 /**
  * @typedef {{email?:string}} Register
  * @typedef {import('yargs').Arguments<Register>} RegisterArgs
@@ -30,13 +32,14 @@ const exe = async (argv) => {
   } catch (err) {
     // @ts-ignore
     view.fail(err.toString())
+    logToFile('register', err)
   }
 }
+
 /**
  * @type {import('yargs').CommandBuilder} yargs
  * @returns {import('yargs').Argv<{}>}
  */
-
 const build = (yargs) => yargs.check(() => hasID()).check(checkEmail)
 
 /**

@@ -15,6 +15,7 @@ const exe = async () => {
     view.succeed(`CIDs:\n${list.join('\n')}`)
   }
 }
+
 /**
  * @type {import('yargs').CommandBuilder} yargs
  */
