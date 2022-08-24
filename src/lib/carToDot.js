@@ -1,6 +1,7 @@
 import fs from 'fs'
 import { CarReader } from '@ipld/car/reader'
 import { CarIndexer } from '@ipld/car/indexer'
+import * as UnixFS from '@ipld/unixfs'
 import * as dagCbor from '@ipld/dag-cbor'
 import * as dagPb from '@ipld/dag-pb'
 import * as dagJson from '@ipld/dag-json'
@@ -21,12 +22,31 @@ const codecNames = {
   [dagJson.code]: 'dagJson',
   [raw.code]: 'raw',
   [json.code]: 'json',
+  //   [0x202]: 'car',
+}
+
+const nodeTypeNames = {
+  [UnixFS.NodeType.Directory]: 'dir',
+  [UnixFS.NodeType.File]: 'file',
+  [UnixFS.NodeType.HAMTShard]: 'hamt',
+  [UnixFS.NodeType.Metadata]: 'meta',
+  [UnixFS.NodeType.Raw]: 'raw',
+  [UnixFS.NodeType.Symlink]: 'sym',
 }
 
 function decode(cid, bytes) {
   if (!codecs[cid.code]) {
     throw new Error(`Unknown codec code: 0x${cid.code.toString(16)}`)
   }
+
+  if (cid.code == dagPb.code) {
+    try {
+      return UnixFS.decode(bytes)
+    } catch (err) {
+      return codecs[cid.code].decode(bytes)
+    }
+  }
+
   return codecs[cid.code].decode(bytes)
 }
 
@@ -36,35 +56,10 @@ function decode(cid, bytes) {
  */
 function toShortCID(cid) {
   let str = cid.toString()
-  return (
-    str.substring(0, 4) + '...' + str.substring(str.length - 5, str.length - 1)
-  )
+  return str.substring(0, 4) + '...' + str.substring(str.length - 4, str.length)
 }
 
 const ignoredKeysForLabel = ['blockLength', 'offset', 'blockOffset']
-
-const dirContent = Buffer.from([8, 1])
-
-/**
- * @param {object} obj
- * @param {object} value
- * @returns {boolean}
- */
-function isUnixFSDirectory(obj, value) {
-  return (
-    obj.type == 'dagPb' &&
-    (value.Links.length > 0 || value?.Data?.toString() == dirContent.toString())
-  )
-}
-
-/**
- * @param {object} obj
- * @param {object} value
- * @returns {boolean}
- */
-function isUnixFSFile(obj, value) {
-  return obj.type == 'dagPb' && value.Links.length == 0
-}
 
 function buildLabel(obj) {
   let label = Object.entries(obj)
@@ -77,11 +72,8 @@ function buildLabel(obj) {
       }
       if (typeof val == 'object') {
         if (key == 'content') {
-          if (isUnixFSDirectory(obj, val)) {
-            return '{unixfs|dir}'
-          }
-          if (isUnixFSFile(obj, val)) {
-            return `{unixfs|file}`
+          if (val?.type) {
+            return `{unixfs|${nodeTypeNames[val?.type]}}`
           }
 
           if (obj.type == 'dagCbor') {
@@ -104,22 +96,24 @@ function buildLabel(obj) {
 /**
  * @async
  * @param {Buffer|Uint8Array} bytes
+ * @param {boolean} vertical - should the graph output be 'vertical' (i.e. rankdir LR)
  * @returns {Promise<string>} the DOT format output of the DAG in the car.
  */
-export async function run(bytes) {
+export async function run(bytes, vertical) {
   const indexer = await CarIndexer.fromBytes(bytes)
   const reader = await CarReader.fromBytes(bytes)
+  /** @type {{header:any, blocks:any}} */
   const fixture = {
     header: reader._header, // a little naughty but we need gory details
     blocks: [],
   }
 
   let dot = `digraph { 
-\tgraph [nodesep="0.25", ranksep="1" splines=line];
+\tgraph [nodesep="0.25", ranksep="1" splines=line rankdir="LR"];
 \tlabeljust=l;
 \tlabelloc=c;
 \tnode [shape=record];
-  `
+`
 
   let linkDot = ''
 
@@ -132,13 +126,13 @@ export async function run(bytes) {
     fixture.blocks[i].content = decode(blockIndex.cid, block.bytes)
 
     const cur = fixture.blocks[i]
-    const links = cur.content.Links || []
+    const links = cur.content.Links || cur.content?.entries || []
     const scid = toShortCID(cur.cid)
 
     const label = buildLabel(cur)
     if (fixture.header.roots.some((x) => x.toString() == cur.cid.toString())) {
       if (links.length > 0) {
-        dot += `\n\t"${scid}" [label="{${label}}" style="rounded" labeljust=l]`
+        dot += `\n\t"${scid}" [label="{${label}|{root}}" style="rounded" labeljust=l]`
       } else {
         dot += `\n\t"${scid}" [label="{${label}}" style="rounded" labeljust=l]`
       }
@@ -147,8 +141,11 @@ export async function run(bytes) {
     }
 
     links.forEach((link) => {
-      linkDot += `\n\t"${scid}" -> "${toShortCID(link['Hash'])}" `
-      linkDot += `[label="${link['Name']}" labeljust=c]`
+      const cid = link?.cid || link?.Hash
+      const name = link?.name || link?.Name
+      //       console.log('link', link, cid, name)
+      linkDot += `\n\t"${scid}" -> "${toShortCID(cid)}" `
+      linkDot += `[label="${name}" labeljust=c]`
     })
 
     i++
