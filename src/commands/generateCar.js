@@ -1,11 +1,14 @@
 import ora from 'ora'
-import { isPath, resolvePath } from '../validation.js'
 import path from 'path'
 import fs from 'fs'
-import { buildCar } from '../lib/car.js'
-
+// @ts-ignore
 import { CID } from 'multiformats/cid'
+// @ts-ignore
 import { sha256 } from 'multiformats/hashes/sha2'
+
+import { isPath, resolvePath } from '../validation.js'
+import { buildCar } from '../lib/car.js'
+import { logToFile } from '../lib/logging.js'
 
 // export const MAX_CAR_SIZE = 32000000 //32MB
 // export const MAX_CAR_SIZE= 256000000 //256MB
@@ -92,7 +95,9 @@ const exe = async ({ filePath, outPath = 'output.car' }) => {
     }
     await stream.read().then(writeBufferToFile)
   } catch (err) {
+    // @ts-ignore
     view.fail(err.toString())
+    logToFile('register', err)
   }
 }
 
@@ -105,7 +110,7 @@ const build = (yargs) => yargs.check(checkPath)
 /**
  * @param {GenerateCarArgs} argv
  */
-const checkPath = ({ filePath, outPath }) => isPath(filePath)
+const checkPath = ({ filePath }) => isPath(filePath)
 
 const generateCar = {
   cmd: 'generate-car <filePath> [outPath]',

@@ -1,8 +1,8 @@
 import client from '../client.js'
 import ora from 'ora'
-import { hasID, isCID } from '../validation.js'
 // @ts-ignore
 import { parseLink } from '@ucanto/server'
+import { hasID, isCID } from '../validation.js'
 
 /**
  * @typedef {{cid?:string}} Remove

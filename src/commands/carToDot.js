@@ -1,10 +1,9 @@
-import ora from 'ora'
 import { isPath, resolvePath } from '../validation.js'
 import fs from 'fs'
 import { run as carToDot } from '../lib/carToDot.js'
 
 /**
- * @typedef {{path?:string}} CarToDot
+ * @typedef {{path?:string, vertical?:boolean}} CarToDot
  * @typedef {import('yargs').Arguments<CarToDot>} CarToDotArgs
  */
 
@@ -14,7 +13,7 @@ import { run as carToDot } from '../lib/carToDot.js'
  * @param {CarToDotArgs} argv
  * @returns {Promise<void>}
  */
-const exe = async ({ path = '/', vertical }) => {
+const exe = async ({ path = '/', vertical = false }) => {
   const buffer = fs.readFileSync(resolvePath(path))
   const info = await carToDot(buffer, vertical)
   console.log(info)
