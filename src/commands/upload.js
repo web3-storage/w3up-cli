@@ -2,6 +2,8 @@ import client from '../client.js'
 import ora from 'ora'
 import { hasID, isPath, resolvePath } from '../validation.js'
 import fs from 'fs'
+import path from 'path'
+import { buildCar } from '../lib/car.js'
 
 /**
  * @typedef {{path?:string}} Upload
@@ -15,15 +17,26 @@ import fs from 'fs'
  */
 
 const exe = async (argv) => {
-  const { path } = argv
-  const view = ora({ text: `Uploading ${path}...`, spinner: 'line' }).start()
+  const _path = argv.path
 
-  if (!path) {
+  const view = ora({ text: `Uploading ${_path}...`, spinner: 'line' }).start()
+
+  if (!_path) {
     return Promise.reject('You must Specify a Path')
   }
 
+  //TODO: automatically convert to a car
+  if (path.extname(_path) !== '.car') {
+    return Promise.reject(
+      `${_path} must be a .car file, found ${path.extname(
+        _path
+      )} use generate-car to make your file a car first.`
+    )
+  }
+
   try {
-    const buffer = await fs.promises.readFile(resolvePath(path))
+    const buffer = await fs.promises.readFile(resolvePath(_path))
+
     const response = await client.upload(buffer)
     if (response) {
       view.succeed(`${response}`)
