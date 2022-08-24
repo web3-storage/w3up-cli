@@ -4,11 +4,53 @@ import { hasID, isPath, resolvePath } from '../validation.js'
 import fs from 'fs'
 import path from 'path'
 import { buildCar } from '../lib/car.js'
+import { CID } from 'multiformats/cid'
+import { MAX_CAR_SIZE } from './generateCar.js'
 
 /**
  * @typedef {{path?:string}} Upload
  * @typedef {import('yargs').Arguments<Upload>} UploadArgs
  */
+
+async function generateCarUploads(filePath, view) {
+  const resolvedPath = path.resolve('.', filePath)
+  try {
+    const { stream, _reader } = await buildCar(resolvedPath, MAX_CAR_SIZE, true)
+    /** @type Array<CID> */
+    let roots = []
+
+    _reader.catch((err) => {
+      throw new Error(
+        err.toString() +
+          '\n current max size is: ' +
+          (MAX_CAR_SIZE / 1000000).toFixed(2) +
+          'MB'
+      )
+    })
+
+    /**
+     * @param {ReadableStreamDefaultReadResult<any>} block
+     * @returns {Promise<void>}
+     */
+    async function uploadBuffer({ done, value }) {
+      if (value && value.bytes) {
+        roots = roots.concat(value.roots)
+        const response = await client.upload(value.bytes)
+        view.succeed(response)
+      }
+
+      if (!done) {
+        await stream.read().then(uploadBuffer)
+      } else {
+        console.log('roots:\n', roots.map((x) => x.toString()).join('\n'))
+      }
+    }
+    await stream.read().then(uploadBuffer)
+  } catch (err) {
+    view.fail('Upload did not complete successfully, check w3up-failure.log')
+    await fs.promises.appendFile('w3up-failure.log', JSON.stringify(err) + '\n')
+  }
+}
 
 /**
  * @async
@@ -27,23 +69,22 @@ const exe = async (argv) => {
 
   //TODO: automatically convert to a car
   if (path.extname(_path) !== '.car') {
-    return Promise.reject(
-      `${_path} must be a .car file, found ${path.extname(
-        _path
-      )} use generate-car to make your file a car first.`
-    )
-  }
+    await generateCarUploads(_path, view)
+  } else {
+    try {
+      const buffer = await fs.promises.readFile(resolvePath(_path))
 
-  try {
-    const buffer = await fs.promises.readFile(resolvePath(_path))
-
-    const response = await client.upload(buffer)
-    if (response) {
-      view.succeed(`${response}`)
+      const response = await client.upload(buffer)
+      if (response) {
+        view.succeed(`${response}`)
+      }
+    } catch (err) {
+      view.fail('Upload did not complete successfully, check w3up-failure.log')
+      await fs.promises.appendFile(
+        'w3up-failure.log',
+        JSON.stringify(err) + '\n'
+      )
     }
-  } catch (err) {
-    view.fail('Upload did not complete successfully, check w3up-failure.log')
-    await fs.promises.appendFile('w3up-failure.log', JSON.stringify(err) + '\n')
   }
 }
 

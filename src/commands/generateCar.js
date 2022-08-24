@@ -9,7 +9,7 @@ import { sha256 } from 'multiformats/hashes/sha2'
 
 // const MAX_CAR_SIZE = 32000000 //32MB
 // const MAX_CAR_SIZE= 256000000 //256MB
-const MAX_CAR_SIZE = 3800000000 //3.8GB
+export const MAX_CAR_SIZE = 3800000000 //3.8GB
 
 /**
  * @typedef {{filePath:string, outPath?:string }} GenerateCar
@@ -33,7 +33,7 @@ export const writeFileLocally = async (car, outPath = 'output.car') => {
  * @param {Uint8Array} bytes - The bytes to get a CAR cid for.
  * @returns {Promise<CID>}
  */
-async function bytesToCarCID(bytes) {
+export async function bytesToCarCID(bytes) {
   // this CID represents the byte content, but doesn't 'link' with the blocks inside
   const digest = await sha256.digest(bytes)
   return CID.createV1(0x202, digest)
@@ -45,17 +45,17 @@ async function bytesToCarCID(bytes) {
  * @returns {Promise<void>}
  */
 const exe = async ({ filePath, outPath = 'output.car' }) => {
-  const p = path.resolve('.', filePath)
+  const resolvedPath = path.resolve('.', filePath)
 
   /** @type import('ora').Options */
   const oraOpts = {
-    text: `Generating Car from ${p}`,
+    text: `Generating Car from ${resolvedPath}`,
     spinner: 'line',
   }
   const view = ora(oraOpts).start()
 
   try {
-    const { stream, _reader } = await buildCar(p, MAX_CAR_SIZE, true)
+    const { stream, _reader } = await buildCar(resolvedPath, MAX_CAR_SIZE, true)
     /** @type Array<CID> */
     let roots = []
 
@@ -79,7 +79,7 @@ const exe = async ({ filePath, outPath = 'output.car' }) => {
         roots = roots.concat(value.roots)
         const cid = await bytesToCarCID(value.bytes)
         writeFileLocally(value.bytes, `${cid}.car`)
-        view.succeed(`CAR created ${p} => ${cid}.car`)
+        view.succeed(`CAR created ${resolvedPath} => ${cid}.car`)
       }
 
       if (!done) {
