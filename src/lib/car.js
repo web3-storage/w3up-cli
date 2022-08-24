@@ -12,6 +12,11 @@ const CAPACITY = UnixFS.BLOCK_SIZE_LIMIT * 32
 const CAR_SIZE = CAPACITY
 
 /**
+ * @typedef {{stream: ReadableStreamReader<any>, _reader: Promise<void> }} buildCarOutput
+ * @typedef {{bytes: Uint8Array|null ,cid: object|null}} Block
+ */
+
+/**
  * @param {string} pathName - The path to check if it's a directory
  * @returns {boolean}
  */
@@ -106,7 +111,8 @@ function createBuffer(carsize) {
  * @async
  * @param {string} pathName - The "root" of the path to generate car(s) for.
  * @param {number} [carsize] - The maximum size of generated car files.
- * @returns {Promise<ReadableStreamReader<any>>}
+ * @param {boolean} [failAtSplit=false] - Should this fail if it tries to split into multiple cars.
+ * @returns {Promise<buildCarOutput>}
  */
 export async function buildCar(
   pathName,
@@ -133,11 +139,13 @@ export async function buildCar(
   )
   let bufferStreamWriter = bufferStream.writable.getWriter()
 
+  /** @type Array<string> */
   // Keep track of written cids, so that blocks are not duplicated across cars.
   let writtenCids = []
 
   // track the last written block, so we know the root of the dag.
-  let root = {}
+  /** @type Block */
+  let root = { bytes: null, cid: null }
 
   /**
    * @param {ReadableStreamDefaultReadResult<any>} block

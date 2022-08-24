@@ -22,7 +22,7 @@ const codecNames = {
   [dagJson.code]: 'dagJson',
   [raw.code]: 'raw',
   [json.code]: 'json',
-//   [0x202]: 'car',
+  //   [0x202]: 'car',
 }
 
 const nodeTypeNames = {
@@ -96,11 +96,13 @@ function buildLabel(obj) {
 /**
  * @async
  * @param {Buffer|Uint8Array} bytes
+ * @param {boolean} vertical - should the graph output be 'vertical' (i.e. rankdir LR)
  * @returns {Promise<string>} the DOT format output of the DAG in the car.
  */
 export async function run(bytes, vertical) {
   const indexer = await CarIndexer.fromBytes(bytes)
   const reader = await CarReader.fromBytes(bytes)
+  /** @type {{header:any, blocks:any}} */
   const fixture = {
     header: reader._header, // a little naughty but we need gory details
     blocks: [],

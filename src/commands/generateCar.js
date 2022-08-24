@@ -4,10 +4,12 @@ import path from 'path'
 import fs from 'fs'
 import { buildCar } from '../lib/car.js'
 
-import * as DAG_PB from '@ipld/dag-pb'
 import { CID } from 'multiformats/cid'
 import { sha256 } from 'multiformats/hashes/sha2'
-import * as CAR from '@ucanto/transport/car'
+
+// const MAX_CAR_SIZE = 32000000 //32MB
+// const MAX_CAR_SIZE= 256000000 //256MB
+const MAX_CAR_SIZE = 3800000000 //3.8GB
 
 /**
  * @typedef {{filePath:string, outPath?:string }} GenerateCar
@@ -28,17 +30,13 @@ export const writeFileLocally = async (car, outPath = 'output.car') => {
 
 /**
  * @async
- * @param {Uint8Array} bytes - The bytes to get a DAG_PB cid for.
+ * @param {Uint8Array} bytes - The bytes to get a CAR cid for.
  * @returns {Promise<CID>}
  */
-async function bytesToDAGPBCID(bytes) {
+async function bytesToCarCID(bytes) {
   // this CID represents the byte content, but doesn't 'link' with the blocks inside
   const digest = await sha256.digest(bytes)
-  return CID.createV1(DAG_PB.code, digest)
-}
-
-async function sleep(time) {
-  return new Promise((res, rej) => setTimeout(res, time))
+  return CID.createV1(0x202, digest)
 }
 
 /**
@@ -48,21 +46,27 @@ async function sleep(time) {
  */
 const exe = async ({ filePath, outPath = 'output.car' }) => {
   const p = path.resolve('.', filePath)
+
+  /** @type import('ora').Options */
   const oraOpts = {
     text: `Generating Car from ${p}`,
     spinner: 'line',
   }
   const view = ora(oraOpts).start()
 
-  //   const carsize = 33554432 //32MB
-  //   const carsize = 33554432 * 8 //32MB * 8 = 256MB
-  const carsize = 33554432 * 8 * 14 //32MB * 8 * 14 = 3.5GB
   try {
-    const { stream, _reader } = await buildCar(p, carsize, true)
+    const { stream, _reader } = await buildCar(p, MAX_CAR_SIZE, true)
+    /** @type Array<CID> */
     let roots = []
 
     _reader.catch((err) => {
-      view.fail(err.toString())
+      view.fail(
+        err.toString() +
+          '\n current max size is: ' +
+          (MAX_CAR_SIZE / 1000000).toFixed(2) +
+          'MB'
+      )
+
       process.exit(1)
     })
 
@@ -73,7 +77,7 @@ const exe = async ({ filePath, outPath = 'output.car' }) => {
     async function writeBufferToFile({ done, value }) {
       if (value && value.bytes) {
         roots = roots.concat(value.roots)
-        const cid = await CAR.codec.link(value.bytes)
+        const cid = await bytesToCarCID(value.bytes)
         writeFileLocally(value.bytes, `${cid}.car`)
         view.succeed(`CAR created ${p} => ${cid}.car`)
       }
@@ -88,9 +92,10 @@ const exe = async ({ filePath, outPath = 'output.car' }) => {
     }
     await stream.read().then(writeBufferToFile)
   } catch (err) {
-    view.fail(err)
+    view.fail(err.toString())
   }
 }
+
 /**
  * @type {import('yargs').CommandBuilder} yargs
  * @returns {import('yargs').Argv<{}>}

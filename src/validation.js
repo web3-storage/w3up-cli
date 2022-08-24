@@ -7,7 +7,7 @@ import { settings } from './client.js'
 
 /**
  *
- * @param {string|undefined} email
+ * @param {string|undefined} email?
  * @returns {boolean}
  */
 export const isEmail = (email) => {
