@@ -28,7 +28,9 @@ const exe = async (argv) => {
   //TODO: automatically convert to a car
   if (path.extname(_path) !== '.car') {
     return Promise.reject(
-      `${_path} must be a .car file, found ${path.extname(_path)}`
+      `${_path} must be a .car file, found ${path.extname(
+        _path
+      )} use generate-car to make your file a car first.`
     )
   }
 
