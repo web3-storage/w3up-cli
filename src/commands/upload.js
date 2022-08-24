@@ -70,7 +70,7 @@ async function generateCarUploads(filePath, view) {
  */
 async function uploadExistingCar(filePath, view) {
   try {
-    const { size } = await fs.promises.stat(_path)
+    const { size } = await fs.promises.stat(filePath)
     if (size > MAX_CAR_SIZE) {
       const maxSizeMB = (MAX_CAR_SIZE / 1000000).toFixed(2)
       const sizeMB = (size / 1000000).toFixed(2)
