@@ -54,29 +54,42 @@ const exe = async ({ filePath, outPath = 'output.car' }) => {
   }
   const view = ora(oraOpts).start()
 
-  const carsize = 33554432 * 8 //32MB * 8 = 256MB
-  const stream = await buildCar(p, carsize)
+  //   const carsize = 33554432 //32MB
+  //   const carsize = 33554432 * 8 //32MB * 8 = 256MB
+  const carsize = 33554432 * 8 * 14 //32MB * 8 * 14 = 3.5GB
+  try {
+    const { stream, _reader } = await buildCar(p, carsize, true)
+    let roots = []
 
-  /**
-   * @param {ReadableStreamDefaultReadResult<any>} block
-   * @returns {Promise<void>}
-   */
-  async function writeBufferToFile({ done, value }) {
-    if (value) {
-      //       const cid = await bytesToDAGPBCID(value)
-      const cid = await CAR.codec.link(value)
-      writeFileLocally(value, `${cid}.car`)
-      view.succeed(`CAR created ${p} => ${cid}.car`)
-    }
+    _reader.catch((err) => {
+      view.fail(err.toString())
+      process.exit(1)
+    })
 
-    if (!done) {
-      view.start(oraOpts.text)
-      await stream.read().then(writeBufferToFile)
-    } else {
-      view.stop()
+    /**
+     * @param {ReadableStreamDefaultReadResult<any>} block
+     * @returns {Promise<void>}
+     */
+    async function writeBufferToFile({ done, value }) {
+      if (value && value.bytes) {
+        roots = roots.concat(value.roots)
+        const cid = await CAR.codec.link(value.bytes)
+        writeFileLocally(value.bytes, `${cid}.car`)
+        view.succeed(`CAR created ${p} => ${cid}.car`)
+      }
+
+      if (!done) {
+        view.start(oraOpts.text)
+        await stream.read().then(writeBufferToFile)
+      } else {
+        view.stop()
+        console.log('roots:\n', roots.map((x) => x.toString()).join('\n'))
+      }
     }
+    await stream.read().then(writeBufferToFile)
+  } catch (err) {
+    view.fail(err)
   }
-  await stream.read().then(writeBufferToFile)
 }
 /**
  * @type {import('yargs').CommandBuilder} yargs

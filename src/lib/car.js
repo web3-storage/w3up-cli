@@ -108,7 +108,11 @@ function createBuffer(carsize) {
  * @param {number} [carsize] - The maximum size of generated car files.
  * @returns {Promise<ReadableStreamReader<any>>}
  */
-export async function buildCar(pathName, carsize = CAR_SIZE) {
+export async function buildCar(
+  pathName,
+  carsize = CAR_SIZE,
+  failAtSplit = false
+) {
   // Create a redable & writable streams with internal queue that can hold around 32 blocks
   const { readable, writable } = new TransformStream(
     {},
@@ -146,7 +150,11 @@ export async function buildCar(pathName, carsize = CAR_SIZE) {
       try {
         await buffer.write(value)
       } catch (err) {
-        bufferStreamWriter.write(await buffer.close({ resize: true }))
+        if (failAtSplit) {
+          throw new Error('Content too large for car.')
+        }
+        const bytes = await buffer.close({ resize: true })
+        bufferStreamWriter.write({ bytes, roots: buffer.roots })
         buffer = createBuffer(carsize)
         await buffer.write(value)
       }
@@ -158,11 +166,14 @@ export async function buildCar(pathName, carsize = CAR_SIZE) {
       if (root) {
         buffer.addRoot(root.cid, { resize: root.cid })
       }
-      bufferStreamWriter.write(await buffer.close({ resize: true }))
+      const bytes = await buffer.close({ resize: true })
+      bufferStreamWriter.write({ bytes, roots: buffer.roots })
       return bufferStreamWriter.close()
     }
   }
 
-  reader.read().then(writeBlockToCar)
-  return bufferStream.readable.getReader()
+  return {
+    stream: bufferStream.readable.getReader(),
+    _reader: reader.read().then(writeBlockToCar),
+  }
 }
