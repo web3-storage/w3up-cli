@@ -1,7 +1,6 @@
 import * as UnixFS from '@ipld/unixfs'
 
 export async function fileToBlock({ writer, filename, bytes }) {
-
   // make file writer, write to it, and close it to get link/cid
   const file = UnixFS.createFileWriter(writer)
   file.write(bytes)

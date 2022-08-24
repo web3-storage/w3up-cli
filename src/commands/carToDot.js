@@ -1,7 +1,7 @@
 import ora from 'ora'
 import { isPath, resolvePath } from '../validation.js'
 import fs from 'fs'
-import { run as carInfo } from '../lib/carInfo.js'
+import { run as carToDot } from '../lib/carToDot.js'
 
 /**
  * @typedef {{path?:string}} CarToDot
@@ -14,15 +14,20 @@ import { run as carInfo } from '../lib/carInfo.js'
  * @param {CarToDotArgs} argv
  * @returns {Promise<void>}
  */
-const exe = async ({ path = '/' }) => {
+const exe = async ({ path = '/', vertical }) => {
   const buffer = fs.readFileSync(resolvePath(path))
-  const info = await carInfo(buffer)
+  const info = await carToDot(buffer, vertical)
   console.log(info)
 }
 /**
  * @type {import('yargs').CommandBuilder} yargs
  */
-const build = (yargs) => yargs.check(checkPath)
+const build = (yargs) =>
+  yargs.check(checkPath).option('vertical', {
+    type: 'boolean',
+    showInHelp: true,
+    describe: 'set rankdir LR',
+  })
 
 /**
  * @param {CarToDotArgs} argv
