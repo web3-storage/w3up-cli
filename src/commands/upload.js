@@ -3,6 +3,7 @@ import ora from 'ora'
 import { hasID, isPath, resolvePath } from '../validation.js'
 import fs from 'fs'
 import path from 'path'
+import { buildCar } from '../lib/car.js'
 
 /**
  * @typedef {{path?:string}} Upload
@@ -24,13 +25,16 @@ const exe = async (argv) => {
     return Promise.reject('You must Specify a Path')
   }
 
-  //TODO: more robust filename checking
-  if (path.extname(_path) !== 'car') {
-    return Promise.reject(`${_path} must be a .car file`)
+  //TODO: automatically convert to a car
+  if (path.extname(_path) !== '.car') {
+    return Promise.reject(
+      `${_path} must be a .car file, found ${path.extname(_path)}`
+    )
   }
 
   try {
     const buffer = await fs.promises.readFile(resolvePath(_path))
+
     const response = await client.upload(buffer)
     if (response) {
       view.succeed(`${response}`)
