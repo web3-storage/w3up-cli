@@ -12,7 +12,8 @@ const W3_STORE_DID =
   'did:key:z6MkrZ1r5XBFZjBU34qyD8fueMbMRkKw17BZaq2ivKFjnz2z' //staging key
 const SERVICE_URL =
   process.env.SERVICE_URL ||
-  'https://mk00d0sf0h.execute-api.us-east-1.amazonaws.com/' //staging url
+  'https://8609r1772a.execute-api.us-east-1.amazonaws.com'
+//   'https://mk00d0sf0h.execute-api.us-east-1.amazonaws.com/' //staging url
 
 const ACCESS_URL = process.env.ACCESS_URL || 'https://auth-dev.dag.haus'
 const ACCESS_DID =
