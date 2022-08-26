@@ -2,6 +2,7 @@ import { isPath, resolvePath } from '../validation.js'
 import fs from 'fs'
 import { run as carToDot } from '../lib/info/carToDot.js'
 import { run as carToList } from '../lib/info/carToList.js'
+import { run as carToTree } from '../lib/info/carToTree.js'
 
 /**
  * @typedef {{path?:string, dot?:boolean, vertical?:boolean}} CarInfo
@@ -14,11 +15,18 @@ import { run as carToList } from '../lib/info/carToList.js'
  * @param {CarInfoArgs} argv
  * @returns {Promise<void>}
  */
-const exe = async ({ path = '/', dot = false, vertical = false }) => {
+const exe = async ({
+  path = '/',
+  dot = false,
+  vertical = false,
+  tree = false,
+}) => {
   const buffer = fs.readFileSync(resolvePath(path))
 
   if (dot) {
     console.log(await carToDot(buffer, vertical))
+  } else if (tree) {
+    console.log(await carToTree(buffer))
   } else {
     console.log(await carToList(buffer))
   }
@@ -29,6 +37,11 @@ const exe = async ({ path = '/', dot = false, vertical = false }) => {
 const build = (yargs) =>
   yargs
     .check(checkPath)
+    .option('tree', {
+      type: 'boolean',
+      showInHelp: true,
+      describe: 'output the car as a tree on the command line',
+    })
     .option('dot', {
       type: 'boolean',
       showInHelp: true,
