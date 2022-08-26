@@ -7,6 +7,8 @@ import * as dagPb from '@ipld/dag-pb'
 import * as dagJson from '@ipld/dag-json'
 import * as raw from 'multiformats/codecs/raw'
 import * as json from 'multiformats/codecs/json'
+import * as CID from 'multiformats/cid'
+import { base58btc } from 'multiformats/bases/base58'
 
 const codecs = {
   [dagCbor.code]: dagCbor,
@@ -64,7 +66,7 @@ function decode(cid, bytes) {
  * @param {boolean} vertical - should the graph output be 'vertical' (i.e. rankdir LR)
  * @returns {Promise<string>} the DOT format output of the DAG in the car.
  */
-export async function run(bytes, vertical) {
+export async function run(bytes) {
   const indexer = await CarIndexer.fromBytes(bytes)
   const reader = await CarReader.fromBytes(bytes)
   /** @type {{header:any, blocks:any}} */
@@ -73,7 +75,7 @@ export async function run(bytes, vertical) {
     blocks: [],
   }
 
-  let output = ''
+  let output = 'CIDv1\t\t\t\t\t\t\t\tCIDv0\n'
 
   for await (const blockIndex of indexer) {
     const block = await reader.get(blockIndex.cid)
@@ -84,17 +86,11 @@ export async function run(bytes, vertical) {
     const content = decode(blockIndex.cid, block.bytes)
 
     const nodeType = nodeTypeNames[content?.type]
-    //     if (nodeType == 'file') {
-    //       continue
-    //     }
-    output += '\n' + blockIndex.cid.toString()
-    //     output +=
-    //       '\n' +
-    //       (content.Links || content?.entries || [])
-    //         .map((x) => x?.name || x?.Name)
-    //         .filter((x) => x)
-    //         .map((x) => blockIndex.cid.toString() + '/' + x)
-    //         .join('\n')
+    let cid = '' //blockIndex.cid.toString()
+
+    output +=
+      blockIndex.cid.toString() + '\tz' + blockIndex.cid.toV0().toString()
+    output += '\n'
   }
   return output
 }
