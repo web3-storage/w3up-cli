@@ -1,14 +1,15 @@
 import client from '../client.js'
 import ora from 'ora'
-import { hasID, isPath, resolvePath } from '../validation.js'
 import fs from 'fs'
 import path from 'path'
-import { buildCar } from '../lib/car.js'
 // @ts-ignore
 import { CID } from 'multiformats/cid'
-import { MAX_CAR_SIZE } from './generateCar.js'
 
+import { MAX_CAR_SIZE } from '../settings.js'
 import { logToFile } from '../lib/logging.js'
+import { buildCar } from '../lib/car.js'
+import { hasID, isPath, resolvePath } from '../validation.js'
+import { humanizeBytes } from '../utils.js'
 
 /**
  * @typedef {{path?:string}} Upload
@@ -22,7 +23,7 @@ import { logToFile } from '../lib/logging.js'
  * @returns {Promise<void>}
  */
 async function generateCarUploads(filePath, view) {
-  const resolvedPath = path.resolve('.', filePath)
+  const resolvedPath = path.resolve(filePath)
   try {
     const { stream, _reader } = await buildCar(resolvedPath, MAX_CAR_SIZE, true)
     /** @type Array<CID> */
@@ -32,8 +33,7 @@ async function generateCarUploads(filePath, view) {
       view.fail(
         err.toString() +
           '\n current max size is: ' +
-          (MAX_CAR_SIZE / 1000000).toFixed(2) +
-          'MB'
+          humanizeBytes(MAX_CAR_SIZE)
       )
       process.exit(1)
     })

@@ -111,7 +111,8 @@ export async function run(bytes, vertical) {
   let dot = `digraph { 
 \tgraph [nodesep="0.25", ranksep="1.5" splines=line rankdir="${
     vertical ? 'LR' : 'TB'
-  }"];
+  }"
+];
 \tlabeljust=l;
 \tlabelloc=b;
 \tnode [shape=record];

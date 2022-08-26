@@ -19,8 +19,10 @@ import resetSettings from './commands/resetSettings.js'
 
 import insights from './commands/insights.js'
 
-import carToDot from './commands/carToDot.js'
+import inspectCar from './commands/inspectCar.js'
 import generateCar from './commands/generateCar.js'
+
+import info from './commands/info.js'
 
 /**
  * @type {import('yargs').Argv<{}>} yargs
@@ -81,8 +83,13 @@ export const main = async () => {
     .command(insights.cmd, insights.description, insights.build, insights.exe)
 
     //utilities
-    .command(carToDot.cmd, carToDot.description, carToDot.build, carToDot.exe)
-    .example(carToDot.exampleIn, carToDot.exampleOut)
+    .command(
+      inspectCar.cmd,
+      inspectCar.description,
+      inspectCar.build,
+      inspectCar.exe
+    )
+    .example(inspectCar.exampleIn, inspectCar.exampleOut)
 
     .command(
       generateCar.cmd,
@@ -91,6 +98,9 @@ export const main = async () => {
       generateCar.exe
     )
     .example(generateCar.exampleIn, generateCar.exampleOut)
+
+    .command(info.cmd, info.description, info.build, info.exe)
+    .example(info.exampleIn, info.exampleOut)
 
     .help()
     //     .showHelpOnFail(true)
