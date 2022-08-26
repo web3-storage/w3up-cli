@@ -7,11 +7,13 @@ import { logToFile } from '../lib/logging.js'
 const exe = async () => {
   const view = ora({ text: 'Checking identity', spinner: 'line' })
   try {
-    const reponse = await client.whoami()
-    if (reponse.error) {
-      view.succeed(reponse.message)
+    const response = await client.whoami()
+    if (response?.error) {
+      view.fail(response?.message)
+    } else if (response == null) {
+      view.fail('Account not found.')
     } else {
-      view.succeed(`${reponse}`)
+      view.succeed(`${response}`)
     }
   } catch (error) {
     view.fail('Could not check identity, check w3up-failure.log')

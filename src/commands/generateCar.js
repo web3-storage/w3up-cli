@@ -9,10 +9,8 @@ import { sha256 } from 'multiformats/hashes/sha2'
 import { isPath, resolvePath } from '../validation.js'
 import { buildCar } from '../lib/car.js'
 import { logToFile } from '../lib/logging.js'
-
-// export const MAX_CAR_SIZE = 32000000 //32MB
-// export const MAX_CAR_SIZE= 256000000 //256MB
-export const MAX_CAR_SIZE = 3800000000 //3.8GB
+import { MAX_CAR_SIZE } from '../settings.js'
+import { humanizeBytes } from '../utils.js'
 
 /**
  * @typedef {{filePath:string, outPath?:string }} GenerateCar
@@ -47,8 +45,8 @@ export async function bytesToCarCID(bytes) {
  * @param {GenerateCarArgs} argv
  * @returns {Promise<void>}
  */
-const exe = async ({ filePath, outPath = 'output.car' }) => {
-  const resolvedPath = path.resolve('.', filePath)
+const exe = async ({ filePath, outPath = 'output.car', split = false }) => {
+  const resolvedPath = path.normalize(filePath)
 
   /** @type import('ora').Options */
   const oraOpts = {
@@ -58,7 +56,11 @@ const exe = async ({ filePath, outPath = 'output.car' }) => {
   const view = ora(oraOpts).start()
 
   try {
-    const { stream, _reader } = await buildCar(resolvedPath, MAX_CAR_SIZE, true)
+    const { stream, _reader } = await buildCar(
+      resolvedPath,
+      MAX_CAR_SIZE,
+      !split
+    )
     /** @type Array<CID> */
     let roots = []
 
@@ -66,8 +68,7 @@ const exe = async ({ filePath, outPath = 'output.car' }) => {
       view.fail(
         err.toString() +
           '\n current max size is: ' +
-          (MAX_CAR_SIZE / 1000000).toFixed(2) +
-          'MB'
+          humanizeBytes(MAX_CAR_SIZE)
       )
 
       process.exit(1)
@@ -97,7 +98,7 @@ const exe = async ({ filePath, outPath = 'output.car' }) => {
   } catch (err) {
     // @ts-ignore
     view.fail(err.toString())
-    logToFile('register', err)
+    logToFile('generate-car', err)
   }
 }
 
@@ -105,7 +106,13 @@ const exe = async ({ filePath, outPath = 'output.car' }) => {
  * @type {import('yargs').CommandBuilder} yargs
  * @returns {import('yargs').Argv<{}>}
  */
-const build = (yargs) => yargs.check(checkPath)
+const build = (yargs) =>
+  yargs.check(checkPath).option('split', {
+    type: 'boolean',
+    alias: 'split',
+    showInHelp: true,
+    describe: 'Split the data into multiple when cars when size limit is hit.',
+  })
 
 /**
  * @param {GenerateCarArgs} argv
