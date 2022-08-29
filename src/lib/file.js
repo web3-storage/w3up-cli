@@ -33,10 +33,9 @@ export async function streamFileToBlock({ writer, filePath }) {
   const stream = fs.createReadStream(filePath, { encoding: 'binary' })
   const file = UnixFS.createFileWriter(writer)
 
-  await new Promise((resolve, reject) => {
-    stream.on('data', async (chunk) => await file.write(Buffer.from(chunk)))
-    stream.on('end', async () => resolve(await file.close()))
-  })
+  for await (const data of stream) {
+    file.write(new Uint8Array(Buffer.from(data, 'binary')))
+  }
 
   const link = await file.close()
 
