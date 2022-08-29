@@ -1,21 +1,21 @@
 <h1 align="center">w3up-cli 🆙</h1>
 <p>
   <img alt="Version" src="https://img.shields.io/badge/version-0.1.1-blue.svg?cacheSeconds=2592000" />
-  <a href="https://github.com/nftstorage/w3up-cli/blob/main/LICENSE.md" target="_blank">
+  <a href="https://github.com/web3-storage/w3up-cli/blob/main/LICENSE.md" target="_blank">
     <img alt="License: Apache--2.0" src="https://img.shields.io/badge/License-Apache--2.0-yellow.svg" />
   </a>
 </p>
 
 > w3up-cli is a command-line interface for the W3up platform by Dag.House. You can use the cli to do things like generate an identity, register, upload assets, list your uploads and more!
 
-### 🏠 [Homepage](https://github.com/nftstorage/w3up-cli)
+### 🏠 [Homepage](https://github.com/web3-storage/w3up-cli)
 
 ## Installation
 
 Install from github:
 
 ```sh
-npm install -g git@github.com:nftstorage/w3up-cli.git
+npm install -g git@github.com:web3-storage/w3up-cli.git
 ```
 
 Install from Npm
