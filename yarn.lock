@@ -2401,9 +2401,9 @@ varint@^6.0.0:
   resolved "https://registry.yarnpkg.com/varint/-/varint-6.0.0.tgz#9881eb0ce8feaea6512439d19ddf84bf551661d0"
   integrity sha512-cXEIW6cfr15lFv563k4GuVuW/fiwjknytD37jIOLSdSWuOI6WnO/oKwmP2FQTU2l01LP8/M5TSAJpzUaGe3uWg==
 
-w3up-client@nftstorage/w3up-client:
-  version "0.1.4"
-  resolved "https://codeload.github.com/nftstorage/w3up-client/tar.gz/94b916f74cbd725e7eaf5736eaad9ede078ad80d"
+w3up-client@web3-storage/w3up-client:
+  version "0.2.0"
+  resolved "https://codeload.github.com/web3-storage/w3up-client/tar.gz/aea33196040dd2d8df0fda5d42194e68d408d8c0"
   dependencies:
     "@ucanto/authority" "^0.4.5"
     "@ucanto/client" "0.5.4"

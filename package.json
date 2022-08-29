@@ -1,7 +1,7 @@
 {
   "name": "w3up-cli",
   "description": "w3up interface",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "main": "./src/main.js",
   "bin": {
     "w3up": "./src/cli.js"
@@ -27,7 +27,7 @@
     "inquirer": "^9.1.0",
     "ora": "^6.1.2",
     "uuid": "^8.3.2",
-    "w3up-client": "nftstorage/w3up-client",
+    "w3up-client": "web3-storage/w3up-client",
     "yargs": "^17.5.1"
   },
   "devDependencies": {
