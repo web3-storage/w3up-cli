@@ -64,7 +64,9 @@ const upload = {
   build,
   exe,
   exampleIn: '$0 inspect-car ../duck.car --tree',
-  exampleOut: `generated examination tree`,
+  exampleOut: `roots
+└─┬ bafy...
+  └── duck.png`,
 }
 
 export default upload
