@@ -75,11 +75,11 @@ const checkPath = ({ path }) => {
 }
 
 const bulkUpload = {
-  cmd: ['bulk-upload <path>', 'bulk-import <path>'],
+  cmd: ['upload-cars <path>'],
   description: 'Upload a file or directory to your account',
   build,
   exe,
-  exampleIn: '$0 bulk-upload dir',
+  exampleIn: '$0 upload-cars ducks/',
   exampleOut: `uploaded bafy...`,
 }
 

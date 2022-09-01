@@ -98,17 +98,16 @@ export async function uploadExistingCar(filePath, view) {
  */
 const exe = async (argv) => {
   const _path = argv.path
-  const view = ora({ text: `Uploading ${_path}...`, spinner: 'line' }).start()
-
   if (!_path) {
     return Promise.reject('You must Specify a Path')
   }
-
-  if (path.extname(_path) !== '.car') {
-    await generateCarUploads(_path, view)
-  } else {
-    await uploadExistingCar(_path, view)
+  if (path.extname(_path) === '.car') {
+    console.warn(
+      `Your upload is already .car format\nYou may need the upload-cars command for existing .car files. This will wrap your .car file in another .car file`
+    )
   }
+  const view = ora({ text: `Uploading ${_path}...`, spinner: 'line' }).start()
+  await generateCarUploads(_path, view)
 }
 
 /**
