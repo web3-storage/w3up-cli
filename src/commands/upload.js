@@ -131,7 +131,7 @@ const checkPath = ({ path }) => {
 
 const upload = {
   cmd: ['upload <path>', 'import <path>'],
-  description: 'Upload a file or directory to your account',
+  description: 'Upload any file or directory to your account',
   build,
   exe,
   exampleIn: '$0 upload ../../duck.png',
