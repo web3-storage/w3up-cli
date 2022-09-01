@@ -68,7 +68,7 @@ async function generateCarUploads(filePath, view) {
  * @param {import('ora').Ora} view
  * @returns {Promise<void>}
  */
-async function uploadExistingCar(filePath, view) {
+export async function uploadExistingCar(filePath, view) {
   try {
     const { size } = await fs.promises.stat(filePath)
     if (size > MAX_CAR_SIZE) {

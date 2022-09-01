@@ -1,3 +1,4 @@
+import fs from 'fs'
 /**
  * Turns a number (representing a byte size) into a readable format.
  *
@@ -19,3 +20,10 @@ export function humanizeBytes(size) {
 
   return (size / gb).toFixed(2) + 'GB'
 }
+
+/**
+ * @param {string} pathName - The path to check if it's a directory
+ * @returns {boolean}
+ */
+export const isDirectory = (pathName) =>
+  fs.existsSync(pathName) && fs.lstatSync(pathName).isDirectory()
