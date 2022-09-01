@@ -42,10 +42,12 @@ export async function run(bytes) {
 
     const isRoot = roots.some((x) => x.toString() == blockIndex.cid.toString())
     const links = content.Links || content?.entries || []
+
     blockMap.set(blockIndex.cid.toString(), {
       cid: blockIndex.cid.toString(),
       links: links,
     })
+
     if (isRoot) {
       contentRoots.push({
         cid: blockIndex.cid.toString(),

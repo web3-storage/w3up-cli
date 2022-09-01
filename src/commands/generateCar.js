@@ -3,13 +3,11 @@ import path from 'path'
 import fs from 'fs'
 // @ts-ignore
 import { CID } from 'multiformats/cid'
-// @ts-ignore
-import { sha256 } from 'multiformats/hashes/sha2'
-
 import { isPath, resolvePath } from '../validation.js'
-import { buildCar } from '../lib/car.js'
+import { buildCar } from '../lib/car/buildCar.js'
 import { logToFile } from '../lib/logging.js'
 import { MAX_CAR_SIZE } from '../settings.js'
+import { bytesToCarCID } from '../utils.js'
 
 /**
  * @typedef {object} GenerateCar
@@ -32,17 +30,6 @@ export const writeFileLocally = async (car, outPath = 'output.car') => {
 
 /**
  * @async
- * @param {Uint8Array} bytes - The bytes to get a CAR cid for.
- * @returns {Promise<CID>}
- */
-export async function bytesToCarCID(bytes) {
-  // this CID represents the byte content, but doesn't 'link' with the blocks inside
-  const digest = await sha256.digest(bytes)
-  return CID.createV1(0x202, digest)
-}
-
-/**
- * @async
  * @param {GenerateCarArgs} argv
  * @returns {Promise<void>}
  */
@@ -58,26 +45,43 @@ const exe = async ({ filePath = '', split = false }) => {
 
   try {
     const { stream } = await buildCar(resolvedPath, MAX_CAR_SIZE, !split)
+    const reader = stream.getReader()
     /** @type Array<CID> */
     let roots = []
+    let rootCarCID = ''
+    let carCIDS = []
+    let count = 0
 
     async function* iterator() {
-      let next = await stream.read()
-      while (!next?.done) {
-        yield next
-        next = await stream.read()
+      while (true) {
+        yield reader.read()
       }
     }
 
     for await (const { value, done } of iterator()) {
+      if (done) {
+        break
+      }
+      count++
       roots = roots.concat(value.roots)
       bytesToCarCID(value.bytes).then((cid) => {
+        if (value.roots) {
+          rootCarCID = cid
+        } else {
+          carCIDS.push(cid)
+        }
         writeFileLocally(value.bytes, `${cid}.car`)
         view.succeed(`CAR created ${resolvedPath} => ${cid}.car`)
       })
     }
+
     view.stop()
     console.log('roots:\n', roots.map((x) => x.toString()).join('\n'))
+    if (count > 1) {
+      console.log('root car:\n', rootCarCID?.toString())
+      //TODO:
+      //client.link()
+    }
   } catch (err) {
     // @ts-ignore
     view.fail(err.toString())

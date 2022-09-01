@@ -6,60 +6,17 @@ import * as UnixFS from '@ipld/unixfs'
 import * as CAR from '@ipld/car'
 
 import { streamFileToBlock } from './file.js'
-import { wrapFilesWithDir } from './dir.js'
+import { walkDir, wrapFilesWithDir } from './dir.js'
+import { isDirectory } from '../../utils.js'
 
 // Internal unixfs read stream capacity that can hold around 32 blocks
-const CAPACITY = UnixFS.BLOCK_SIZE_LIMIT * 1024
+const CAPACITY = UnixFS.BLOCK_SIZE_LIMIT * 32
 const MAX_CARS_AT_ONCE = 8
 
 /**
- * @typedef {{stream: ReadableStreamReader<any>}} buildCarOutput
+ * @typedef {{stream: ReadableStream }} buildCarOutput
  * @typedef {{bytes: Uint8Array|null ,cid: object|null}} Block
- * @typedef {{name: string, link: any}} FileDesc
  */
-
-/**
- * @param {string} pathName - The path to check if it's a directory
- * @returns {boolean}
- */
-const isDirectory = (pathName) =>
-  fs.existsSync(pathName) && fs.lstatSync(pathName).isDirectory()
-
-/**
- * @async
- * @param {object} options
- * @param {UnixFS.Writer} options.writer - The UnixFS writer
- * @param {string} options.pathName - The current recursive pathname
- * @param {string} options.filename - The current filename
- * @returns {Promise<FileDesc>}
- */
-async function walkDir({ writer, pathName, filename }) {
-  const filePath = path.resolve(pathName, filename)
-
-  if (isDirectory(filePath)) {
-    /** @type {Array<FileDesc>} */
-    let files = []
-    const fileNames = (await fs.promises.readdir(filePath)).filter(
-      (x) => !x.startsWith('.')
-    )
-    for (var name of fileNames) {
-      files.push(
-        await walkDir({
-          writer,
-          pathName: pathName + '/' + filename,
-          filename: name,
-        })
-      )
-    }
-    return wrapFilesWithDir({
-      writer,
-      files,
-      dirName: filename,
-    })
-  }
-
-  return await streamFileToBlock({ writer, filePath })
-}
 
 /**
  * Create a readable block stream for a given path.
@@ -135,6 +92,9 @@ export async function buildCar(pathName, carsize, failAtSplit = false) {
     {},
     {
       highWaterMark: MAX_CARS_AT_ONCE,
+    },
+    {
+      highWaterMark: MAX_CARS_AT_ONCE,
     }
   )
   let carStreamWriter = carWriterStream.writable.getWriter()
@@ -150,11 +110,6 @@ export async function buildCar(pathName, carsize, failAtSplit = false) {
       while (true) {
         yield reader.read()
       }
-      //       let next = await reader.read()
-      //       while (!next?.done) {
-      //         yield next
-      //         next = await reader.read()
-      //       }
     }
 
     await carStreamWriter.ready
@@ -173,7 +128,7 @@ export async function buildCar(pathName, carsize, failAtSplit = false) {
         if (failAtSplit) {
           throw new Error('Content too large for car.')
         }
-        const bytes = await carWriter.close({ resize: true })
+        const bytes = carWriter.close({ resize: true })
         carStreamWriter.write({ bytes, roots: carWriter.roots })
         carWriter = createCarWriter(carsize)
         carWriter.write(value)
@@ -192,41 +147,6 @@ export async function buildCar(pathName, carsize, failAtSplit = false) {
   readAll()
 
   return {
-    stream: carWriterStream.readable.getReader(),
+    stream: carWriterStream.readable,
   }
 }
-/**
- * @param {ReadableStreamDefaultReadResult<any>} block
- * @returns {Promise<void>}
- */
-//   async function writeBlockToCar({ done, value }) {
-//     await carStreamWriter.ready
-//     // skip blocks if already in some car.
-//     const skip = value && writtenCids.includes(value.cid.toString())
-//
-//     if (!done && !skip) {
-//       try {
-//         await carWriter.write(value)
-//       } catch (err) {
-//         if (failAtSplit) {
-//           throw new Error('Content too large for car.')
-//         }
-//         const bytes = await carWriter.close({ resize: true })
-//         carStreamWriter.write({ bytes, roots: carWriter.roots })
-//         carWriter = createCarWriter(carsize)
-//         await carWriter.write(value)
-//       }
-//
-//       writtenCids.push(value.cid.toString())
-//       root = value
-//       return reader.read().then(writeBlockToCar)
-//     } else {
-//       if (root) {
-//         carWriter.addRoot(root.cid, { resize: root.cid })
-//       }
-//       const bytes = await carWriter.close({ resize: true })
-//       carStreamWriter.write({ bytes, roots: carWriter.roots })
-//       return carStreamWriter.close()
-//     }
-//   }
-//   reader.read().then(writeBlockToCar)
