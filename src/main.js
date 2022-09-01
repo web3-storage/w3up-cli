@@ -11,6 +11,7 @@ import register from './commands/register.js'
 import list from './commands/list.js'
 import whoami from './commands/whoami.js'
 import upload from './commands/upload.js'
+import bulkUpload from './commands/bulk-upload.js'
 import remove from './commands/remove.js'
 
 import importSettings from './commands/importSettings.js'

@@ -10,10 +10,11 @@ import { isPath, resolvePath } from '../validation.js'
 import { buildCar } from '../lib/car.js'
 import { logToFile } from '../lib/logging.js'
 import { MAX_CAR_SIZE } from '../settings.js'
-import { humanizeBytes } from '../utils.js'
 
 /**
- * @typedef {{filePath:string, outPath?:string }} GenerateCar
+ * @typedef {object} GenerateCar
+ * @property {string} [filePath='']
+ * @property {boolean} [split=false]
  * @typedef {import('yargs').Arguments<GenerateCar>} GenerateCarArgs
  */
 
@@ -45,7 +46,7 @@ export async function bytesToCarCID(bytes) {
  * @param {GenerateCarArgs} argv
  * @returns {Promise<void>}
  */
-const exe = async ({ filePath, outPath = 'output.car', split = false }) => {
+const exe = async ({ filePath = '', split = false }) => {
   const resolvedPath = path.normalize(filePath)
 
   /** @type import('ora').Options */
@@ -56,55 +57,37 @@ const exe = async ({ filePath, outPath = 'output.car', split = false }) => {
   const view = ora(oraOpts).start()
 
   try {
-    const { stream, _reader } = await buildCar(
-      resolvedPath,
-      MAX_CAR_SIZE,
-      !split
-    )
+    const { stream } = await buildCar(resolvedPath, MAX_CAR_SIZE, !split)
     /** @type Array<CID> */
     let roots = []
 
-    _reader.catch((err) => {
-      view.fail(
-        err.toString() +
-          '\n current max size is: ' +
-          humanizeBytes(MAX_CAR_SIZE)
-      )
-
-      process.exit(1)
-    })
-
-    /**
-     * @param {ReadableStreamDefaultReadResult<any>} block
-     * @returns {Promise<void>}
-     */
-    async function writeBufferToFile({ done, value }) {
-      if (value && value.bytes) {
-        roots = roots.concat(value.roots)
-        const cid = await bytesToCarCID(value.bytes)
-        writeFileLocally(value.bytes, `${cid}.car`)
-        view.succeed(`CAR created ${resolvedPath} => ${cid}.car`)
-      }
-
-      if (!done) {
-        view.start(oraOpts.text)
-        await stream.read().then(writeBufferToFile)
-      } else {
-        view.stop()
-        console.log('roots:\n', roots.map((x) => x.toString()).join('\n'))
+    async function* iterator() {
+      let next = await stream.read()
+      while (!next?.done) {
+        yield next
+        next = await stream.read()
       }
     }
-    await stream.read().then(writeBufferToFile)
+
+    for await (const { value, done } of iterator()) {
+      roots = roots.concat(value.roots)
+      bytesToCarCID(value.bytes).then((cid) => {
+        writeFileLocally(value.bytes, `${cid}.car`)
+        view.succeed(`CAR created ${resolvedPath} => ${cid}.car`)
+      })
+    }
+    view.stop()
+    console.log('roots:\n', roots.map((x) => x.toString()).join('\n'))
   } catch (err) {
     // @ts-ignore
     view.fail(err.toString())
     logToFile('generate-car', err)
+    process.exit(1) //force exit in case other async things are running.
   }
 }
 
 /**
  * @type {import('yargs').CommandBuilder} yargs
- * @returns {import('yargs').Argv<{}>}
  */
 const build = (yargs) =>
   yargs.check(checkPath).option('split', {
@@ -120,7 +103,7 @@ const build = (yargs) =>
 const checkPath = ({ filePath }) => isPath(filePath)
 
 const generateCar = {
-  cmd: 'generate-car <filePath> [outPath]',
+  cmd: 'generate-car <filePath>',
   description: 'From an input file, locally generate a CAR file.',
   build,
   exe,

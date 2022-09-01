@@ -1,66 +1,19 @@
-import fs from 'fs'
 import { CarReader } from '@ipld/car/reader'
 import { CarIndexer } from '@ipld/car/indexer'
-import * as UnixFS from '@ipld/unixfs'
-import * as dagCbor from '@ipld/dag-cbor'
-import * as dagPb from '@ipld/dag-pb'
-import * as dagJson from '@ipld/dag-json'
-import * as raw from 'multiformats/codecs/raw'
-import * as json from 'multiformats/codecs/json'
 
-const codecs = {
-  [dagCbor.code]: dagCbor,
-  [dagPb.code]: dagPb,
-  [dagJson.code]: dagJson,
-  [raw.code]: raw,
-  [json.code]: json,
-}
-
-const codecNames = {
-  [dagCbor.code]: 'dagCbor',
-  [dagPb.code]: 'dagPb',
-  [dagJson.code]: 'dagJson',
-  [raw.code]: 'raw',
-  [json.code]: 'json',
-  //   [0x202]: 'car',
-}
-
-const nodeTypeNames = {
-  [UnixFS.NodeType.Directory]: 'dir',
-  [UnixFS.NodeType.File]: 'file',
-  [UnixFS.NodeType.HAMTShard]: 'hamt',
-  [UnixFS.NodeType.Metadata]: 'meta',
-  [UnixFS.NodeType.Raw]: 'raw',
-  [UnixFS.NodeType.Symlink]: 'sym',
-}
-
-function decode(cid, bytes) {
-  if (!codecs[cid.code]) {
-    throw new Error(`Unknown codec code: 0x${cid.code.toString(16)}`)
-  }
-
-  if (cid.code == dagPb.code) {
-    try {
-      return UnixFS.decode(bytes)
-    } catch (err) {
-      return codecs[cid.code].decode(bytes)
-    }
-  }
-
-  return codecs[cid.code].decode(bytes)
-}
-
-/**
- * @param {object} cid - the CID to format to a short form for output.
- * @returns {string} The shortned CID.
- */
-function toShortCID(cid) {
-  let str = cid.toString()
-  return str.substring(0, 4) + '...' + str.substring(str.length - 4, str.length)
-}
+import { toShortCID, decode, codecNames, nodeTypeNames } from './common.js'
+import { humanizeBytes } from '../../utils.js'
 
 const ignoredKeysForLabel = ['blockLength', 'offset', 'blockOffset']
 
+// @ts-ignore
+/** @typedef {import('multiformats/cid').CID} CID */
+
+/**
+ * Build a label for a node in the graph.
+ * @param {object} obj - The node data.
+ * @returns {string} - The built label.
+ */
 function buildLabel(obj) {
   let label = Object.entries(obj)
     .map(([key, val]) => {
@@ -73,9 +26,14 @@ function buildLabel(obj) {
       if (typeof val == 'object') {
         if (key == 'content') {
           if (val?.type) {
-            return `{unixfs|${nodeTypeNames[val?.type]}}`
+            const bytes = val['content']
+              ? `|{size|${humanizeBytes(val['content']?.byteLength)}}`
+              : ''
+            // @ts-ignore
+            return `{unixfs|${nodeTypeNames[val?.type]}}${bytes}`
           }
 
+          // @ts-ignore
           if (obj.type == 'dagCbor') {
             let data = val?.id // has metadata id
             if (data) {
@@ -102,37 +60,38 @@ function buildLabel(obj) {
 export async function run(bytes, vertical) {
   const indexer = await CarIndexer.fromBytes(bytes)
   const reader = await CarReader.fromBytes(bytes)
-  /** @type {{header:any, blocks:any}} */
+  /** @type {{roots:Array<any>, blocks:any}} */
   const fixture = {
-    header: reader._header, // a little naughty but we need gory details
+    roots: reader._header.roots, // a little naughty but we need gory details
     blocks: [],
   }
 
   let dot = `digraph { 
-\tgraph [nodesep="0.25", ranksep="1.5" splines=line rankdir="${
+\tgraph [nodesep="0.1", ranksep="1.5" splines=line rankdir="${
     vertical ? 'LR' : 'TB'
   }"
 ];
 \tlabeljust=l;
 \tlabelloc=b;
-\tnode [shape=record];
+\tnode [shape=record margin=0.04];
 `
   let linkDot = ''
 
   let i = 0
   for await (const blockIndex of indexer) {
-    fixture.blocks[i] = blockIndex
     const block = await reader.get(blockIndex.cid)
+    /** @type any */
+    const cur = { ...block }
 
-    fixture.blocks[i].type = codecNames[blockIndex.cid.code]
-    fixture.blocks[i].content = decode(blockIndex.cid, block.bytes)
+    cur.type = codecNames[blockIndex.cid.code]
+    cur.content = decode(blockIndex.cid, cur.bytes)
 
-    const cur = fixture.blocks[i]
+    /** @type Array<any> */
     const links = cur.content.Links || cur.content?.entries || []
     const scid = toShortCID(cur.cid)
 
     const label = buildLabel(cur)
-    if (fixture.header.roots.some((x) => x.toString() == cur.cid.toString())) {
+    if (fixture.roots.some((x) => x.toString() == cur.cid.toString())) {
       if (links.length > 0) {
         dot += `\n\t"${scid}" [label="{${label}|{root}}" style="rounded" labeljust=l]`
       } else {
@@ -145,7 +104,6 @@ export async function run(bytes, vertical) {
     links.forEach((link) => {
       const cid = link?.cid || link?.Hash
       const name = link?.name || link?.Name
-      //       console.log('link', link, cid, name)
       linkDot += `\n\t"${scid}" -> "${toShortCID(cid)}" `
       const ports = vertical
         ? 'tailport="e" headport="w"'
@@ -163,6 +121,5 @@ export async function run(bytes, vertical) {
 
   dot += linkDot + '\n}'
 
-  const json = new TextDecoder().decode(dagJson.encode(fixture))
   return dot
 }

@@ -5,7 +5,7 @@ import * as UnixFS from '@ipld/unixfs'
  * @param {object} options
  * @param {any} options.writer
  * @param {Array<{name:string, link:any}>} options.files
- * @param {any} options.dirName
+ * @param {string} options.dirName
  * @returns {Promise<{name:string, link:any}>}
  */
 export async function wrapFilesWithDir({ writer, files, dirName = '' }) {

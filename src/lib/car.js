@@ -2,17 +2,18 @@ import path from 'path'
 import fs from 'fs'
 import 'web-streams-polyfill'
 import * as UnixFS from '@ipld/unixfs'
+// @ts-ignore
 import * as CAR from '@ipld/car'
 
-import { fileToBlock, streamFileToBlock } from './file.js'
+import { streamFileToBlock } from './file.js'
 import { wrapFilesWithDir } from './dir.js'
 
-// Internal queue capacity that can hold around 32 blocks
-const CAPACITY = UnixFS.BLOCK_SIZE_LIMIT * 32
-const CAR_SIZE = CAPACITY
+// Internal unixfs read stream capacity that can hold around 32 blocks
+const CAPACITY = UnixFS.BLOCK_SIZE_LIMIT * 1024
+const MAX_CARS_AT_ONCE = 8
 
 /**
- * @typedef {{stream: ReadableStreamReader<any>, _reader: Promise<void> }} buildCarOutput
+ * @typedef {{stream: ReadableStreamReader<any>}} buildCarOutput
  * @typedef {{bytes: Uint8Array|null ,cid: object|null}} Block
  * @typedef {{name: string, link: any}} FileDesc
  */
@@ -23,13 +24,6 @@ const CAR_SIZE = CAPACITY
  */
 const isDirectory = (pathName) =>
   fs.existsSync(pathName) && fs.lstatSync(pathName).isDirectory()
-
-/**
- * @param {string} pathName - The path to check if it's a symlink
- * @returns {boolean}
- */
-const isSymbolicLink = (pathName) =>
-  fs.existsSync(pathName) && fs.lstatSync(pathName).isSymbolicLink()
 
 /**
  * @async
@@ -78,6 +72,7 @@ async function createReadableBlockStreamWithWrappingDir(pathName, writable) {
   // Next we create a writer with filesystem like API for encoding files and
   // directories into IPLD blocks that will come out on `readable` end.
   const writer = UnixFS.createWriter({ writable })
+  //   writer.settings.chunker.context.maxChunkSize = 1024 * 5
 
   // hold files to wrap with dir.
   let files = []
@@ -119,16 +114,12 @@ function createCarWriter(carsize) {
 /**
  * @async
  * @param {string} pathName - The "root" of the path to generate car(s) for.
- * @param {number} [carsize] - The maximum size of generated car files.
+ * @param {number} carsize - The maximum size of generated car files.
  * @param {boolean} [failAtSplit=false] - Should this fail if it tries to split into multiple cars.
  * @returns {Promise<buildCarOutput>}
  */
-export async function buildCar(
-  pathName,
-  carsize = CAR_SIZE,
-  failAtSplit = false
-) {
-  // Create a redable & writable streams with internal queue that can hold around 32 blocks
+export async function buildCar(pathName, carsize, failAtSplit = false) {
+  // Create a redable & writable streams with internal queue
   const { readable, writable } = new TransformStream(
     {},
     UnixFS.withCapacity(CAPACITY)
@@ -143,29 +134,41 @@ export async function buildCar(
   let carWriterStream = new TransformStream(
     {},
     {
-      highWaterMark: 4,
+      highWaterMark: MAX_CARS_AT_ONCE,
     }
   )
   let carStreamWriter = carWriterStream.writable.getWriter()
 
-  /** @type Array<string> */
-  // Keep track of written cids, so that blocks are not duplicated across cars.
-  let writtenCids = []
+  async function readAll() {
+    // Keep track of written cids, so that blocks are not duplicated across cars.
+    let writtenCids = new Set()
 
-  // track the last written block, so we know the root of the dag.
-  /** @type Block */
-  let root = { bytes: null, cid: null }
+    // track the last written block, so we know the root of the dag.
+    /** @type Block */
+    let root = { bytes: null, cid: null }
+    async function* iterator() {
+      while (true) {
+        yield reader.read()
+      }
+      //       let next = await reader.read()
+      //       while (!next?.done) {
+      //         yield next
+      //         next = await reader.read()
+      //       }
+    }
 
-  /**
-   * @param {ReadableStreamDefaultReadResult<any>} block
-   * @returns {Promise<void>}
-   */
-  async function writeBlockToCar({ done, value }) {
     await carStreamWriter.ready
+    for await (const { value, done } of iterator()) {
+      if (done) {
+        break
+      }
+      if (writtenCids.has(value.cid.toString())) {
+        continue
+      }
 
-    if (!done && !writtenCids.includes(value.cid.toString())) {
       try {
-        await carWriter.write(value)
+        carWriter.write(value)
+        writtenCids.add(value.cid.toString())
       } catch (err) {
         if (failAtSplit) {
           throw new Error('Content too large for car.')
@@ -173,24 +176,57 @@ export async function buildCar(
         const bytes = await carWriter.close({ resize: true })
         carStreamWriter.write({ bytes, roots: carWriter.roots })
         carWriter = createCarWriter(carsize)
-        await carWriter.write(value)
+        carWriter.write(value)
       }
-
-      writtenCids.push(value.cid.toString())
       root = value
-      return reader.read().then(writeBlockToCar)
-    } else {
-      if (root) {
-        carWriter.addRoot(root.cid, { resize: root.cid })
-      }
-      const bytes = await carWriter.close({ resize: true })
-      carStreamWriter.write({ bytes, roots: carWriter.roots })
-      return carStreamWriter.close()
     }
+
+    if (root) {
+      carWriter.addRoot(root.cid, { resize: root.cid })
+    }
+
+    const bytes = await carWriter.close({ resize: true })
+    carStreamWriter.write({ bytes, roots: carWriter.roots })
+    carStreamWriter.close()
   }
+  readAll()
 
   return {
     stream: carWriterStream.readable.getReader(),
-    _reader: reader.read().then(writeBlockToCar),
   }
 }
+/**
+ * @param {ReadableStreamDefaultReadResult<any>} block
+ * @returns {Promise<void>}
+ */
+//   async function writeBlockToCar({ done, value }) {
+//     await carStreamWriter.ready
+//     // skip blocks if already in some car.
+//     const skip = value && writtenCids.includes(value.cid.toString())
+//
+//     if (!done && !skip) {
+//       try {
+//         await carWriter.write(value)
+//       } catch (err) {
+//         if (failAtSplit) {
+//           throw new Error('Content too large for car.')
+//         }
+//         const bytes = await carWriter.close({ resize: true })
+//         carStreamWriter.write({ bytes, roots: carWriter.roots })
+//         carWriter = createCarWriter(carsize)
+//         await carWriter.write(value)
+//       }
+//
+//       writtenCids.push(value.cid.toString())
+//       root = value
+//       return reader.read().then(writeBlockToCar)
+//     } else {
+//       if (root) {
+//         carWriter.addRoot(root.cid, { resize: root.cid })
+//       }
+//       const bytes = await carWriter.close({ resize: true })
+//       carStreamWriter.write({ bytes, roots: carWriter.roots })
+//       return carStreamWriter.close()
+//     }
+//   }
+//   reader.read().then(writeBlockToCar)

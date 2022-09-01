@@ -12,6 +12,7 @@ import path from 'path'
  */
 export async function fileToBlock({ writer, filename, bytes }) {
   // make file writer, write to it, and close it to get link/cid
+  // @ts-ignore
   const file = UnixFS.createFileWriter(writer)
   file.write(bytes)
   const link = await file.close()
@@ -31,6 +32,7 @@ export async function fileToBlock({ writer, filename, bytes }) {
  */
 export async function streamFileToBlock({ writer, filePath }) {
   const stream = fs.createReadStream(filePath, { encoding: 'binary' })
+  // @ts-ignore
   const file = UnixFS.createFileWriter(writer)
 
   for await (const data of stream) {
