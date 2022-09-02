@@ -63,8 +63,10 @@ const upload = {
   description: 'Generate an examination file from a <path> to a CAR ',
   build,
   exe,
-  exampleIn: '$0 car-info ../duck.car',
-  exampleOut: `generated examination string (can be piped)`,
+  exampleIn: '$0 inspect-car ../duck.car --tree',
+  exampleOut: `roots
+└─┬ bafy...
+  └── duck.png`,
 }
 
 export default upload

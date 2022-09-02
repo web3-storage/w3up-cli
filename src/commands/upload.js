@@ -64,51 +64,21 @@ async function generateCarUploads(filePath, view) {
 
 /**
  * @async
- * @param {string} filePath - The path to generate car uploads for.
- * @param {import('ora').Ora} view
- * @returns {Promise<void>}
- */
-async function uploadExistingCar(filePath, view) {
-  try {
-    const { size } = await fs.promises.stat(filePath)
-    if (size > MAX_CAR_SIZE) {
-      const maxSizeMB = (MAX_CAR_SIZE / 1000000).toFixed(2)
-      const sizeMB = (size / 1000000).toFixed(2)
-
-      const text = `Attempted to upload a file of size ${sizeMB}MB, max size is ${maxSizeMB}MB`
-      view.fail(text)
-      throw new Error(text)
-    }
-    const buffer = await fs.promises.readFile(resolvePath(filePath))
-
-    const response = await client.upload(buffer)
-    if (response) {
-      view.succeed(`${response}`)
-    }
-  } catch (err) {
-    view.fail('Upload did not complete successfully, check w3up-failure.log')
-    logToFile('upload', err)
-  }
-}
-
-/**
- * @async
  * @param {UploadArgs} argv
  * @returns {Promise<void>}
  */
 const exe = async (argv) => {
   const _path = argv.path
-  const view = ora({ text: `Uploading ${_path}...`, spinner: 'line' }).start()
-
   if (!_path) {
     return Promise.reject('You must Specify a Path')
   }
-
-  if (path.extname(_path) !== '.car') {
-    await generateCarUploads(_path, view)
-  } else {
-    await uploadExistingCar(_path, view)
+  if (path.extname(_path) === '.car') {
+    console.warn(
+      `Your upload is already .car format\nYou may need the upload-cars command for existing .car files. This will wrap your .car file in another .car file`
+    )
   }
+  const view = ora({ text: `Uploading ${_path}...`, spinner: 'line' }).start()
+  await generateCarUploads(_path, view)
 }
 
 /**
@@ -132,7 +102,7 @@ const checkPath = ({ path }) => {
 
 const upload = {
   cmd: ['upload <path>', 'import <path>'],
-  description: 'Upload a file or directory to your account',
+  description: 'Upload any file or directory to your account',
   build,
   exe,
   exampleIn: '$0 upload ../../duck.png',
