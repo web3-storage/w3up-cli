@@ -28,8 +28,8 @@ export async function uploadExistingCar(filePath, view) {
       throw new Error(text)
     }
     const buffer = await fs.promises.readFile(resolvePath(filePath))
-
     const response = await client.upload(buffer)
+
     if (response) {
       view.succeed(`${response}`)
     }
@@ -88,12 +88,10 @@ const exe = async (argv) => {
     writer.write(path.join(_file))
   }
 
-  //TODO: implement pool pattern
   let done = false
   while (!done) {
     const read = await reader.read().then(async (read) => {
-      await uploadExistingCar(read.value, view)
-      console.log(read.value)
+      uploadExistingCar(read.value, view)
       return read
     })
     done = read.done
