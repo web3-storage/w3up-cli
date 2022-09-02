@@ -1,10 +1,40 @@
+import client from '../client.js'
 import ora from 'ora'
 import fs from 'fs'
 import path from 'path'
-
-import { hasID, isPath } from '../validation.js'
+import { MAX_CAR_SIZE } from '../settings.js'
+import { logToFile } from '../lib/logging.js'
 import { isDirectory } from '../utils.js'
-import { uploadExistingCar } from './upload.js'
+import { hasID, isPath, resolvePath } from '../validation.js'
+
+/**
+ * @async
+ * @param {string} filePath - The path to generate car uploads for.
+ * @param {import('ora').Ora} view
+ * @returns {Promise<void>}
+ */
+export async function uploadExistingCar(filePath, view) {
+  try {
+    const { size } = await fs.promises.stat(filePath)
+    if (size > MAX_CAR_SIZE) {
+      const maxSizeMB = (MAX_CAR_SIZE / 1000000).toFixed(2)
+      const sizeMB = (size / 1000000).toFixed(2)
+
+      const text = `Attempted to upload a file of size ${sizeMB}MB, max size is ${maxSizeMB}MB`
+      view.fail(text)
+      throw new Error(text)
+    }
+    const buffer = await fs.promises.readFile(resolvePath(filePath))
+
+    const response = await client.upload(buffer)
+    if (response) {
+      view.succeed(`${response}`)
+    }
+  } catch (err) {
+    view.fail('Upload did not complete successfully, check w3up-failure.log')
+    logToFile('upload', err)
+  }
+}
 
 /**
  * @typedef {{path?:string}} Upload
