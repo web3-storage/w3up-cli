@@ -75,10 +75,11 @@ const exe = async (argv) => {
     writer.write(path.join(_path, file))
   }
 
+  //TODO: implement pool pattern
   let done = false
   while (!done) {
-    const read = await reader.read().then((read) => {
-      uploadExistingCar(read.value, view)
+    const read = await reader.read().then(async (read) => {
+      await uploadExistingCar(read.value, view)
       return read
     })
     done = read.done
