@@ -51,7 +51,10 @@ export async function uploadExistingCar(filePath, view) {
  */
 const exe = async (argv) => {
   const _path = argv.path
-  const view = ora({ text: `Uploading ${_path}...`, spinner: 'line' }).start()
+  const view = ora({
+    text: `Uploading all cars within ${_path}...`,
+    spinner: 'line',
+  }).start()
 
   if (!_path) {
     return Promise.reject('You must Specify a Path')
@@ -62,8 +65,6 @@ const exe = async (argv) => {
   if (!isDirectory(targetPath)) {
     return Promise.reject('Path must be directory for bulk uploads.')
   }
-
-  console.log(`Uploading all cars within ${targetPath}`)
 
   const stream = new TransformStream(
     {},
@@ -91,8 +92,7 @@ const exe = async (argv) => {
   let done = false
   while (!done) {
     const read = await reader.read().then(async (read) => {
-      //await uploadExistingCar(read.value, view)
-
+      await uploadExistingCar(read.value, view)
       console.log(read.value)
       return read
     })
