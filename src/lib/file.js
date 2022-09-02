@@ -44,6 +44,14 @@ export async function streamFileToBlock({ writer, filePath }) {
     link,
   }
 }
+/**
+ *
+ * @param {string} target
+ * @returns {boolean}
+ */
+export const isDirectory = (target) => {
+  return fs.lstatSync(target).isDirectory() == true
+}
 
 // export async function generateTestFiles({
 //   writer,
