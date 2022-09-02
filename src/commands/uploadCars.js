@@ -4,8 +4,11 @@ import fs from 'fs'
 import path from 'path'
 import { MAX_CAR_SIZE } from '../settings.js'
 import { logToFile } from '../lib/logging.js'
-import { isDirectory } from '../lib/file.js'
-import { hasID, isPath, resolvePath } from '../validation.js'
+import { isDirectory, getAllFiles } from '../lib/file.js'
+import { hasID, isPath, resolvePath, isCarFile } from '../validation.js'
+
+//gotta start somewhere. 3 is fine.
+const MAX_CONNECTION_POOL_SIZE = 3
 
 /**
  * @async
@@ -54,9 +57,13 @@ const exe = async (argv) => {
     return Promise.reject('You must Specify a Path')
   }
 
-  if (!isDirectory(_path)) {
+  const targetPath = path.resolve(_path)
+
+  if (!isDirectory(targetPath)) {
     return Promise.reject('Path must be directory for bulk uploads.')
   }
+
+  console.log(`Uploading all cars within ${targetPath}`)
 
   const stream = new TransformStream(
     {},
@@ -66,20 +73,27 @@ const exe = async (argv) => {
   const writer = stream.writable.getWriter()
   const reader = stream.readable.getReader()
 
-  const files = await fs.promises.readdir(_path)
+  let files = getAllFiles(targetPath)
 
   for (const file of files) {
-    if (isDirectory(file)) {
+    const _file = path.resolve(targetPath, file)
+    if (isDirectory(_file)) {
       continue
     }
-    writer.write(path.join(_path, file))
+    if (!isCarFile(_file)) {
+      continue
+    }
+
+    writer.write(path.join(_file))
   }
 
   //TODO: implement pool pattern
   let done = false
   while (!done) {
     const read = await reader.read().then(async (read) => {
-      await uploadExistingCar(read.value, view)
+      //await uploadExistingCar(read.value, view)
+
+      console.log(read.value)
       return read
     })
     done = read.done
