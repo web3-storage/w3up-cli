@@ -177,6 +177,8 @@ Uploads a file or directory and link it to your account. The second argument is 
 
 **Important:** All data uploaded using `w3up` is made available to anyone who requests it using the correct [CID][concepts-cid]. Do not upload sensitive or private data in unencrypted form!
 
+> 📝 If you are uploading thousands of small files, it's faster to put them together into a directory and upload that, than to invoke this CLI with thousands of individual files.
+
 #### `list`
 
 > Prints a list of [CIDs][concepts-cid] for all files uploaded thus far.
