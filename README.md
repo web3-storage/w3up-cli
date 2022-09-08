@@ -204,7 +204,7 @@ roots:
 
 Notice that there are two [CIDs][concepts-cid] printed in the output. The first CID identifies the [Content Archive (CAR)](#about-content-archives-cars) that `w3up` generates when preparing your files for upload. 
 
-A CAR is a collection of content-addressed data "block", with one or more "root blocks" that contain data and/or links to other blocks. In the output above, there's a single root block with the CID `bafybeig3v73gypy3wshzjdq6aopisk66hjdwdma4cg6q7eojiuhivorkyi`. This root CID is what you want to use when retrieving data from IPFS. For example, to fetch the file from the HTTP gateway at `w3s.link`, you would use the URL https://w3s.link/ipfs/bafybeig3v73gypy3wshzjdq6aopisk66hjdwdma4cg6q7eojiuhivorkyi
+A CAR is a collection of content-addressed data "blocks", with one or more "root blocks" that contain data and/or links to other blocks. In the output above, there's a single root block with the CID `bafybeig3v73gypy3wshzjdq6aopisk66hjdwdma4cg6q7eojiuhivorkyi`. This root CID is what you want to use when retrieving data from IPFS. For example, to fetch the file from the HTTP gateway at `w3s.link`, you would use the URL https://w3s.link/ipfs/bafybeig3v73gypy3wshzjdq6aopisk66hjdwdma4cg6q7eojiuhivorkyi
 
 
 > 📝 If you are uploading thousands of small files, it's faster to put them together into a directory and upload that, than to invoke this CLI with thousands of individual files.
