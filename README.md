@@ -211,7 +211,7 @@ A CAR is a collection of content-addressed data "blocks", with one or more "root
 
 #### `upload-cars`
 
-> Upload a CAR file (content archive) containing IPLD data.
+> Bulk upload a collection of  CAR files (content archives) containing IPLD data.
 
 The [`upload`](#upload) command described above accepts regular files and directories and packs them into a [Content Archive (CAR)](#about-content-archives-cars) before uploading to the web3.storage platform. If you already have your data in CAR format, of if you'd rather do the CAR conversion yourself, you can use the `upload-cars` command.
 
