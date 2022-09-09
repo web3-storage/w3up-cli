@@ -46,6 +46,30 @@ export async function streamFileToBlock({ writer, filePath }) {
     link,
   }
 }
+/**
+ *
+ * @param {string} target
+ * @returns {boolean}
+ */
+export const isDirectory = (target) => {
+  return fs.lstatSync(target).isDirectory() == true
+}
+
+/**
+ * @todo Make a depth flag?
+ * @param {string} targetDirectory
+ * @returns {string[]}
+ * @description Given any directory, recursively walk and return all files in a list.
+ */
+export const getAllFiles = (targetDirectory) => {
+  return fs.readdirSync(targetDirectory).flatMap((item) => {
+    const path = `${targetDirectory}/${item}`
+    if (fs.statSync(path).isDirectory()) {
+      return getAllFiles(path)
+    }
+    return path
+  })
+}
 
 // export async function generateTestFiles({
 //   writer,

@@ -71,3 +71,15 @@ export const hasEmail = () => {
   }
   return true
 }
+
+/**
+ *
+ * @param {string | undefined} targetPath
+ * @returns {boolean}
+ */
+export const isCarFile = (targetPath) => {
+  if (!targetPath || !isPath(targetPath)) {
+    return false
+  }
+  return path.extname(targetPath) === '.car'
+}
