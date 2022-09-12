@@ -17,12 +17,13 @@ Install from github:
 ```sh
 npm install -g git@github.com:web3-storage/w3up-cli.git
 ```
-
+<!-- Un-comment this once package is published to npm
 Install from Npm
 
 ```sh
 npm install -g w3up
 ```
+-->
 
 ## Usage
 
@@ -146,7 +147,7 @@ Running `w3up id` a second time will load your key from disk instead of generati
 
 You can validate you are registered!
 
-If you have generated the id properly, you'll see your `did:key` printed in the command line. It should look like `did:bafy....`.
+If you have generated the id properly, you'll see your `did:key` printed in the command line. It should look like `did:key:bafy....`.
 
 #### `register`
 
@@ -239,6 +240,11 @@ bagbaieraq7mqnbxwetsl53fs776rcink4ar6ow5u5imrb3di6klochw2fdfq
 ```
 
 Note that `list` currently shows the CID of the [Content Archive (CAR)](#about-content-archives-cars) that was uploaded and does not yet include the root CID of the content graph within the CAR.
+
+<!-- Consider explaining here how to get the CID of the content graph to help user to address their content through the gateway? Something along this lines?
+
+You can use [`w3up inspect-car`](#inspect-car) to get the root CID, that can be used to retrieve the content from IPFS or a gateaway.
+-->
 
 #### `remove`
 
@@ -335,6 +341,7 @@ Rather than work with the binary settings file directly, it's convenient to use 
 ### Other commands
 
 #### `insights`
+<!-- I wonder if we could give a bit more context about insights? What are they? -->
 
 The w3up service offers "insights" about uploaded content that can be retreived using one of the following commands:
 
