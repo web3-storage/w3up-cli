@@ -23,6 +23,7 @@ import insights from './commands/insights.js'
 import inspectCar from './commands/inspectCar.js'
 import generateCar from './commands/generateCar.js'
 
+import open from './commands/open.js'
 import info from './commands/info.js'
 
 /**
@@ -107,6 +108,9 @@ export const main = async () => {
       generateCar.exe
     )
     .example(generateCar.exampleIn, generateCar.exampleOut)
+
+    .command(open.cmd, open.description, open.build, open.exe)
+    .example(open.exampleIn, open.exampleOut)
 
     .command(info.cmd, info.description, info.build, info.exe)
     .example(info.exampleIn, info.exampleOut)

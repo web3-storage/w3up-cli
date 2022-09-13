@@ -25,6 +25,7 @@
     "conf": "^10.2.0",
     "dotenv": "^16.0.1",
     "inquirer": "^9.1.0",
+    "open": "^8.4.0",
     "ora": "^6.1.2",
     "uuid": "^8.3.2",
     "w3up-client": "web3-storage/w3up-client",
