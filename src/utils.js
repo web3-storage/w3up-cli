@@ -14,8 +14,9 @@ const mb = Math.pow(kb, 2)
 const gb = Math.pow(kb, 3)
 
 /**
- * @param {number} size - The size to humanize in bytes.
- * @returns A string representing the "humanized" size.
+ * Humanize a number of bytes into a readable string.
+ * @param {number} size - The size in bytes.
+ * @returns {string} The size in a human readable string.
  */
 export function humanizeBytes(size) {
   if (size < kb / 2) {
