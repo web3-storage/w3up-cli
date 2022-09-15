@@ -1,5 +1,5 @@
 {
-  "name": "w3up-cli",
+  "name": "@web3-storage/w3up-cli",
   "description": "w3up interface",
   "version": "0.6.0",
   "main": "./src/main.js",
@@ -52,6 +52,9 @@
     ".": {
       "import": "./src/lib.js"
     }
+  },
+  "release": {
+    "branches": ["master", "next"]
   },
   "type": "module",
   "license": "(Apache-2.0 AND MIT)"
