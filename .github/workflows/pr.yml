@@ -1,0 +1,17 @@
+name: Run tests
+
+on: [pull_request]
+
+jobs:
+  tests:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - run: yarn install --immutable --immutable-cache --check-cache
+      - run: npm test
