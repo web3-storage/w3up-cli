@@ -1,7 +1,7 @@
 {
   "name": "w3up-cli",
   "description": "w3up interface",
-  "version": "0.5.4",
+  "version": "0.6.0",
   "main": "./src/main.js",
   "bin": {
     "w3up": "./src/cli.js"
@@ -38,6 +38,7 @@
     "mocha": "^10.0.0",
     "playwright-test": "^8.1.1",
     "prettier": "^2.7.1",
+    "semantic-release": "^19.0.5",
     "typescript": "^4.7.4"
   },
   "exports": {
