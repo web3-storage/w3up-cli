@@ -1,11 +1,14 @@
-import client from '../client.js'
-import ora from 'ora'
 import fs from 'fs'
+import ora from 'ora'
 import path from 'path'
-import { MAX_CAR_SIZE } from '../settings.js'
+// @ts-ignore
+import toIterator from 'stream-to-it'
+
+import client from '../client.js'
+import { getAllFiles, isDirectory } from '../lib/car/file.js'
 import { logToFile } from '../lib/logging.js'
-import { isDirectory, getAllFiles } from '../lib/car/file.js'
-import { hasID, isPath, resolvePath, isCarFile } from '../validation.js'
+import { MAX_CAR_SIZE } from '../settings.js'
+import { hasID, isCarFile, isPath, resolvePath } from '../validation.js'
 
 //gotta start somewhere. 3 is fine.
 const MAX_CONNECTION_POOL_SIZE = 3
@@ -72,7 +75,6 @@ const exe = async (argv) => {
     { highWaterMark: 1 }
   )
   const writer = stream.writable.getWriter()
-  const reader = stream.readable.getReader()
 
   let files = getAllFiles(targetPath)
 
@@ -88,13 +90,8 @@ const exe = async (argv) => {
     writer.write(path.join(_file))
   }
 
-  let done = false
-  while (!done) {
-    const read = await reader.read().then(async (read) => {
-      uploadExistingCar(read.value, view)
-      return read
-    })
-    done = read.done
+  for await (const car of toIterator(stream.readable)) {
+    uploadExistingCar(car, view)
   }
 }
 

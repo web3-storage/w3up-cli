@@ -2,6 +2,8 @@
   "name": "w3up-cli",
   "description": "w3up interface",
   "version": "0.6.0",
+  "type": "module",
+  "license": "(Apache-2.0 AND MIT)",
   "main": "./src/main.js",
   "bin": {
     "w3up": "./src/cli.js"
@@ -32,6 +34,7 @@
     "yargs": "^17.5.1"
   },
   "devDependencies": {
+    "@trivago/prettier-plugin-sort-imports": "^3.3.0",
     "@types/inquirer": "^9.0.1",
     "@types/yargs": "^17.0.11",
     "chai": "^4.3.6",
@@ -47,6 +50,14 @@
       "import": "./src/lib.js"
     }
   },
-  "type": "module",
-  "license": "(Apache-2.0 AND MIT)"
+  "prettier": {
+    "trailingComma": "es5",
+    "semi": false,
+    "singleQuote": true,
+    "importOrder": [
+      "^[./]"
+    ],
+    "importOrderSeparation": true,
+    "importOrderSortSpecifiers": true
+  }
 }
