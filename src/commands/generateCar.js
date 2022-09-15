@@ -3,6 +3,8 @@ import path from 'path'
 import fs from 'fs'
 // @ts-ignore
 import { CID } from 'multiformats/cid'
+// @ts-ignore
+import toIterator from 'stream-to-it'
 import { isPath, resolvePath } from '../validation.js'
 import { buildCar } from '../lib/car/buildCar.js'
 import { logToFile } from '../lib/logging.js'
@@ -45,32 +47,22 @@ const exe = async ({ filePath = '', split = false }) => {
 
   try {
     const { stream } = await buildCar(resolvedPath, MAX_CAR_SIZE, !split)
-    const reader = stream.getReader()
     /** @type Array<CID> */
     let roots = []
     let rootCarCID = ''
     let carCIDS = []
     let count = 0
 
-    async function* iterator() {
-      while (true) {
-        yield reader.read()
-      }
-    }
-
-    for await (const { value, done } of iterator()) {
-      if (done) {
-        break
-      }
+    for await (const car of toIterator(stream)) {
       count++
-      roots = roots.concat(value.roots)
-      bytesToCarCID(value.bytes).then((cid) => {
-        if (value.roots) {
+      roots = roots.concat(car.roots)
+      bytesToCarCID(car.bytes).then((cid) => {
+        if (car.roots) {
           rootCarCID = cid
         } else {
           carCIDS.push(cid)
         }
-        writeFileLocally(value.bytes, `${cid}.car`)
+        writeFileLocally(car.bytes, `${cid}.car`)
         view.succeed(`CAR created ${resolvedPath} => ${cid}.car`)
       })
     }

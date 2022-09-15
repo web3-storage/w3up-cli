@@ -4,6 +4,8 @@ import fs from 'fs'
 import path from 'path'
 // @ts-ignore
 import { CID } from 'multiformats/cid'
+// @ts-ignore
+import toIterator from 'stream-to-it'
 
 import { MAX_CAR_SIZE } from '../settings.js'
 import { logToFile } from '../lib/logging.js'
@@ -20,37 +22,25 @@ import { bytesToCarCID } from '../utils.js'
  * @async
  * @param {string} filePath - The path to generate car uploads for.
  * @param {import('ora').Ora} view
- * @param {boolean} split - The path to generate car uploads for.
+ * @param {boolean} [split] - The path to generate car uploads for.
  * @returns {Promise<void>}
  */
-async function generateCarUploads(filePath, view, split) {
+async function generateCarUploads(filePath, view, split = false) {
   const resolvedPath = path.resolve(filePath)
   try {
     const { stream } = await buildCar(resolvedPath, MAX_CAR_SIZE, split != true)
-    const reader = stream.getReader()
     /** @type Array<CID> */
     let roots = []
     let count = 0
     let rootCarCID = ''
 
-    async function* iterator() {
-      while (true) {
-        yield reader.read()
-      }
-    }
-
-    for await (const { value, done } of iterator()) {
-      if (done) {
-        break
-      }
-
+    for await (const car of toIterator(stream)) {
       count++
-
-      roots = roots.concat(value.roots)
-      if (value.roots) {
-        rootCarCID = await bytesToCarCID(value.bytes)
+      roots = roots.concat(car.roots)
+      if (car.roots) {
+        rootCarCID = await bytesToCarCID(car.bytes)
       }
-      const response = await client.upload(value.bytes)
+      const response = await client.upload(car.bytes)
       view.succeed(response)
     }
 
@@ -85,7 +75,7 @@ const exe = async (argv) => {
     )
   }
   const view = ora({ text: `Uploading ${_path}...`, spinner: 'line' }).start()
-  await generateCarUploads(_path, view)
+  await generateCarUploads(_path, view, split)
 }
 
 /**
