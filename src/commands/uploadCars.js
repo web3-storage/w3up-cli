@@ -4,7 +4,7 @@ import fs from 'fs'
 import path from 'path'
 import { MAX_CAR_SIZE } from '../settings.js'
 import { logToFile } from '../lib/logging.js'
-import { isDirectory, getAllFiles } from '../lib/file.js'
+import { isDirectory, getAllFiles } from '../lib/car/file.js'
 import { hasID, isPath, resolvePath, isCarFile } from '../validation.js'
 
 //gotta start somewhere. 3 is fine.
