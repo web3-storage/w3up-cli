@@ -120,7 +120,6 @@ Docs:
 
 ```
 
-
 ### Registration
 
 Most of the commands in `w3up` require a registered identity keypair.
@@ -156,7 +155,7 @@ If you have generated the id properly, you'll see your `did:key` printed in the 
 w3up register you@example.com
 ```
 
-After you've generated an identity, you need to register it with the w3up service. The `w3up register` command will display a message asking you to check your email. Once you click the activation link in the email, the `w3up register` command will complete the registration process and show a success message. 
+After you've generated an identity, you need to register it with the w3up service. The `w3up register` command will display a message asking you to check your email. Once you click the activation link in the email, the `w3up register` command will complete the registration process and show a success message.
 
 _Note: Remember to check your spam folder if you suspect you never got the email_
 
@@ -202,16 +201,15 @@ roots:
  bafybeig3v73gypy3wshzjdq6aopisk66hjdwdma4cg6q7eojiuhivorkyi
 ```
 
-Notice that there are two [CIDs][concepts-cid] printed in the output. The first CID identifies the [Content Archive (CAR)](#about-content-archives-cars) that `w3up` generates when preparing your files for upload. 
+Notice that there are two [CIDs][concepts-cid] printed in the output. The first CID identifies the [Content Archive (CAR)](#about-content-archives-cars) that `w3up` generates when preparing your files for upload.
 
 A CAR is a collection of content-addressed data "blocks", with one or more "root blocks" that contain data and/or links to other blocks. In the output above, there's a single root block with the CID `bafybeig3v73gypy3wshzjdq6aopisk66hjdwdma4cg6q7eojiuhivorkyi`. This root CID is what you want to use when retrieving data from IPFS. For example, to fetch the file from the HTTP gateway at `w3s.link`, you would use the URL https://w3s.link/ipfs/bafybeig3v73gypy3wshzjdq6aopisk66hjdwdma4cg6q7eojiuhivorkyi
-
 
 > 📝 If you are uploading thousands of small files, it's faster to put them together into a directory and upload that, than to invoke this CLI with thousands of individual files.
 
 #### `upload-cars`
 
-> Bulk upload a collection of  CAR files (content archives) containing IPLD data.
+> Bulk upload a collection of CAR files (content archives) containing IPLD data.
 
 The [`upload`](#upload) command described above accepts regular files and directories and packs them into a [Content Archive (CAR)](#about-content-archives-cars) before uploading to the web3.storage platform. If you already have your data in CAR format, of if you'd rather do the CAR conversion yourself, you can use the `upload-cars` command.
 
@@ -220,7 +218,6 @@ w3up upload-cars <path>
 ```
 
 The `path` argument must point to a directory containing one or more CAR files. If there are nested directories, each will be recursively walked and all discovered CAR files will be uploaded.
-
 
 #### `list`
 
@@ -345,10 +342,9 @@ The w3up service offers "insights" about uploaded content that can be retreived 
 w3up insights <cid>
 ```
 
-`w3up insights <cid>` will hit the w3up service and retrieve all currently known insights for that CID. 
+`w3up insights <cid>` will hit the w3up service and retrieve all currently known insights for that CID.
 
 The `w3up insights-ws` is similar, but will set up a websockets-based watch and print any further insights as they are discovered.
-
 
 ## About Content Archives (CARs)
 
@@ -377,5 +373,4 @@ This project is [Apache--2.0][license] licensed.
 [license]: https://github.com/nftstorage/w3up-cli/blob/main/LICENSE.md
 [gh-issues]: https://github.com/nftstorage/w3up-cli/issues
 [new-gh-issue]: https://github.com/nftstorage/w3up-cli/issues/new
-
 [concepts-cid]: https://docs.ipfs.tech/concepts/content-addressing/#content-addressing-and-cids

@@ -21,8 +21,8 @@
     "pretest": "npm run prettier && npm run typecheck",
     "test": "echo 'no tests exist'",
     "typecheck": "tsc --noEmit",
-    "prettier": "prettier -c '{src,test}/**/*.{js,ts,yml,json}' --ignore-path .gitignore",
-    "prettier:fix": "prettier --write '{src,test}/**/*.{js,ts,yml,json}' --ignore-path .gitignore",
+    "prettier": "prettier --ignore-unknown --write .",
+    "prettier:fix": "prettier --ignore-unknown --write .",
     "test:coverage": "vitest run --coverage",
     "test:dev": "vitest"
   },
