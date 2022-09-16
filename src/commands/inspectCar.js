@@ -1,8 +1,9 @@
-import { isPath, resolvePath } from '../validation.js'
 import fs from 'fs'
+
 import { run as carToDot } from '../lib/info/carToDot.js'
 import { run as carToList } from '../lib/info/carToList.js'
 import { run as carToTree } from '../lib/info/carToTree.js'
+import { isPath, resolvePath } from '../validation.js'
 
 /**
  * @typedef {{path?:string, dot?:boolean, vertical?:boolean}} CarInfo

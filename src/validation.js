@@ -1,8 +1,10 @@
+import * as API from '@ucanto/interface'
 // @ts-ignore
 import { parseLink } from '@ucanto/server'
 import fs from 'fs'
 import path from 'path'
 import { pathToFileURL } from 'url'
+
 import { settings } from './client.js'
 
 /**
@@ -17,7 +19,7 @@ export const isEmail = (email) => {
 
 /**
  *
- * @param {string|undefined} cid
+ * @param {API.Link|undefined} cid
  * @returns {boolean}
  */
 export const isCID = (cid) => {

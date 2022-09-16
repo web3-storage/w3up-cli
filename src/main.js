@@ -1,29 +1,22 @@
 #!/usr/bin/env node
-
 import _yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
 
-import printQuickstart from './quickstart.js'
-
+import exportSettings from './commands/exportSettings.js'
+import generateCar from './commands/generateCar.js'
 import id from './commands/id.js'
-import register from './commands/register.js'
-
+import importSettings from './commands/importSettings.js'
+import info from './commands/info.js'
+import insights from './commands/insights.js'
+import inspectCar from './commands/inspectCar.js'
 import list from './commands/list.js'
-import whoami from './commands/whoami.js'
+import register from './commands/register.js'
+import remove from './commands/remove.js'
+import resetSettings from './commands/resetSettings.js'
 import upload from './commands/upload.js'
 import uploadCars from './commands/uploadCars.js'
-import remove from './commands/remove.js'
-
-import importSettings from './commands/importSettings.js'
-import exportSettings from './commands/exportSettings.js'
-import resetSettings from './commands/resetSettings.js'
-
-import insights from './commands/insights.js'
-
-import inspectCar from './commands/inspectCar.js'
-import generateCar from './commands/generateCar.js'
-
-import info from './commands/info.js'
+import whoami from './commands/whoami.js'
+import printQuickstart from './quickstart.js'
 
 /**
  * @type {import('yargs').Argv<{}>} yargs

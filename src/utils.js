@@ -1,4 +1,9 @@
 import fs from 'fs'
+// @ts-ignore
+import { CID } from 'multiformats/cid'
+// @ts-ignore
+import { sha256 } from 'multiformats/hashes/sha2'
+
 /**
  * Turns a number (representing a byte size) into a readable format.
  *
@@ -15,11 +20,11 @@ const gb = Math.pow(kb, 3)
  * @returns {string} The size in a human readable string.
  */
 export function humanizeBytes(size) {
-  if (size < kb) {
+  if (size < kb / 2) {
     return size.toFixed(2) + 'B'
-  } else if (size > kb && size < mb) {
-    return (size / kb).toFixed(2) + 'KB'
-  } else if (size > mb && size < gb) {
+  } else if (size < mb / 2) {
+    return (size / kb / 2).toPrecision(2) + 'KB'
+  } else if (size < gb / 2) {
     return (size / mb).toFixed(2) + 'MB'
   }
 
@@ -32,3 +37,14 @@ export function humanizeBytes(size) {
  */
 export const isDirectory = (pathName) =>
   fs.existsSync(pathName) && fs.lstatSync(pathName).isDirectory()
+
+/**
+ * @async
+ * @param {Uint8Array} bytes - The bytes to get a CAR cid for.
+ * @returns {Promise<CID>}
+ */
+export async function bytesToCarCID(bytes) {
+  // this CID represents the byte content, but doesn't 'link' with the blocks inside
+  const digest = await sha256.digest(bytes)
+  return CID.createV1(0x202, digest)
+}

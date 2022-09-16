@@ -1,9 +1,13 @@
+import * as API from '@ucanto/interface'
+// @ts-ignore
+import { parseLink } from '@ucanto/server'
+import ora from 'ora'
+
 import client from '../client.js'
-import ora, { oraPromise } from 'ora'
 import { hasID, isCID } from '../validation.js'
 
 /**
- * @typedef {{cid?:string, ws?:boolean, subscribe?:boolean}} Insights
+ * @typedef {{cid?:API.Link, ws?:boolean, subscribe?:boolean}} Insights
  * @typedef {import('yargs').Arguments<Insights>} InsightsArgs
  */
 
@@ -18,16 +22,8 @@ const exe = async ({ cid, ws, subscribe }) => {
 
   if (shouldWS) {
     spinner.fail(`⚠️Subscriptions not yet supported ⚠️`)
-
-    //     const wsView = ora(`Getting Insight Subscription for ${cid}...`).start()
-    //     if (client.insightsWS) {
-    //       const response = await client.insightsWS(cid)
-    //       console.log('response', response)
-    //     }
-    //
-    //     wsView.succeed(`${cid}`)
   } else {
-    const insights = await client.insights(cid)
+    const insights = await client.insights(parseLink(cid))
     spinner.succeed(JSON.stringify(insights?.insight_data, null, 2))
   }
 }

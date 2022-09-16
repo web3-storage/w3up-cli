@@ -1,19 +1,21 @@
-import ora from 'ora'
-import path from 'path'
 import fs from 'fs'
 // @ts-ignore
 import { CID } from 'multiformats/cid'
+import ora from 'ora'
+import path from 'path'
 // @ts-ignore
-import { sha256 } from 'multiformats/hashes/sha2'
+import toIterator from 'stream-to-it'
 
-import { isPath, resolvePath } from '../validation.js'
-import { buildCar } from '../lib/car.js'
+import { buildCar } from '../lib/car/buildCar.js'
 import { logToFile } from '../lib/logging.js'
 import { MAX_CAR_SIZE } from '../settings.js'
-import { humanizeBytes } from '../utils.js'
+import { bytesToCarCID } from '../utils.js'
+import { isPath, resolvePath } from '../validation.js'
 
 /**
- * @typedef {{filePath:string, outPath?:string }} GenerateCar
+ * @typedef {object} GenerateCar
+ * @property {string} [filePath='']
+ * @property {boolean} [split=false]
  * @typedef {import('yargs').Arguments<GenerateCar>} GenerateCarArgs
  */
 
@@ -31,21 +33,10 @@ export const writeFileLocally = async (car, outPath = 'output.car') => {
 
 /**
  * @async
- * @param {Uint8Array} bytes - The bytes to get a CAR cid for.
- * @returns {Promise<CID>}
- */
-export async function bytesToCarCID(bytes) {
-  // this CID represents the byte content, but doesn't 'link' with the blocks inside
-  const digest = await sha256.digest(bytes)
-  return CID.createV1(0x202, digest)
-}
-
-/**
- * @async
  * @param {GenerateCarArgs} argv
  * @returns {Promise<void>}
  */
-const exe = async ({ filePath, outPath = 'output.car', split = false }) => {
+const exe = async ({ filePath = '', split = false }) => {
   const resolvedPath = path.normalize(filePath)
 
   /** @type import('ora').Options */
@@ -56,55 +47,44 @@ const exe = async ({ filePath, outPath = 'output.car', split = false }) => {
   const view = ora(oraOpts).start()
 
   try {
-    const { stream, _reader } = await buildCar(
-      resolvedPath,
-      MAX_CAR_SIZE,
-      !split
-    )
+    const { stream } = await buildCar(resolvedPath, MAX_CAR_SIZE, !split)
     /** @type Array<CID> */
     let roots = []
+    let rootCarCID = ''
+    let carCIDS = []
+    let count = 0
 
-    _reader.catch((err) => {
-      view.fail(
-        err.toString() +
-          '\n current max size is: ' +
-          humanizeBytes(MAX_CAR_SIZE)
-      )
-
-      process.exit(1)
-    })
-
-    /**
-     * @param {ReadableStreamDefaultReadResult<any>} block
-     * @returns {Promise<void>}
-     */
-    async function writeBufferToFile({ done, value }) {
-      if (value && value.bytes) {
-        roots = roots.concat(value.roots)
-        const cid = await bytesToCarCID(value.bytes)
-        writeFileLocally(value.bytes, `${cid}.car`)
+    for await (const car of toIterator(stream)) {
+      count++
+      roots = roots.concat(car.roots)
+      bytesToCarCID(car.bytes).then((cid) => {
+        if (car.roots) {
+          rootCarCID = cid
+        } else {
+          carCIDS.push(cid)
+        }
+        writeFileLocally(car.bytes, `${cid}.car`)
         view.succeed(`CAR created ${resolvedPath} => ${cid}.car`)
-      }
-
-      if (!done) {
-        view.start(oraOpts.text)
-        await stream.read().then(writeBufferToFile)
-      } else {
-        view.stop()
-        console.log('roots:\n', roots.map((x) => x.toString()).join('\n'))
-      }
+      })
     }
-    await stream.read().then(writeBufferToFile)
+
+    view.stop()
+    console.log('roots:\n', roots.map((x) => x.toString()).join('\n'))
+    if (count > 1) {
+      console.log('root car:\n', rootCarCID?.toString())
+      //TODO:
+      //client.link()
+    }
   } catch (err) {
     // @ts-ignore
     view.fail(err.toString())
     logToFile('generate-car', err)
+    process.exit(1) //force exit in case other async things are running.
   }
 }
 
 /**
  * @type {import('yargs').CommandBuilder} yargs
- * @returns {import('yargs').Argv<{}>}
  */
 const build = (yargs) =>
   yargs.check(checkPath).option('split', {
@@ -120,7 +100,7 @@ const build = (yargs) =>
 const checkPath = ({ filePath }) => isPath(filePath)
 
 const generateCar = {
-  cmd: 'generate-car <filePath> [outPath]',
+  cmd: 'generate-car <filePath>',
   description: 'From an input file, locally generate a CAR file.',
   build,
   exe,
