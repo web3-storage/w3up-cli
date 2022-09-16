@@ -12,16 +12,10 @@
 
 ## Installation
 
-Install from github:
+Install from NPM:
 
 ```sh
-npm install -g git@github.com:web3-storage/w3up-cli.git
-```
-
-Install from Npm
-
-```sh
-npm install -g w3up
+npm install -g @web3-storage/w3up-cli
 ```
 
 ## Usage
