@@ -1,3 +1,4 @@
+import * as API from '@ucanto/interface'
 import { config } from 'dotenv'
 
 import { humanizeBytes } from './utils.js'
@@ -25,6 +26,7 @@ const SERVICE_URL =
 
 const ACCESS_URL = process.env.ACCESS_URL || 'https://access-api.web3.storage' // production
 //'https://auth-dev.dag.haus' //stagin/dev url
+
 const ACCESS_DID =
   process.env.ACCESS_DID ||
   'did:key:z6MkkHafoFWxxWVNpNXocFdU6PL2RVLyTEgS1qTnD3bRP7V9' // production

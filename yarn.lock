@@ -1035,6 +1035,21 @@
   resolved "https://registry.yarnpkg.com/@web3-storage/multipart-parser/-/multipart-parser-1.0.0.tgz#6b69dc2a32a5b207ba43e556c25cc136a56659c4"
   integrity sha512-BEO6al7BYqcnfX15W2cnGR+Q566ACXAT9UQykORCWW80lmkpWsnEob6zJS1ZVBKsSJC8+7vJkHwlp+lXG1UCdw==
 
+"@web3-storage/w3up-client@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@web3-storage/w3up-client/-/w3up-client-1.1.0.tgz#7d0afd4355f89e6c15902cb117778a1743bd2aeb"
+  integrity sha512-WNOPfBDRcAf3I7/S9pvVIOGD1hqX7Ah6I3NY6YPPZ+jIXn4ihs+m2xpfnsPnK9uXzgp2LXdd91dK3iQ0anXQ5Q==
+  dependencies:
+    "@ucanto/authority" "^0.5.0"
+    "@ucanto/client" "0.6.0"
+    "@ucanto/core" "^0.6.0"
+    "@ucanto/interface" "^0.7.0"
+    "@ucanto/transport" "^0.7.0"
+    "@ucanto/validator" "^0.6.0"
+    "@web3-storage/access" "^0.1.2-rc.2"
+    cross-fetch "^3.1.5"
+    tweetnacl "^1.0.3"
+
 "@zxing/text-encoding@0.9.0":
   version "0.9.0"
   resolved "https://registry.yarnpkg.com/@zxing/text-encoding/-/text-encoding-0.9.0.tgz#fb50ffabc6c7c66a0c96b4c03e3d9be74864b70b"
@@ -5123,20 +5138,6 @@ vitest@^0.23.2:
     tinypool "^0.3.0"
     tinyspy "^1.0.2"
     vite "^2.9.12 || ^3.0.0-0"
-
-w3up-client@web3-storage/w3up-client:
-  version "0.3.3"
-  resolved "https://codeload.github.com/web3-storage/w3up-client/tar.gz/072ce890f8068c3443e8a9c9454bd123c6b05e29"
-  dependencies:
-    "@ucanto/authority" "^0.5.0"
-    "@ucanto/client" "0.6.0"
-    "@ucanto/core" "^0.6.0"
-    "@ucanto/interface" "^0.7.0"
-    "@ucanto/transport" "^0.7.0"
-    "@ucanto/validator" "^0.6.0"
-    "@web3-storage/access" "^0.1.2-rc.2"
-    cross-fetch "^3.1.5"
-    tweetnacl "^1.0.3"
 
 walk-up-path@^1.0.0:
   version "1.0.0"

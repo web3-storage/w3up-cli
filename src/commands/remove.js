@@ -1,3 +1,4 @@
+import * as API from '@ucanto/interface'
 // @ts-ignore
 import { parseLink } from '@ucanto/server'
 import ora from 'ora'
@@ -6,7 +7,7 @@ import client from '../client.js'
 import { hasID, isCID } from '../validation.js'
 
 /**
- * @typedef {{cid?:string}} Remove
+ * @typedef {{cid?:API.Link}} Remove
  * @typedef {import('yargs').Arguments<Remove>} RemoveArgs
  */
 
