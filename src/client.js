@@ -2,7 +2,7 @@
 import * as CBOR from '@ucanto/transport/cbor'
 import Conf from 'conf'
 // @ts-ignore
-import W3Client from 'w3up-client'
+import W3Client from '@web3-storage/w3up-client'
 
 import { default as cliSettings } from './settings.js'
 
