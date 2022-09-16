@@ -1,6 +1,8 @@
 import { config } from 'dotenv'
-config()
+
 import { humanizeBytes } from './utils.js'
+
+config()
 
 // export const MAX_CAR_SIZE = 32000 //320KB
 // export const MAX_CAR_SIZE = 32000000 //32MB

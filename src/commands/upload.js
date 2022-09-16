@@ -1,17 +1,17 @@
-import client from '../client.js'
-import ora from 'ora'
 import fs from 'fs'
-import path from 'path'
 // @ts-ignore
 import { CID } from 'multiformats/cid'
+import ora from 'ora'
+import path from 'path'
 // @ts-ignore
 import toIterator from 'stream-to-it'
 
-import { MAX_CAR_SIZE } from '../settings.js'
-import { logToFile } from '../lib/logging.js'
+import client from '../client.js'
 import { buildCar } from '../lib/car/buildCar.js'
-import { hasID, isPath, resolvePath } from '../validation.js'
+import { logToFile } from '../lib/logging.js'
+import { MAX_CAR_SIZE } from '../settings.js'
 import { bytesToCarCID } from '../utils.js'
+import { hasID, isPath, resolvePath } from '../validation.js'
 
 /**
  * @typedef {{path?:string, split?:boolean}} Upload

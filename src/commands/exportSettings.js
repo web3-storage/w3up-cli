@@ -1,6 +1,7 @@
-import ora from 'ora'
 import fs from 'fs'
 import Inquirer from 'inquirer'
+import ora from 'ora'
+
 import { settings } from '../client.js'
 import { resolvePath } from '../validation.js'
 

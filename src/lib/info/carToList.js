@@ -1,5 +1,5 @@
-import { CarReader } from '@ipld/car/reader'
 import { CarIndexer } from '@ipld/car/indexer'
+import { CarReader } from '@ipld/car/reader'
 
 /**
  * @async

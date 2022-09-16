@@ -1,15 +1,16 @@
-import ora from 'ora'
-import path from 'path'
 import fs from 'fs'
 // @ts-ignore
 import { CID } from 'multiformats/cid'
+import ora from 'ora'
+import path from 'path'
 // @ts-ignore
 import toIterator from 'stream-to-it'
-import { isPath, resolvePath } from '../validation.js'
+
 import { buildCar } from '../lib/car/buildCar.js'
 import { logToFile } from '../lib/logging.js'
 import { MAX_CAR_SIZE } from '../settings.js'
 import { bytesToCarCID } from '../utils.js'
+import { isPath, resolvePath } from '../validation.js'
 
 /**
  * @typedef {object} GenerateCar

@@ -1,9 +1,9 @@
-import ora from 'ora'
 import Inquirer from 'inquirer'
-import client from '../client.js'
-import { isEmail, hasID } from '../validation.js'
+import ora from 'ora'
 
+import client from '../client.js'
 import { logToFile } from '../lib/logging.js'
+import { hasID, isEmail } from '../validation.js'
 
 /**
  * @typedef {{email?:string}} Register

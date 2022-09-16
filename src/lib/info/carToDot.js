@@ -1,8 +1,8 @@
-import { CarReader } from '@ipld/car/reader'
 import { CarIndexer } from '@ipld/car/indexer'
+import { CarReader } from '@ipld/car/reader'
 
-import { toShortCID, decode, codecNames, nodeTypeNames } from './common.js'
 import { humanizeBytes } from '../../utils.js'
+import { codecNames, decode, nodeTypeNames, toShortCID } from './common.js'
 
 const ignoredKeysForLabel = ['blockLength', 'offset', 'blockOffset']
 

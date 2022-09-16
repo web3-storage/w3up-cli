@@ -1,8 +1,9 @@
+// @ts-ignore
+import * as CBOR from '@ucanto/transport/cbor'
 import Conf from 'conf'
 // @ts-ignore
 import W3Client from 'w3up-client'
-// @ts-ignore
-import * as CBOR from '@ucanto/transport/cbor'
+
 import { default as cliSettings } from './settings.js'
 
 const serialize = ({ ...data }) =>

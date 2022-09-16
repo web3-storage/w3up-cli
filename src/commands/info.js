@@ -1,6 +1,7 @@
 import ora, { oraPromise } from 'ora'
-import { default as info } from '../settings.js'
+
 import { settings } from '../client.js'
+import { default as info } from '../settings.js'
 
 /**
  * @async

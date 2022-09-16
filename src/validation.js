@@ -3,6 +3,7 @@ import { parseLink } from '@ucanto/server'
 import fs from 'fs'
 import path from 'path'
 import { pathToFileURL } from 'url'
+
 import { settings } from './client.js'
 
 /**

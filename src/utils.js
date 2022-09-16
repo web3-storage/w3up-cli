@@ -3,6 +3,7 @@ import fs from 'fs'
 import { CID } from 'multiformats/cid'
 // @ts-ignore
 import { sha256 } from 'multiformats/hashes/sha2'
+
 /**
  * Turns a number (representing a byte size) into a readable format.
  *

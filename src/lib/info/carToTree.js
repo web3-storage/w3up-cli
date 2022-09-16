@@ -1,7 +1,8 @@
-import { CarReader } from '@ipld/car/reader'
 import { CarIndexer } from '@ipld/car/indexer'
+import { CarReader } from '@ipld/car/reader'
 // @ts-ignore
 import archy from 'archy'
+
 import { decode } from './common.js'
 
 // @ts-ignore

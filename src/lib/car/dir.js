@@ -1,6 +1,7 @@
+import * as UnixFS from '@ipld/unixfs'
 import fs from 'fs'
 import path from 'path'
-import * as UnixFS from '@ipld/unixfs'
+
 import { isDirectory } from '../../utils.js'
 import { streamFileToBlock } from './file.js'
 

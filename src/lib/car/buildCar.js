@@ -1,13 +1,13 @@
-import path from 'path'
-import fs from 'fs'
-import 'web-streams-polyfill'
-import * as UnixFS from '@ipld/unixfs'
 // @ts-ignore
 import * as CAR from '@ipld/car'
+import * as UnixFS from '@ipld/unixfs'
+import fs from 'fs'
+import path from 'path'
+import 'web-streams-polyfill'
 
-import { streamFileToBlock } from './file.js'
-import { walkDir, wrapFilesWithDir } from './dir.js'
 import { isDirectory } from '../../utils.js'
+import { walkDir, wrapFilesWithDir } from './dir.js'
+import { streamFileToBlock } from './file.js'
 
 // Internal unixfs read stream capacity that can hold around 32 blocks
 const CAPACITY = UnixFS.BLOCK_SIZE_LIMIT * 32

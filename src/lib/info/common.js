@@ -1,15 +1,15 @@
 // @ts-ignore
-import * as UnixFS from '@ipld/unixfs'
 // @ts-ignore
 import * as dagCbor from '@ipld/dag-cbor'
 // @ts-ignore
-import * as dagPb from '@ipld/dag-pb'
-// @ts-ignore
 import * as dagJson from '@ipld/dag-json'
 // @ts-ignore
-import * as raw from 'multiformats/codecs/raw'
+import * as dagPb from '@ipld/dag-pb'
+import * as UnixFS from '@ipld/unixfs'
 // @ts-ignore
 import * as json from 'multiformats/codecs/json'
+// @ts-ignore
+import * as raw from 'multiformats/codecs/raw'
 
 // @ts-ignore
 /** @typedef {import('multiformats/cid').CID} CID */

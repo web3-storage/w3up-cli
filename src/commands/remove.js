@@ -1,7 +1,8 @@
-import client from '../client.js'
-import ora from 'ora'
 // @ts-ignore
 import { parseLink } from '@ucanto/server'
+import ora from 'ora'
+
+import client from '../client.js'
 import { hasID, isCID } from '../validation.js'
 
 /**
