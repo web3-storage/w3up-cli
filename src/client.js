@@ -23,8 +23,10 @@ export const settings = new Conf({
 })
 
 const client = new W3Client({
+  //@ts-ignore
   serviceDID: cliSettings.W3_STORE_DID,
   serviceURL: cliSettings.SERVICE_URL,
+  //@ts-ignore
   accessDID: cliSettings.ACCESS_DID,
   accessURL: cliSettings.ACCESS_URL,
   settings,
