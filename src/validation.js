@@ -19,7 +19,7 @@ export const isEmail = (email) => {
 
 /**
  *
- * @param {API.Link|undefined} cid
+ * @param {API.Link|undefined|string} cid
  * @returns {boolean}
  */
 export const isCID = (cid) => {

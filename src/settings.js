@@ -32,6 +32,8 @@ const ACCESS_DID =
   'did:key:z6MkkHafoFWxxWVNpNXocFdU6PL2RVLyTEgS1qTnD3bRP7V9' // production
 //'did:key:z6MksafxoiEHyRF6RsorjrLrEyFQPFDdN6psxtAfEsRcvDqx' // dev/staging did
 
+export const OPEN_WITH_SERVICE_URL = `https://w3s.link/ipfs/`
+
 export default {
   projectName,
   W3_STORE_DID,

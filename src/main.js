@@ -10,6 +10,7 @@ import info from './commands/info.js'
 import insights from './commands/insights.js'
 import inspectCar from './commands/inspectCar.js'
 import list from './commands/list.js'
+import open from './commands/open.js'
 import register from './commands/register.js'
 import remove from './commands/remove.js'
 import resetSettings from './commands/resetSettings.js'
@@ -100,6 +101,9 @@ export const main = async () => {
       generateCar.exe
     )
     .example(generateCar.exampleIn, generateCar.exampleOut)
+
+    .command(open.cmd, open.description, open.build, open.exe)
+    .example(open.exampleIn, open.exampleOut)
 
     .command(info.cmd, info.description, info.build, info.exe)
     .example(info.exampleIn, info.exampleOut)
