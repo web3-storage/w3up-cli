@@ -1,18 +1,20 @@
-import client from '../client.js'
-import ora from 'ora'
 import fs from 'fs'
-import path from 'path'
 // @ts-ignore
 import { CID } from 'multiformats/cid'
+import ora from 'ora'
+import path from 'path'
+// @ts-ignore
+import toIterator from 'stream-to-it'
 
-import { MAX_CAR_SIZE } from '../settings.js'
+import client from '../client.js'
+import { buildCar } from '../lib/car/buildCar.js'
 import { logToFile } from '../lib/logging.js'
-import { buildCar } from '../lib/car.js'
+import { MAX_CAR_SIZE } from '../settings.js'
+import { bytesToCarCID } from '../utils.js'
 import { hasID, isPath, resolvePath } from '../validation.js'
-import { humanizeBytes } from '../utils.js'
 
 /**
- * @typedef {{path?:string}} Upload
+ * @typedef {{path?:string, split?:boolean}} Upload
  * @typedef {import('yargs').Arguments<Upload>} UploadArgs
  */
 
@@ -20,42 +22,35 @@ import { humanizeBytes } from '../utils.js'
  * @async
  * @param {string} filePath - The path to generate car uploads for.
  * @param {import('ora').Ora} view
+ * @param {boolean} [split] - The path to generate car uploads for.
  * @returns {Promise<void>}
  */
-async function generateCarUploads(filePath, view) {
+async function generateCarUploads(filePath, view, split = false) {
   const resolvedPath = path.resolve(filePath)
   try {
-    const { stream, _reader } = await buildCar(resolvedPath, MAX_CAR_SIZE, true)
+    const { stream } = await buildCar(resolvedPath, MAX_CAR_SIZE, split != true)
     /** @type Array<CID> */
     let roots = []
+    let count = 0
+    let rootCarCID = ''
 
-    _reader.catch((err) => {
-      view.fail(
-        err.toString() +
-          '\n current max size is: ' +
-          humanizeBytes(MAX_CAR_SIZE)
-      )
-      process.exit(1)
-    })
-
-    /**
-     * @param {ReadableStreamDefaultReadResult<any>} block
-     * @returns {Promise<void>}
-     */
-    async function uploadBuffer({ done, value }) {
-      if (value && value.bytes) {
-        roots = roots.concat(value.roots)
-        const response = await client.upload(value.bytes)
-        view.succeed(response)
+    for await (const car of toIterator(stream)) {
+      count++
+      roots = roots.concat(car.roots)
+      if (car.roots) {
+        rootCarCID = await bytesToCarCID(car.bytes)
       }
-
-      if (!done) {
-        await stream.read().then(uploadBuffer)
-      } else {
-        console.log('roots:\n', roots.map((x) => x.toString()).join('\n'))
-      }
+      /**
+       * @type any
+       */
+      const response = await client.upload(car.bytes)
+      view.succeed(response)
     }
-    await stream.read().then(uploadBuffer)
+
+    console.log('roots:\n', roots.map((x) => x.toString()).join('\n'))
+    if (count > 1) {
+      console.log('root car:\n', rootCarCID?.toString())
+    }
   } catch (err) {
     view.fail('Upload did not complete successfully, check w3up-failure.log')
     logToFile('upload', err)
@@ -69,6 +64,11 @@ async function generateCarUploads(filePath, view) {
  */
 const exe = async (argv) => {
   const _path = argv.path
+  const split = argv.split
+
+  if (!_path) {
+    return Promise.reject('You must Specify a Path')
+  }
   if (!_path) {
     return Promise.reject('You must Specify a Path')
   }
@@ -78,14 +78,24 @@ const exe = async (argv) => {
     )
   }
   const view = ora({ text: `Uploading ${_path}...`, spinner: 'line' }).start()
-  await generateCarUploads(_path, view)
+  await generateCarUploads(_path, view, split)
 }
 
 /**
  * @type {import('yargs').CommandBuilder} yargs
  * @returns {import('yargs').Argv<{}>}
  */
-const build = (yargs) => yargs.check(() => hasID()).check(checkPath)
+const build = (yargs) =>
+  yargs
+    .check(() => hasID())
+    .check(checkPath)
+    .option('split', {
+      type: 'boolean',
+      alias: 'split',
+      showInHelp: true,
+      describe:
+        'Split the data into multiple when cars when size limit is hit.',
+    })
 
 /**
  * @param {UploadArgs} argv

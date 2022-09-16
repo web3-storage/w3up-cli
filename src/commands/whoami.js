@@ -1,19 +1,23 @@
-import client from '../client.js'
 import ora from 'ora'
-import { hasID } from '../validation.js'
 
+import client from '../client.js'
 import { logToFile } from '../lib/logging.js'
+import { hasID } from '../validation.js'
 
 const exe = async () => {
   const view = ora({ text: 'Checking identity', spinner: 'line' })
   try {
+    const id = await client.identity()
     const response = await client.whoami()
+
     if (response?.error) {
+      //@ts-ignore
       view.fail(response?.message)
     } else if (response == null) {
       view.fail('Account not found.')
     } else {
-      view.succeed(`${response}`)
+      view.stop()
+      console.log(`Agent: ${id.did()}\nAccount: ${response}`)
     }
   } catch (error) {
     view.fail('Could not check identity, check w3up-failure.log')
