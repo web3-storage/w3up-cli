@@ -5,6 +5,9 @@ import { hasID } from '../validation.js'
 
 const exe = async () => {
   const view = ora()
+  /**
+   * @type any
+   */
   const list = await oraPromise(client.list(), {
     text: `Listing Uploads...`,
     spinner: 'line',

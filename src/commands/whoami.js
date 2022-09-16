@@ -11,6 +11,7 @@ const exe = async () => {
     const response = await client.whoami()
 
     if (response?.error) {
+      //@ts-ignore
       view.fail(response?.message)
     } else if (response == null) {
       view.fail('Account not found.')

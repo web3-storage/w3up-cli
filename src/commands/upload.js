@@ -40,6 +40,9 @@ async function generateCarUploads(filePath, view, split = false) {
       if (car.roots) {
         rootCarCID = await bytesToCarCID(car.bytes)
       }
+      /**
+       * @type any
+       */
       const response = await client.upload(car.bytes)
       view.succeed(response)
     }
