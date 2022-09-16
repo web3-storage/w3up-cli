@@ -15,14 +15,11 @@
     "src"
   ],
   "scripts": {
-    "build": "npm run build:api_docs && npm run build:types",
-    "build:types": "tsc --declaration --emitDeclarationOnly --declarationDir ./types",
-    "build:api_docs": "jsdoc2md -f src/index.js > API.md",
     "pretest": "npm run prettier && npm run typecheck",
     "test": "echo 'no tests exist'",
     "typecheck": "tsc --noEmit",
-    "prettier": "prettier --ignore-unknown --write .",
-    "prettier:fix": "prettier --ignore-unknown --write .",
+    "prettier": "prettier --ignore-unknown --ignore-path .gitignore --check .",
+    "prettier:fix": "prettier --ignore-unknown --write --ignore-path .gitignore .",
     "test:coverage": "vitest run --coverage",
     "test:dev": "vitest"
   },
@@ -56,16 +53,6 @@
     ".": {
       "import": "./src/lib.js"
     }
-  },
-  "prettier": {
-    "trailingComma": "es5",
-    "semi": false,
-    "singleQuote": true,
-    "importOrder": [
-      "^[./]"
-    ],
-    "importOrderSeparation": true,
-    "importOrderSortSpecifiers": true
   },
   "publishConfig": {
     "access": "public"
