@@ -7,7 +7,7 @@ import client from '../client.js'
 import { hasID, isCID } from '../validation.js'
 
 /**
- * @typedef {{cid?:API.Link, ws?:boolean, subscribe?:boolean}} Insights
+ * @typedef {{cid?:API.Link, ws?:boolean, subscribe?:boolean, insight_data?: any}} Insights
  * @typedef {import('yargs').Arguments<Insights>} InsightsArgs
  */
 
@@ -23,6 +23,9 @@ const exe = async ({ cid, ws, subscribe }) => {
   if (shouldWS) {
     spinner.fail(`⚠️Subscriptions not yet supported ⚠️`)
   } else {
+    /***
+     * @type Insights
+     */
     const insights = await client.insights(parseLink(cid))
     spinner.succeed(JSON.stringify(insights?.insight_data, null, 2))
   }
