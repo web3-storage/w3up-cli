@@ -12,7 +12,7 @@
 
 ## Installation
 
-Install from NPM: 
+Install from NPM:
 
 ```sh
 npm install -g @web3-storage/w3up-cli
