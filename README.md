@@ -10,7 +10,7 @@
 
 > w3up is currently a preview feature for the [web3.storage](https://web3.storage/) platform, and will eventually replace its current upload product. Registering and uploading data to w3up is currently free. Additionally, accounts registered during this preview window will be integrated with the broader web3.storage platform's account system. However, data uploaded during this preview window will eventually require payment for us to continue storing it and making it available. 
 
-> By using w3up, you consent to the web3.storage [terms-of-service](https://web3.storage/terms/). Please refer to the web3.storage [website](https://web3.storage/pricing/) for information on pricing. (The exception is if you are uploading NFT data, in which case we will migrate your data and account to [NFT.Storage](https://nft.storage/) which offers free storage of NFTs.)
+> By using w3up, you consent to the web3.storage [terms-of-service](https://web3.storage/terms/). Please refer to the web3.storage [website](https://web3.storage/pricing/) for information on pricing. If you do not intend to pay, please do not use w3up for long-term storage. (The exception is if you are uploading NFT data, in which case we will migrate your data and account to [NFT.Storage](https://nft.storage/) which offers free storage of NFTs.)
 
 Please reach out to the #web3-storage channel on [IPFS Discord](https://docs.ipfs.tech/community/chat/#discord) if you have any questions!
 
