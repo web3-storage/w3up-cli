@@ -1,8 +1,9 @@
+import { Delegation, UCAN } from '@ucanto/core'
 import fs from 'fs'
 import Inquirer from 'inquirer'
 import ora from 'ora'
 
-import { settings } from '../client.js'
+import client, { settings } from '../client.js'
 import { isPath } from '../validation.js'
 
 /**
@@ -28,20 +29,48 @@ const exe = async ({ fileName }) => {
 
   if (show && fileName) {
     try {
+      settings.clear()
       const json = fs.readFileSync(fileName, { encoding: 'utf-8' })
       const imported = JSON.parse(json)
+
+      function importBuffer(key) {
+        const parsed = Buffer.from(imported[key], 'base64')
+        if (parsed) {
+          settings.set(key, parsed)
+        }
+      }
+
       if (settings && imported) {
         for (var key of Object.keys(imported)) {
-          if (key == 'secret') {
-            const secret = Uint8Array.from(
-              Buffer.from(imported.secret, 'base64')
-            )
-            settings.set(key, secret)
+          if (
+            key == 'secret' ||
+            key == 'agent_secret' ||
+            key == 'account_secret'
+          ) {
+            importBuffer(key)
+          } else if (key == 'delegations') {
+            const delegations = {}
+
+            for (const [did, del] of Object.entries(imported.delegations)) {
+              const ucan = UCAN.parse(del?.ucan)
+              const root = await UCAN.write(ucan)
+              delegations[did] = {
+                ucan: Delegation.create({ root }),
+                alias: del.alias,
+              }
+            }
+
+            settings.set('delegations', delegations)
           } else {
             settings.set(key, imported[key])
           }
         }
       }
+
+      if (!settings.has('account_secret') || !settings.has('agent_secret')) {
+        await client.identity()
+      }
+
       spinner.succeed(`Imported settings from ${fileName} successfully.`)
     } catch (err) {
       spinner.fail('error:' + err)

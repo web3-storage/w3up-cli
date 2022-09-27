@@ -19,10 +19,10 @@ const exe = async ({ reset }) => {
     settings.clear()
   }
 
-  const id = await client.identity()
-  if (id) {
-    view.succeed('ID: ' + id.did())
-  }
+  const identity = await client.identity()
+
+  view.succeed('Agent DID: ' + identity.agent.did())
+  view.succeed('Account DID: ' + identity.account.did())
 }
 /**
  * @type {import('yargs').CommandBuilder} yargs

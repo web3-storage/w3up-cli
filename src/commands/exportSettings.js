@@ -1,3 +1,4 @@
+import { Delegation, UCAN } from '@ucanto/core'
 import fs from 'fs'
 import Inquirer from 'inquirer'
 import ora from 'ora'
@@ -20,7 +21,7 @@ const exe = async ({ filename }) => {
   const view = ora().start()
 
   view.stopAndPersist({
-    text: 'These values give anyone the power to act as you, are you sure you want to print them?',
+    text: 'These values give anyone the power to act as you, are you sure you want to export them?',
   })
 
   const { show } = await Inquirer.prompt({
@@ -32,6 +33,20 @@ const exe = async ({ filename }) => {
     const store = settings.store
     if (store.secret) {
       store.secret = Buffer.from(store.secret).toString('base64')
+    }
+    if (store.agent_secret) {
+      store.agent_secret = Buffer.from(store.agent_secret).toString('base64')
+    }
+    if (store.account_secret) {
+      store.account_secret = Buffer.from(store.account_secret).toString(
+        'base64'
+      )
+    }
+
+    for (const [did, del] of Object.entries(store.delegations)) {
+      //       console.log('what', del)
+      const imported = Delegation.import([del?.ucan?.root])
+      store.delegations[did] = { ucan: UCAN.format(imported), alias: del.alias }
     }
 
     const settingsJson = JSON.stringify(store, null, 2)

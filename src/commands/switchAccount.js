@@ -16,18 +16,12 @@ import listAccounts from './listAccounts.js'
  * @returns {Promise<void>}
  */
 const exe = async ({ did, alias }) => {
-  const id = await client.identity()
   const delegations = settings.get('delegations')
   if (!delegations) {
     console.log('No delegations.')
     return
   }
   let choices = []
-  choices.push({
-    name: 'agent\t\t' + id.did(),
-    alias: 'mine',
-    value: null,
-  })
 
   for (const del of Object.values(delegations)) {
     const imported = Delegation.import([del.ucan.root])
@@ -42,7 +36,7 @@ const exe = async ({ did, alias }) => {
     const found = choices.find((x) => x.alias == alias)
     if (found) {
       const del = settings.set('delegation', found || null)
-      console.log(`now using account: ${del?.issuer?.did() || id.did()}`)
+      console.log(`now using account: ${del?.issuer?.did()}`)
     } else {
       console.log(
         `No account with alias ${alias} found. Here are your current accounts:\n`
@@ -51,7 +45,7 @@ const exe = async ({ did, alias }) => {
     }
   } else if (did) {
   } else {
-    await inquirerPick(id, choices)
+    await inquirerPick(choices)
   }
 }
 
@@ -59,7 +53,7 @@ const exe = async ({ did, alias }) => {
  * @param {import('@ucanto/interface').SigningPrincipal<number>} id
  * @param {{ name: string; value: any; }[]} choices
  */
-async function inquirerPick(id, choices) {
+async function inquirerPick(choices) {
   await inquirer
     .prompt([
       {
@@ -71,8 +65,8 @@ async function inquirerPick(id, choices) {
     ])
     .then((answers) => {
       const del = answers['Choose an account']
-      settings.set('delegation', del || null)
-      console.log(`now using account: ${del || id.did()}`)
+      settings.set('delegation', del)
+      console.log(`now using account: ${del}`)
     })
 }
 

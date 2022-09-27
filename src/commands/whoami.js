@@ -7,8 +7,9 @@ import { hasID } from '../validation.js'
 const exe = async () => {
   const view = ora({ text: 'Checking identity', spinner: 'line' })
   try {
-    const id = await client.identity()
-    const account = await settings.get('delegation')
+    //     const id = await client.agent()
+    //     const account = await settings.get('delegation')
+    const { agent, account } = await client.identity()
     const response = await client.whoami()
 
     if (response?.error) {
@@ -18,8 +19,8 @@ const exe = async () => {
       view.fail('Account not found.')
     } else {
       view.stop()
-      console.log(`Agent: ${id.did()}
-Account: ${account}
+      console.log(`Agent: ${agent.did()}
+Account: ${account.did()}
 Access Account: ${response}`)
     }
   } catch (error) {

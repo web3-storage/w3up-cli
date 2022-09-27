@@ -21,23 +21,7 @@ const exe = async ({ fileName, alias = '' }) => {
     try {
       const bytes = await fs.promises.readFile(fileName)
       const imported = await client.importDelegation(bytes)
-      const did = imported.issuer.did()
-
-      const audience = imported.audience.did()
-      const id = (await client.identity()).did()
-      if (id != audience) {
-        view.fail(
-          `Cannot import delegation, it was issued to ${audience} and your did is ${id}`
-        )
-        return
-      }
-
-      let delegations = settings.has('delegations')
-        ? settings.get('delegations')
-        : {}
-
-      delegations[did] = { ucan: imported, alias }
-      settings.set('delegations', delegations)
+      const did = imported?.issuer?.did()
 
       view.succeed(
         `Imported delegation for ${alias} ${did} from ${fileName} successfully.`
