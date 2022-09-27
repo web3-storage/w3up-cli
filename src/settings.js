@@ -5,12 +5,8 @@ import { humanizeBytes } from './utils.js'
 
 config()
 
-// export const MAX_CAR_SIZE = 32000 //320KB
-// export const MAX_CAR_SIZE = 32000000 //32MB
-// export const MAX_CAR_SIZE= 256000000 //256MB
-// export const MAX_CAR_SIZE = 3800000000 //3.8GB
-export const MAX_CAR_SIZE = Math.pow(1024, 2) * 32 //32MB
-// export const MAX_CAR_SIZE = Math.pow(1024, 3) * 2 //2GB
+//export const MAX_CAR_SIZE = Math.pow(1024, 2) * 32 //32MB
+export const MAX_CAR_SIZE = Math.pow(1024, 3) * 2 //2GB
 //1800000000 //1.8GB
 
 const projectName = 'w3-cli'
@@ -31,6 +27,8 @@ const ACCESS_DID =
   process.env.ACCESS_DID ||
   'did:key:z6MkkHafoFWxxWVNpNXocFdU6PL2RVLyTEgS1qTnD3bRP7V9' // production
 //'did:key:z6MksafxoiEHyRF6RsorjrLrEyFQPFDdN6psxtAfEsRcvDqx' // dev/staging did
+
+export const OPEN_WITH_SERVICE_URL = `https://w3s.link/ipfs/`
 
 export default {
   projectName,

@@ -12,6 +12,7 @@ import insights from './commands/insights.js'
 import inspectCar from './commands/inspectCar.js'
 import list from './commands/list.js'
 import accounts from './commands/listAccounts.js'
+import open from './commands/open.js'
 import register from './commands/register.js'
 import remove from './commands/remove.js'
 import resetSettings from './commands/resetSettings.js'
@@ -87,6 +88,9 @@ export const main = async () => {
 
     .command(info)
     //     .example(info.exampleIn, info.exampleOut)
+    .command(open.cmd, open.description, open.build, open.exe)
+    .example(open.exampleIn, open.exampleOut)
+
 
     .help()
     //     .showHelpOnFail(true)

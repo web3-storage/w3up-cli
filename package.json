@@ -18,7 +18,7 @@
     "pretest": "npm run prettier && npm run typecheck",
     "test": "echo 'no tests exist'",
     "typecheck": "tsc --build",
-    "prettier": "prettier --ignore-unknown --ignore-path .gitignore --check .",
+    "prettier": "prettier --ignore-unknown --ignore-path .gitignore --check ./src",
     "prettier:fix": "prettier --ignore-unknown --write --ignore-path .gitignore .",
     "test:coverage": "vitest run --coverage",
     "test:dev": "vitest"
@@ -33,6 +33,7 @@
     "conf": "^10.2.0",
     "dotenv": "^16.0.1",
     "inquirer": "^9.1.0",
+    "open": "^8.4.0",
     "ora": "^6.1.2",
     "stream-to-it": "^0.2.4",
     "uuid": "^8.3.2",
