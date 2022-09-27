@@ -5,7 +5,7 @@ import { hasID } from '../validation.js'
 
 /**
  * @typedef {{verbose?:boolean}} List
- * @typedef {import('yargs').Arguments<Upload>} ListArgs
+ * @typedef {import('yargs').Arguments<List>} ListArgs
  */
 
 /**
