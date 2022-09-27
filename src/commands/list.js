@@ -16,7 +16,7 @@ const listToTable = (list) =>
 
 /**
  *
- * @param {*} list
+ * @param {Array<any>} list
  * @returns {string}
  */
 const formatOutput = (list) => {
@@ -40,7 +40,7 @@ const exe = async () => {
     view.info(`You don't seem to have any uploads yet!`)
   } else {
     const formattedOutput = formatOutput(listResponse)
-    view.succeed()
+    view.succeed(formattedOutput)
   }
 }
 
