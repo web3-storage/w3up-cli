@@ -49,7 +49,7 @@ Options:
   --help     Show help                                                 [boolean]export-settings
 ```
 
-To complete the quickstart flow, you need to use a few commands:
+To complete the quickstart flow, you'll need to use a few commands:
 
 1. [`w3up id`](#id) generates a new identity keypair.
 1. [`w3up register`](#register) associates your email address with your new identity key and grants access to the service.
