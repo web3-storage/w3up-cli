@@ -88,9 +88,8 @@ export const main = async () => {
 
     .command(info)
     //     .example(info.exampleIn, info.exampleOut)
-    .command(open.cmd, open.description, open.build, open.exe)
-    .example(open.exampleIn, open.exampleOut)
-
+    .command(open)
+    //     .example(open.exampleIn, open.exampleOut)
 
     .help()
     //     .showHelpOnFail(true)
