@@ -3,7 +3,7 @@
   "description": "w3up interface",
   "version": "0.6.0",
   "type": "module",
-  "license": "(Apache-2.0 AND MIT)",
+  "license": "Apache-2.0 OR MIT",
   "main": "./src/main.js",
   "bin": {
     "w3up": "./src/cli.js"
