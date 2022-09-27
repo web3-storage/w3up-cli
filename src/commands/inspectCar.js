@@ -35,7 +35,7 @@ const exe = async ({
 /**
  * @type {import('yargs').CommandBuilder} yargs
  */
-const build = (yargs) =>
+const builder = (yargs) =>
   yargs
     .check(checkPath)
     .option('tree', {
@@ -60,10 +60,10 @@ const build = (yargs) =>
 const checkPath = ({ path }) => isPath(path)
 
 const upload = {
-  cmd: 'inspect-car <path>',
-  description: 'Generate an examination file from a <path> to a CAR ',
-  build,
-  exe,
+  command: 'inspect-car <path>',
+  describe: 'Generate an examination file from a <path> to a CAR ',
+  builder,
+  handler: exe,
   exampleIn: '$0 inspect-car ../duck.car --tree',
   exampleOut: `roots
 └─┬ bafy...

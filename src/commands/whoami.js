@@ -1,6 +1,6 @@
 import ora from 'ora'
 
-import client from '../client.js'
+import client, { settings } from '../client.js'
 import { logToFile } from '../lib/logging.js'
 import { hasID } from '../validation.js'
 
@@ -8,6 +8,7 @@ const exe = async () => {
   const view = ora({ text: 'Checking identity', spinner: 'line' })
   try {
     const id = await client.identity()
+    const account = await settings.get('delegation')
     const response = await client.whoami()
 
     if (response?.error) {
@@ -17,7 +18,9 @@ const exe = async () => {
       view.fail('Account not found.')
     } else {
       view.stop()
-      console.log(`Agent: ${id.did()}\nAccount: ${response}`)
+      console.log(`Agent: ${id.did()}
+Account: ${account}
+Access Account: ${response}`)
     }
   } catch (error) {
     view.fail('Could not check identity, check w3up-failure.log')
@@ -29,15 +32,13 @@ const exe = async () => {
  * @type {import('yargs').CommandBuilder} yargs
  * @returns {import('yargs').Argv<{}>}
  */
-const build = (yargs) => yargs.check(() => hasID())
+const builder = (yargs) => yargs.check(() => hasID())
 
-const whoami = {
-  cmd: 'whoami',
-  description: 'Show your current UCAN Identity',
-  build,
-  exe,
+export default {
+  command: 'whoami',
+  describe: 'Show your current UCAN Identity',
+  builder,
+  handler: exe,
   exampleOut: `DID:12345...`,
   exampleIn: '$0 whoami',
 }
-
-export default whoami

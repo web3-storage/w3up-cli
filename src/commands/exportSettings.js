@@ -49,10 +49,10 @@ const exe = async ({ filename }) => {
 }
 
 const exportSettings = {
-  cmd: 'export-settings [filename]', //[] means optional arg.
-  description: 'Export a settings json file',
-  build: {},
-  exe,
+  command: 'export-settings [filename]', //[] means optional arg.
+  describe: 'Export a settings json file',
+  builder: {},
+  handler: exe,
   exampleOut: `DID:12345`,
   exampleIn: '$0 export-settings',
 }

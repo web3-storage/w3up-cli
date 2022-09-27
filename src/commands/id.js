@@ -1,7 +1,6 @@
 import ora, { oraPromise } from 'ora'
 
-import client from '../client.js'
-import { settings } from '../client.js'
+import client, { settings } from '../client.js'
 
 /**
  * @typedef {{reset?:boolean}} Id
@@ -20,8 +19,7 @@ const exe = async ({ reset }) => {
     settings.clear()
   }
 
-  let text = !settings.has('secret') ? 'Generating new id' : 'Loading id'
-  const id = await oraPromise(client.identity(), text)
+  const id = await client.identity()
   if (id) {
     view.succeed('ID: ' + id.did())
   }
@@ -30,7 +28,7 @@ const exe = async ({ reset }) => {
  * @type {import('yargs').CommandBuilder} yargs
  * @returns {import('yargs').Argv<{}>}
  */
-const build = (yargs) =>
+const builder = (yargs) =>
   yargs.option('reset', {
     type: 'boolean',
     alias: 'reset',
@@ -39,10 +37,10 @@ const build = (yargs) =>
   })
 
 const id = {
-  cmd: 'id',
-  description: 'Generate a UCAN Identity',
-  build,
-  exe,
+  command: 'id',
+  describe: 'Generate a UCAN Identity',
+  builder,
+  handler: exe,
   exampleOut: `ID loaded: did:key:z6MkiWm...`,
   exampleIn: '$0 id',
 }

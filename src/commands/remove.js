@@ -26,7 +26,7 @@ const exe = async ({ cid }) => {
  * @type {import('yargs').CommandBuilder} yargs
  * @returns {import('yargs').Argv<{}>}
  */
-const build = (yargs) => yargs.check(() => hasID()).check(checkCID)
+const builder = (yargs) => yargs.check(() => hasID()).check(checkCID)
 
 /**
  * @param {RemoveArgs} argv
@@ -41,13 +41,11 @@ const checkCID = ({ cid }) => {
 
 //TODO allow list of CIDs
 // https://github.com/nftstorage/w3up-cli/issues/20
-const remove = {
-  cmd: ['remove <cid>', 'unlink <cid>'],
-  description: 'Unlink a CID from your account.',
-  build,
-  exe,
+export default {
+  command: ['remove <cid>', 'unlink <cid>'],
+  describe: 'Unlink a CID from your account.',
+  builder,
+  handler: exe,
   exampleIn: '$0 remove bafy...',
   exampleOut: `unlinked bafy...`,
 }
-
-export default remove

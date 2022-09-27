@@ -30,13 +30,11 @@ const exe = async () => {
   }
 }
 
-const resetSettings = {
-  cmd: 'reset-settings',
-  description: 'Delete all local settings',
-  build: {},
-  exe,
+export default {
+  command: 'reset-settings',
+  describe: 'Delete all local settings',
+  builder: {},
+  handler: exe,
   exampleOut: `Settings cleared.`,
   exampleIn: '$0 reset-settings',
 }
-
-export default resetSettings

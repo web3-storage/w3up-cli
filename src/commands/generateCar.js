@@ -86,7 +86,7 @@ const exe = async ({ filePath = '', split = false }) => {
 /**
  * @type {import('yargs').CommandBuilder} yargs
  */
-const build = (yargs) =>
+const builder = (yargs) =>
   yargs.check(checkPath).option('split', {
     type: 'boolean',
     alias: 'split',
@@ -100,10 +100,10 @@ const build = (yargs) =>
 const checkPath = ({ filePath }) => isPath(filePath)
 
 const generateCar = {
-  cmd: 'generate-car <filePath>',
-  description: 'From an input file, locally generate a CAR file.',
-  build,
-  exe,
+  command: 'generate-car <filePath>',
+  describe: 'From an input file, locally generate a CAR file.',
+  builder,
+  handler: exe,
   exampleIn: '$0 generate-car ../duck.png duck.car',
   exampleOut: `CAR created ../duck.png => duck.car`,
 }

@@ -31,14 +31,18 @@ async function generateCarUploads(filePath, view, split = false) {
     const { stream } = await buildCar(resolvedPath, MAX_CAR_SIZE, split != true)
     /** @type Array<CID> */
     let roots = []
+    /** @type Array<CID> */
+    let cids = []
     let count = 0
-    let rootCarCID = ''
+    let rootCarCID
 
     for await (const car of toIterator(stream)) {
       count++
       roots = roots.concat(car.roots)
-      if (car.roots) {
+      if (car.roots && car.roots?.length > 0) {
         rootCarCID = await bytesToCarCID(car.bytes)
+      } else {
+        cids.push(await bytesToCarCID(car.bytes))
       }
       /**
        * @type any
@@ -50,6 +54,9 @@ async function generateCarUploads(filePath, view, split = false) {
     console.log('roots:\n', roots.map((x) => x.toString()).join('\n'))
     if (count > 1) {
       console.log('root car:\n', rootCarCID?.toString())
+      console.log('linking other cars:', cids)
+      const linkingResponse = await client.linkcars(rootCarCID, cids)
+      console.log('other', linkingResponse)
     }
   } catch (err) {
     view.fail('Upload did not complete successfully, check w3up-failure.log')
@@ -85,7 +92,7 @@ const exe = async (argv) => {
  * @type {import('yargs').CommandBuilder} yargs
  * @returns {import('yargs').Argv<{}>}
  */
-const build = (yargs) =>
+const builder = (yargs) =>
   yargs
     .check(() => hasID())
     .check(checkPath)
@@ -110,13 +117,11 @@ const checkPath = ({ path }) => {
   }
 }
 
-const upload = {
-  cmd: ['upload <path>', 'import <path>'],
-  description: 'Upload any file or directory to your account',
-  build,
-  exe,
+export default {
+  command: ['upload <path>', 'import <path>'],
+  describe: 'Upload any file or directory to your account',
+  builder,
+  handler: exe,
   exampleIn: '$0 upload ../../duck.png',
   exampleOut: `uploaded bafy...`,
 }
-
-export default upload

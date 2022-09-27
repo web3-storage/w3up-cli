@@ -23,15 +23,13 @@ const exe = async () => {
 /**
  * @type {import('yargs').CommandBuilder} yargs
  */
-const build = (yargs) => yargs.check(() => hasID())
+const builder = (yargs) => yargs.check(() => hasID())
 
-const list = {
-  cmd: 'list',
-  description: 'List your uploads',
-  build,
-  exe,
+export default {
+  command: 'list',
+  describe: 'List your uploads',
+  builder,
+  handler: exe,
   exampleOut: `bafy...\nbafy...`,
   exampleIn: '$0 list',
 }
-
-export default list

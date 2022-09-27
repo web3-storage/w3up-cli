@@ -13,10 +13,10 @@ const exe = async () => {
 }
 
 export default {
-  cmd: 'info',
-  description: 'Print information about cli',
-  build: {},
-  exe,
+  command: 'info',
+  describe: 'Print information about cli',
+  builder: {},
+  handler: exe,
   exampleOut: ``,
   exampleIn: '$0 info',
 }

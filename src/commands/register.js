@@ -40,7 +40,7 @@ const exe = async (argv) => {
  * @type {import('yargs').CommandBuilder} yargs
  * @returns {import('yargs').Argv<{}>}
  */
-const build = (yargs) => yargs.check(() => hasID()).check(checkEmail)
+const builder = (yargs) => yargs.check(() => hasID()).check(checkEmail)
 
 /**
  * @param {RegisterArgs} argv
@@ -53,11 +53,9 @@ const checkEmail = (argv) => {
   throw new Error(`Error: ${email} is probably not a valid email.`)
 }
 
-const register = {
-  cmd: 'register <email>',
-  description: 'Register your UCAN Identity with w3up',
-  build,
-  exe,
+export default {
+  command: 'register <email>',
+  describe: 'Register your UCAN Identity with w3up',
+  builder,
+  handler: exe,
 }
-
-export default register
