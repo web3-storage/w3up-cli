@@ -11,19 +11,48 @@ import { hasID } from '../validation.js'
 const listToTable = (list) =>
   list.map((li) => {
     const at = new Intl.DateTimeFormat('en-US').format(li.uploadedAt)
-    return `${at.toLocaleString()}  ${li.rootCarCID} \t ${li.transportCarCID}`
+    let out = `${at.toLocaleString()}  ${li.rootContentCID}`
+
+    const verbose = false
+    if (verbose) {
+      out = `${at.toLocaleString()}  ${li.rootContentCID} \t ${li.carCID}`
+    }
+
+    return out
   })
 
 /**
+ * @typedef {{
+ *  results: Array<any>
+ *  count: number
+ *  page: number
+ *  nextPage: number|null
+ *  previousPage: number|null
+ *  pageSize: number
+ * }} PagedListResponse
  *
- * @param {Array<any>} list
+ */
+
+/**
+ *
+ * @param {PagedListResponse} listResponse
  * @returns {string}
  */
-const formatOutput = (list) => {
+const formatOutput = (listResponse) => {
+  const list = listResponse?.results || []
   const space = `\t\t\t\t\t\t\t`
-  const headers = `Date       RootCid ${space} Transport CID`
-  const divider = `---------  ------- ${space} -------------`
-  return `\n${headers}\n${divider}\n${listToTable(list).join('\n')}`
+  let headers = `Date       Root CID `
+  let divider = `---------  -------  `
+
+  const verbose = false
+  if (verbose) {
+    headers = `Date       Root CID ${space} CAR CID`
+    divider = `---------  -------  ${space} -------`
+  }
+
+  const footer = `\nCount: ${listResponse?.count}`
+  const output = [headers, divider, listToTable(list).join('\n'), footer]
+  return `\n${output.join('\n')}`
 }
 
 const exe = async () => {
@@ -36,7 +65,7 @@ const exe = async () => {
     spinner: 'line',
   })
 
-  if (!listResponse.length) {
+  if (!listResponse?.results?.length) {
     view.info(`You don't seem to have any uploads yet!`)
   } else {
     const formattedOutput = formatOutput(listResponse)
