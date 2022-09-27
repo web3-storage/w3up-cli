@@ -68,7 +68,7 @@ const formatOutput = (listResponse, verbose = false) => {
 /**
  * @async
  * @param {ListArgs} argv
- * @returns {Promise<void>}
+ * @returns {Promise<any>}
  */
 const exe = async (argv) => {
   const verbose = argv.verbose
