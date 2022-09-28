@@ -85,14 +85,19 @@ const exe = async (argv) => {
   //You can delete this later (9/27/2022)
   //its extremely short-term to prevent collisions with old api
   if (Array.isArray(listResponse)) {
-    return view.succeed(`\n${listResponse.join('\n')}`)
+    if (!listResponse.length) {
+      view.info(`You don't seem to have any uploads yet!`)
+    } else {
+      console.log(listResponse.join('\n'))
+    }
+    return
   }
 
   if (!listResponse?.results?.length) {
     view.info(`You don't seem to have any uploads yet!`)
   } else {
     const formattedOutput = formatOutput(listResponse, verbose)
-    return view.succeed(formattedOutput)
+    console.log(formattedOutput)
   }
 }
 
