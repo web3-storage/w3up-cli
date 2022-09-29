@@ -99,7 +99,7 @@ const exe = async (argv) => {
  * @type {import('yargs').CommandBuilder} yargs
  * @returns {import('yargs').Argv<{}>}
  */
-const build = (yargs) => yargs.check(() => hasID()).check(checkPath)
+const builder = (yargs) => yargs.check(() => hasID()).check(checkPath)
 
 /**
  * @param {UploadArgs} argv
@@ -114,13 +114,11 @@ const checkPath = ({ path }) => {
   }
 }
 
-const bulkUpload = {
-  cmd: ['upload-cars <path>'],
-  description: 'Walk a file directory, and upload any found cars to an account',
-  build,
-  exe,
+export default {
+  command: ['upload-cars <path>'],
+  describe: 'Walk a file directory, and upload any found cars to an account',
+  builder,
+  handler: exe,
   exampleIn: '$0 upload-cars ducks/',
   exampleOut: `<show all cars uploaded>`,
 }
-
-export default bulkUpload

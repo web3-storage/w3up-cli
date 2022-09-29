@@ -17,7 +17,7 @@
   "scripts": {
     "pretest": "npm run prettier && npm run typecheck",
     "test": "echo 'no tests exist'",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --build",
     "prettier": "prettier --ignore-unknown --ignore-path .gitignore --check ./src",
     "prettier:fix": "prettier --ignore-unknown --write --ignore-path .gitignore .",
     "test:coverage": "vitest run --coverage",
@@ -25,10 +25,11 @@
   },
   "dependencies": {
     "@ipld/unixfs": "^1.1.0-dev",
-    "@ucanto/server": "^0.6.4",
+    "@ucanto/server": "^1.0.1",
     "@web-std/stream": "^1.0.1",
-    "@web3-storage/w3up-client": "^1.1.0",
+    "@web3-storage/w3up-client": "^2.0.0",
     "archy": "^1.0.0",
+    "cli-table": "^0.3.11",
     "conf": "^10.2.0",
     "dotenv": "^16.0.1",
     "inquirer": "^9.1.0",

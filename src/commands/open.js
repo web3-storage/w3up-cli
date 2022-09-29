@@ -26,7 +26,7 @@ const exe = async ({ cid }) => {
  * @type {import('yargs').CommandBuilder} yargs
  * @returns {import('yargs').Argv<{}>}
  */
-const build = (yargs) => yargs.check(checkTarget)
+const builder = (yargs) => yargs.check(checkTarget)
 
 /**
  * @param {CidArgs} argv
@@ -46,10 +46,10 @@ const checkTarget = ({ cid }) => {
 }
 
 const openCmd = {
-  cmd: 'open <cid>',
-  description: 'Open a CID in your browser on w3s.link',
-  build,
-  exe,
+  command: 'open <cid>',
+  describe: 'Open a CID in your browser on w3s.link',
+  builder,
+  handler: exe,
   exampleIn: '$0 open bafy...',
   exampleOut: `# opens ${OPEN_WITH_SERVICE_URL}/bafy... in your browser`,
 }

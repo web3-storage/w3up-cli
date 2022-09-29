@@ -60,7 +60,7 @@ export const isPath = (targetPath) => {
 }
 
 export const hasID = () => {
-  if (!settings.has('secret')) {
+  if (!settings.has('secret') && !settings.has('account_secret')) {
     throw new Error(`You have not setup an id, please run w3up id first.`)
   }
   return true

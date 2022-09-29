@@ -33,7 +33,7 @@ const exe = async ({ cid, ws, subscribe }) => {
 /**
  * @type {import('yargs').CommandBuilder} yargs
  */
-const build = (yargs) =>
+const builder = (yargs) =>
   yargs
     .check(() => hasID())
     .check(checkCID)
@@ -56,10 +56,10 @@ const checkCID = ({ cid }) => {
 }
 
 const insights = {
-  cmd: 'insights <cid>',
-  description: 'Get insights for a CID',
-  build,
-  exe,
+  command: 'insights <cid>',
+  describe: 'Get insights for a CID',
+  builder,
+  handler: exe,
   exampleOut: `example output goes here`,
   exampleIn: '$0 insights',
 }

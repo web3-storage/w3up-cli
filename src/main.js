@@ -1,19 +1,23 @@
-#!/usr/bin/env node
 import _yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
 
+import delegate from './commands/delegate.js'
 import exportSettings from './commands/exportSettings.js'
 import generateCar from './commands/generateCar.js'
 import id from './commands/id.js'
+import importDelegation from './commands/importDelegation.js'
 import importSettings from './commands/importSettings.js'
 import info from './commands/info.js'
 import insights from './commands/insights.js'
 import inspectCar from './commands/inspectCar.js'
 import list from './commands/list.js'
+import accounts from './commands/listAccounts.js'
 import open from './commands/open.js'
 import register from './commands/register.js'
 import remove from './commands/remove.js'
 import resetSettings from './commands/resetSettings.js'
+// import setup from './commands/setup.js'
+import switchAccount from './commands/switchAccount.js'
 import upload from './commands/upload.js'
 import uploadCars from './commands/uploadCars.js'
 import whoami from './commands/whoami.js'
@@ -35,84 +39,64 @@ export const main = async () => {
         yargs.showHelp()
       },
     })
+    .command({
+      command: 'completion',
+      handler() {
+        yargs.showCompletionScript()
+      },
+    })
 
     //registration
-    .command(id.cmd, id.description, id.build, id.exe)
-    .example(id.exampleIn, id.exampleOut)
+    .command(id)
+    //     .command(setup)
+    //     .example(id.exampleIn, id.exampleOut)
 
-    .command(register.cmd, register.description, register.build, register.exe)
-    .command(whoami.cmd, whoami.description, whoami.build, whoami.exe)
-    .example(whoami.exampleIn, whoami.exampleOut)
+    .command(register)
+    .command(whoami)
+    //     .example(whoami.exampleIn, whoami.exampleOut)
 
     //general usage
-    .command(list.cmd, list.description, list.build, list.exe)
-    .example(list.exampleIn, list.exampleOut)
-
-    .command(upload.cmd, upload.description, upload.build, upload.exe)
-    .example(upload.exampleIn, upload.exampleOut)
-
-    .command(
-      uploadCars.cmd,
-      uploadCars.description,
-      uploadCars.build,
-      uploadCars.exe
-    )
-    .example(uploadCars.exampleIn, uploadCars.exampleOut)
-
-    .command(remove.cmd, remove.description, remove.build, remove.exe)
-    .example(remove.exampleIn, remove.exampleOut)
+    .command(list)
+    //     .example(list.exampleIn, list.exampleOut)
+    .command(upload)
+    //     .example(upload.exampleIn, upload.exampleOut)
+    .command(uploadCars)
+    //     .example(uploadCars.exampleIn, uploadCars.exampleOut)
+    .command(remove)
+    //     .example(remove.exampleIn, remove.exampleOut)
 
     //settings
-    .command(
-      importSettings.cmd,
-      importSettings.description,
-      importSettings.build,
-      importSettings.exe
-    )
-    .command(
-      exportSettings.cmd,
-      exportSettings.description,
-      exportSettings.build,
-      exportSettings.exe
-    )
-    .command(
-      resetSettings.cmd,
-      resetSettings.description,
-      resetSettings.build,
-      resetSettings.exe
-    )
+    .command(importSettings)
+    .command(exportSettings)
+    .command(resetSettings)
+
+    //general usage
+    .command(delegate)
+    .command(accounts)
+    .command(importDelegation)
+    .command(switchAccount)
 
     //insights
-    .command(insights.cmd, insights.description, insights.build, insights.exe)
+    .command(insights)
 
     //utilities
-    .command(
-      inspectCar.cmd,
-      inspectCar.description,
-      inspectCar.build,
-      inspectCar.exe
-    )
-    .example(inspectCar.exampleIn, inspectCar.exampleOut)
+    .command(inspectCar)
+    //     .example(inspectCar.exampleIn, inspectCar.exampleOut)
 
-    .command(
-      generateCar.cmd,
-      generateCar.description,
-      generateCar.build,
-      generateCar.exe
-    )
-    .example(generateCar.exampleIn, generateCar.exampleOut)
+    .command(generateCar)
+    //     .example(generateCar.exampleIn, generateCar.exampleOut)
 
-    .command(open.cmd, open.description, open.build, open.exe)
-    .example(open.exampleIn, open.exampleOut)
-
-    .command(info.cmd, info.description, info.build, info.exe)
-    .example(info.exampleIn, info.exampleOut)
+    .command(info)
+    //     .example(info.exampleIn, info.exampleOut)
+    .command(open)
+    //     .example(open.exampleIn, open.exampleOut)
 
     .help()
     //     .showHelpOnFail(true)
     .demandCommand(1, '')
     .recommendCommands()
     .strict()
+    .wrap(yargs.terminalWidth())
     .epilog('Docs:\n  https://github.com/nftstorage/w3up-cli').argv
 
   return argv
