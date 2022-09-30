@@ -28,7 +28,7 @@ import { hasID, isPath, resolvePath } from '../validation.js'
 async function generateCarUploads(filePath, view, split = false) {
   const resolvedPath = path.resolve(filePath)
   try {
-    const { stream } = await buildCar(resolvedPath, MAX_CAR_SIZE, split != true)
+    const { stream } = await buildCar(resolvedPath, MAX_CAR_SIZE, false)
     /** @type Array<CID> */
     let roots = []
     /** @type Array<CID> */
@@ -36,34 +36,29 @@ async function generateCarUploads(filePath, view, split = false) {
     let count = 0
     let rootCarCID
 
-    let origin = undefined
+    const uploadPromises = []
 
     for await (const car of toIterator(stream)) {
       count++
       roots = roots.concat(car.roots)
-
-      if (!origin) {
-        origin = await bytesToCarCID(car.bytes)
-      }
-      /** @type any */
-      const response = await client.upload(car.bytes, origin)
-
-      if (car.roots && car.roots?.length === 0) {
-        origin = await bytesToCarCID(car.bytes)
-      }
       if (car.roots && car.roots?.length > 0) {
-        rootCarCID = origin
+        rootCarCID = await bytesToCarCID(car.bytes)
       } else {
-        cids.push(origin)
+        cids.push(await bytesToCarCID(car.bytes))
       }
-
-      view.succeed(response)
+      /**
+       * @type any
+       */
+      await client.upload(car.bytes).then((response) => {
+        view.succeed(response)
+      })
     }
 
-    console.log('roots:\n', roots.map((x) => x.toString()).join('\n'))
+    console.log('data CIDs:\n', roots.map((x) => x.toString()).join('\n'))
     if (count > 1) {
       console.log('root car:\n', rootCarCID?.toString())
-      console.log('other cars:', cids.map((x) => x.toString()).join('\n'))
+      console.log('shard cars:\n', cids.join('\n '))
+      //       console.log('linking other cars:', cids)
       //       const linkingResponse = await client.linkcars(rootCarCID, cids)
       //       console.log('other', linkingResponse)
     }
@@ -82,6 +77,9 @@ const exe = async (argv) => {
   const _path = argv.path
   const split = argv.split
 
+  if (!_path) {
+    return Promise.reject('You must Specify a Path')
+  }
   if (!_path) {
     return Promise.reject('You must Specify a Path')
   }
