@@ -28,13 +28,15 @@ import { hasID, isPath, resolvePath } from '../validation.js'
 async function generateCarUploads(filePath, view, split = false) {
   const resolvedPath = path.resolve(filePath)
   try {
-    const { stream } = await buildCar(resolvedPath, MAX_CAR_SIZE, split != true)
+    const { stream } = await buildCar(resolvedPath, MAX_CAR_SIZE, false)
     /** @type Array<CID> */
     let roots = []
     /** @type Array<CID> */
     let cids = []
     let count = 0
     let rootCarCID
+
+    const uploadPromises = []
 
     for await (const car of toIterator(stream)) {
       count++
@@ -47,16 +49,18 @@ async function generateCarUploads(filePath, view, split = false) {
       /**
        * @type any
        */
-      const response = await client.upload(car.bytes)
-      view.succeed(response)
+      await client.upload(car.bytes).then((response) => {
+        view.succeed(response)
+      })
     }
 
-    console.log('roots:\n', roots.map((x) => x.toString()).join('\n'))
+    console.log('data CIDs:\n', roots.map((x) => x.toString()).join('\n'))
     if (count > 1) {
       console.log('root car:\n', rootCarCID?.toString())
-      console.log('linking other cars:', cids)
-      const linkingResponse = await client.linkcars(rootCarCID, cids)
-      console.log('other', linkingResponse)
+      console.log('shard cars:\n', cids.join('\n '))
+      //       console.log('linking other cars:', cids)
+      //       const linkingResponse = await client.linkcars(rootCarCID, cids)
+      //       console.log('other', linkingResponse)
     }
   } catch (err) {
     view.fail('Upload did not complete successfully, check w3up-failure.log')

@@ -1,7 +1,5 @@
-// @ts-ignore
-import Table from 'cli-table'
-
 import client, { settings } from '../client.js'
+import { buildSimpleConsoleTable } from '../utils.js'
 
 /**
  * @typedef {{}} ListAccounts
@@ -18,7 +16,7 @@ const exe = async ({} = {}) => {
   const selected = settings.get('delegation')
   const delegations = settings.get('delegations')
 
-  const table = buildSimpleConsoleTable()
+  const table = buildSimpleConsoleTable(['selected', 'alias', 'did'])
   for (const [did, del] of Object.entries(delegations)) {
     const cur = selected == did
     table.push([cur ? '*' : '', del.alias, did])
@@ -37,27 +35,4 @@ export default {
   describe: 'List all accounts.',
   builder,
   handler: exe,
-}
-
-function buildSimpleConsoleTable() {
-  return new Table({
-    chars: {
-      top: '',
-      'top-mid': '',
-      'top-left': '',
-      'top-right': '',
-      bottom: '',
-      'bottom-mid': '',
-      'bottom-left': '',
-      'bottom-right': '',
-      left: '',
-      'left-mid': '',
-      mid: '',
-      'mid-mid': '',
-      right: '',
-      'right-mid': '',
-      middle: ' ',
-    },
-    style: { 'padding-left': 0, 'padding-right': 0 },
-  })
 }

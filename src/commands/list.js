@@ -1,6 +1,7 @@
 import ora, { oraPromise } from 'ora'
 
 import client from '../client.js'
+import { buildSimpleConsoleTable } from '../utils.js'
 import { hasID } from '../validation.js'
 
 /**
@@ -9,22 +10,19 @@ import { hasID } from '../validation.js'
  */
 
 /**
- *
  * @param {Array<any>} list
  * @param {boolean} verbose
  * @returns {Array<any>}
  */
-const listToTable = (list, verbose = false) =>
-  list.map((li) => {
-    const at = new Intl.DateTimeFormat('en-US').format(li.uploadedAt)
-    let out = `${at.toLocaleString()}  ${li.rootContentCID}`
+function itemToTable(item, verbose = false) {
+  const at = new Intl.DateTimeFormat('en-US').format(item.linkedAt)
+  let out = [at.toLocaleString(), item.dataCid]
+  if (verbose) {
+    out.push([item.carCid])
+  }
 
-    if (verbose) {
-      out = `${at.toLocaleString()}  ${li.rootContentCID} \t ${li.carCID}`
-    }
-
-    return out
-  })
+  return out
+}
 
 /**
  * @typedef {{
@@ -35,34 +33,26 @@ const listToTable = (list, verbose = false) =>
  *  previousPage: number|null
  *  pageSize: number
  * }} PagedListResponse
- *
  */
 
 /**
  *
  * @param {PagedListResponse} listResponse
- *  @param {boolean} verbose
+ * @param {boolean} verbose
  * @returns {string}
  */
 const formatOutput = (listResponse, verbose = false) => {
   const list = listResponse?.results || []
-  const space = `\t\t\t\t\t\t\t`
-  let headers = `Date       Root CID `
-  let divider = `---------  -------  `
 
+  const head = ['Date', 'Data CID']
   if (verbose) {
-    headers = `Date       Root CID ${space} CAR CID`
-    divider = `---------  -------  ${space} -------`
+    head.push('Car CID')
   }
-
-  const footer = `\nCount: ${listResponse?.count}`
-  const output = [
-    headers,
-    divider,
-    listToTable(list, verbose).join('\n'),
-    footer,
-  ]
-  return `\n${output.join('\n')}`
+  const table = buildSimpleConsoleTable(head)
+  for (const upload of list) {
+    table.push(itemToTable(upload, verbose))
+  }
+  return table.toString()
 }
 
 /**
@@ -74,16 +64,14 @@ const exe = async (argv) => {
   const verbose = argv.verbose
 
   const view = ora()
-  /**
-   * @type any
-   */
+  /** @type any */
   const listResponse = await oraPromise(client.list(), {
     text: `Listing Uploads...`,
     spinner: 'line',
   })
 
-  //You can delete this later (9/27/2022)
-  //its extremely short-term to prevent collisions with old api
+  // You can delete this later (9/27/2022)
+  // its extremely short-term to prevent collisions with old api
   if (Array.isArray(listResponse)) {
     if (!listResponse.length) {
       view.info(`You don't seem to have any uploads yet!`)
@@ -96,14 +84,11 @@ const exe = async (argv) => {
   if (!listResponse?.results?.length) {
     view.info(`You don't seem to have any uploads yet!`)
   } else {
-    const formattedOutput = formatOutput(listResponse, verbose)
-    console.log(formattedOutput)
+    console.log(formatOutput(listResponse, verbose))
   }
 }
 
-/**
- * @type {import('yargs').CommandBuilder} yargs
- */
+/** @type {import('yargs').CommandBuilder} yargs */
 const builder = (yargs) =>
   yargs
     .check(() => hasID())
