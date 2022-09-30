@@ -15,10 +15,10 @@ import { hasID } from '../validation.js'
  * @returns {Array<any>}
  */
 function itemToTable(item, verbose = false) {
-  const at = new Intl.DateTimeFormat('en-US').format(item.linkedAt)
-  let out = [at.toLocaleString(), item.dataCid]
+  const at = new Intl.DateTimeFormat('en-US').format(item.uploadedAt)
+  let out = [at.toLocaleString(), item.rootContentCID]
   if (verbose) {
-    out.push([item.carCid])
+    out.push([item.carCID])
   }
 
   return out
