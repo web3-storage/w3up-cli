@@ -36,27 +36,36 @@ async function generateCarUploads(filePath, view, split = false) {
     let count = 0
     let rootCarCID
 
+    let origin = undefined
+
     for await (const car of toIterator(stream)) {
       count++
       roots = roots.concat(car.roots)
-      if (car.roots && car.roots?.length > 0) {
-        rootCarCID = await bytesToCarCID(car.bytes)
-      } else {
-        cids.push(await bytesToCarCID(car.bytes))
+
+      if (!origin) {
+        origin = await bytesToCarCID(car.bytes)
       }
-      /**
-       * @type any
-       */
-      const response = await client.upload(car.bytes)
+      /** @type any */
+      const response = await client.upload(car.bytes, origin)
+
+      if (car.roots && car.roots?.length === 0) {
+        origin = await bytesToCarCID(car.bytes)
+      }
+      if (car.roots && car.roots?.length > 0) {
+        rootCarCID = origin
+      } else {
+        cids.push(origin)
+      }
+
       view.succeed(response)
     }
 
     console.log('roots:\n', roots.map((x) => x.toString()).join('\n'))
     if (count > 1) {
       console.log('root car:\n', rootCarCID?.toString())
-      console.log('linking other cars:', cids)
-      const linkingResponse = await client.linkcars(rootCarCID, cids)
-      console.log('other', linkingResponse)
+      console.log('other cars:', cids.map((x) => x.toString()).join('\n'))
+      //       const linkingResponse = await client.linkcars(rootCarCID, cids)
+      //       console.log('other', linkingResponse)
     }
   } catch (err) {
     view.fail('Upload did not complete successfully, check w3up-failure.log')
@@ -73,9 +82,6 @@ const exe = async (argv) => {
   const _path = argv.path
   const split = argv.split
 
-  if (!_path) {
-    return Promise.reject('You must Specify a Path')
-  }
   if (!_path) {
     return Promise.reject('You must Specify a Path')
   }

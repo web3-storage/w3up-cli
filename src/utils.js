@@ -1,3 +1,5 @@
+// @ts-ignore
+import Table from 'cli-table'
 import fs from 'fs'
 // @ts-ignore
 import { CID } from 'multiformats/cid'
@@ -47,4 +49,32 @@ export async function bytesToCarCID(bytes) {
   // this CID represents the byte content, but doesn't 'link' with the blocks inside
   const digest = await sha256.digest(bytes)
   return CID.createV1(0x202, digest)
+}
+
+export function buildSimpleConsoleTable(head) {
+  const table = new Table({
+    truncate: false,
+    head: head || [],
+    chars: {
+      top: '',
+      'top-mid': '',
+      'top-left': '',
+      'top-right': '',
+      bottom: '',
+      'bottom-mid': '',
+      'bottom-left': '',
+      'bottom-right': '',
+      left: '',
+      'left-mid': '',
+      mid: '',
+      'mid-mid': '',
+      right: '',
+      'right-mid': '',
+      middle: ' ',
+    },
+    style: { 'padding-left': 0, 'padding-right': 2, head: ['blue'] },
+  })
+
+  table.push(new Array(head.length).fill('--------'))
+  return table
 }
