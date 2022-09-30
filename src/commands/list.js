@@ -3,6 +3,7 @@ import ora, { oraPromise } from 'ora'
 import client from '../client.js'
 import { buildSimpleConsoleTable } from '../utils.js'
 import { hasID } from '../validation.js'
+
 /**
  * @typedef {{verbose?:boolean}} List
  * @typedef {import('yargs').Arguments<List>} ListArgs
