@@ -1,5 +1,5 @@
 // @ts-ignore
-import { Delegation } from '@ucanto/server'
+import { Delegation } from '@ucanto/core'
 import inquirer from 'inquirer'
 
 import client, { settings } from '../client.js'

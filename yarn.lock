@@ -907,7 +907,7 @@
     "@ucanto/interface" "^1.0.0"
     multiformats "^9.8.1"
 
-"@ucanto/server@^1.0.1", "@ucanto/server@^1.0.2":
+"@ucanto/server@^1.0.2":
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/@ucanto/server/-/server-1.0.2.tgz#349341e937ff444df3d48a5f686a8449cfbbbe31"
   integrity sha512-ECXv8y8WM/Do9MSb8DLYbRY7yRvL6VdQL2v1YfU5USjAyNPyjP73M+zpXf7tEhdXcZbqn/JIws3H21J56i7oog==
@@ -927,10 +927,10 @@
     "@ucanto/interface" "^1.0.0"
     multiformats "^9.8.1"
 
-"@ucanto/validator@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@ucanto/validator/-/validator-1.0.1.tgz#6244098126f1d1cff8a50247a6f0fd5e53022d1a"
-  integrity sha512-w8NTSPKkEhQRWDmnt8KjMg65/U7SZfVaiKyDlP46Ph0zRAAr16VfBFYVArucKu4V4kgh6gHT4qRBEaAUJ4U0zQ==
+"@ucanto/validator@^1.0.1", "@ucanto/validator@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@ucanto/validator/-/validator-1.0.2.tgz#3230eea32977c192b6b42adeb7cd3ca00f584495"
+  integrity sha512-SFjS/8FDOwzPNM29brT6wgbE+HXD8iQnHR3aeqEgzIUL7j56kluZykfVWD0xR8oLn8vYzNqJqf60YeFAbIBsqg==
   dependencies:
     "@ipld/car" "^4.1.5"
     "@ipld/dag-cbor" "^7.0.3"
@@ -984,10 +984,10 @@
   dependencies:
     web-streams-polyfill "^3.1.1"
 
-"@web3-storage/access@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@web3-storage/access/-/access-1.0.0.tgz#67448a1697915c1490a79ca37b76b11143007cdb"
-  integrity sha512-p8zvobWXtzJDAD0TFz+vzALajPHwy2yJbPjPkGpVpEd9OKrVOx0kK50ev19G1SVTtQrKVb5+N95inFEKMOON1A==
+"@web3-storage/access@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@web3-storage/access/-/access-2.0.0.tgz#0a749ef608a012c7a9a0cd191629e31b26d69b8d"
+  integrity sha512-8VfDXvAjp7CPSj4j/RogN+r0g5fZHL+CDJcQQW/ah/O31vPSV9El/Sk/HC3vbQWgF0Ype9ur8MsJv4Zq3UjOvg==
   dependencies:
     "@ipld/car" "^4.1.5"
     "@ipld/dag-ucan" "3.0.0-beta"
@@ -999,7 +999,7 @@
     "@ucanto/principal" "^1.0.1"
     "@ucanto/server" "^1.0.2"
     "@ucanto/transport" "^1.0.1"
-    "@ucanto/validator" "^1.0.1"
+    "@ucanto/validator" "^1.0.2"
     "@web-std/fetch" "^4.1.0"
     bigint-mod-arith "^3.1.1"
     conf "^10.1.2"
@@ -1022,20 +1022,20 @@
   resolved "https://registry.yarnpkg.com/@web3-storage/multipart-parser/-/multipart-parser-1.0.0.tgz#6b69dc2a32a5b207ba43e556c25cc136a56659c4"
   integrity sha512-BEO6al7BYqcnfX15W2cnGR+Q566ACXAT9UQykORCWW80lmkpWsnEob6zJS1ZVBKsSJC8+7vJkHwlp+lXG1UCdw==
 
-"@web3-storage/w3up-client@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@web3-storage/w3up-client/-/w3up-client-2.0.0.tgz#238a609808d7c20202a7575c820beae7cd2fc21d"
-  integrity sha512-Vym6Y0PcAhkzKBE8IkVL8+kAn1SkkpZhBMPgGehkAnspolm6D2xs9gZ3ZhD4cBGngja2rQvjYvFdr5sCsrQJ4Q==
+"@web3-storage/w3up-client@^2.1.1":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/@web3-storage/w3up-client/-/w3up-client-2.1.1.tgz#3b74c7f6da02371613dcafdd53c808a85ad1217d"
+  integrity sha512-1+OeyfeEnZx53w37/mq9Lj0syAPGsxmTy01lHn4roUY8JtUFWR9AXiCdSGbdixfkrrCsKOv5yA1xgdCNpF/ozw==
   dependencies:
     "@ucanto/client" "^1.0.1"
     "@ucanto/core" "^1.0.1"
     "@ucanto/interface" "^1.0.0"
     "@ucanto/principal" "^1.0.1"
+    "@ucanto/server" "^1.0.2"
     "@ucanto/transport" "^1.0.1"
-    "@ucanto/validator" "^1.0.1"
-    "@web3-storage/access" "^1.0.0"
+    "@ucanto/validator" "^1.0.2"
+    "@web3-storage/access" "^2.0.0"
     cross-fetch "^3.1.5"
-    tweetnacl "^1.0.3"
 
 "@zxing/text-encoding@0.9.0":
   version "0.9.0"
@@ -5042,11 +5042,6 @@ tslib@^2.1.0:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.4.0.tgz#7cecaa7f073ce680a05847aa77be941098f36dc3"
   integrity sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==
-
-tweetnacl@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-1.0.3.tgz#ac0af71680458d8a6378d0d0d050ab1407d35596"
-  integrity sha512-6rt+RN7aOi1nGMyC4Xa5DdYiukl2UWCbcJft7YhxReBGQD7OAM8Pbxw6YMo4r2diNEA8FEmu32YOn9rhaiE5yw==
 
 type-detect@^4.0.0, type-detect@^4.0.5:
   version "4.0.8"
