@@ -41,17 +41,19 @@ export async function run(bytes) {
     /** @type {{Links?:Array<any>, entries?:Array<any>}} */
     const content = decode(blockIndex.cid, block.bytes)
 
-    const isRoot = roots.some((x) => x.toString() == blockIndex.cid.toString())
+    const isRoot = roots.some(
+      (x) => x?.toString() == blockIndex.cid?.toString()
+    )
     const links = content.Links || content?.entries || []
 
-    blockMap.set(blockIndex.cid.toString(), {
-      cid: blockIndex.cid.toString(),
+    blockMap.set(blockIndex.cid?.toString(), {
+      cid: blockIndex.cid?.toString(),
       links: links,
     })
 
     if (isRoot) {
       contentRoots.push({
-        cid: blockIndex.cid.toString(),
+        cid: blockIndex.cid?.toString(),
         links: links,
       })
     }
@@ -76,14 +78,15 @@ function walkTree(cid, name, blockMap) {
   const label = name.length > 0 ? name : cid
 
   if (!block) {
-    return { label: label + 'not found', nodes: [] }
+    return null
+    //     return { label: label + 'not found', nodes: [] }
   }
 
   return {
     label,
     nodes: block.links
       .map((x) =>
-        walkTree(x.cid.toString(), x?.name || x?.Name || '', blockMap)
+        walkTree(x.cid?.toString(), x?.name || x?.Name || '', blockMap)
       )
       .filter((x) => x),
   }
