@@ -104,7 +104,7 @@ Commands:
 
 Options:
     --version  Show version number                                       [boolean]
--p, --profile  Select profile                                            [boolean]
+    -p, --profile  Select profile                                        [string] [default: "main"]
     --help     Show help                                                 [boolean]
 
 Examples:
