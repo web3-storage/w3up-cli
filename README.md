@@ -77,25 +77,30 @@ Usage:
   w3up <cmd> [options]
 
 Commands:
-  w3up id                                 Generate a UCAN Identity
-  w3up register <email>                   Register your UCAN Identity with w3up
-  w3up whoami                             Show your current UCAN Identity
-  w3up list                               List your uploads
-  w3up upload <path>                      Upload any file or directory to your a
-                                          ccount               [aliases: import]
-  w3up upload-cars <path>                 Walk a file directory, and upload any
-                                          found cars to an account
-  w3up remove <cid>                       Unlink a CID from your account.
-                                                               [aliases: unlink]
-  w3up import-settings <fileName>         Import a settings.json file
-  w3up export-settings [filename]         Export a settings json file
-  w3up reset-settings                     Delete all local settings
-  w3up insights <cid>                     Get insights for a CID
-  w3up inspect-car <path>                 Generate an examination file from a <p
-                                          ath> to a CAR
-  w3up generate-car <filePath> [outPath]  From an input file, locally generate a
-                                           CAR file.
-  w3up info                               Print information about cli
+  w3up id                                   Generate a UCAN Identity
+  w3up register <email>                     Register your UCAN Identity with w3up
+  w3up whoami                               Show your current UCAN Identity
+  w3up list                                 List your uploads
+  w3up upload <path>                        Upload any file or directory to your account
+                                                                  [aliases: import]
+  w3up upload-cars <path>                   Walk a file directory, and upload any
+                                             found cars to an account
+  w3up remove <cid>                         Unlink a CID from your account.
+                                                                  [aliases: unlink]
+  w3up import-settings <fileName>           Import a settings json file
+  w3up export-settings [filename]           Export a settings json file
+  w3up reset-settings                       Delete all local settings
+  w3up delegate <did>                       Delegate capabilities to another DID
+  w3up accounts                             List all accounts.
+  w3up import-delegation <fileName> [alias] Import a delegation.car file for access to an account (and gi
+                                             ve it an optional alias).
+  w3up switch-account [alias]               Select from accounts, including imported ones.
+  w3up insights <cid>                       Get insights for a CID
+  w3up inspect-car <path>                   Generate an examination file from a <p
+                                             ath> to a CAR
+  w3up generate-car <filePath> [outPath]    From an input file, locally generate a
+                                             CAR file.
+  w3up info                                 Print information about cli
 
 Options:
   --version  Show version number                                       [boolean]
@@ -305,6 +310,37 @@ roots
 ```
 
 Finally, passing the `--dot` flag will output a description of the graph structure using the [DOT](https://graphviz.org/doc/info/lang.html) language defined by the [Graphviz](https://graphviz.org/) project, to allow visually inspecting the CAR structure.
+
+### Delegate capabilities
+
+Once you have an identity registered with w3up, you can delegate capabilities to other agents.
+
+#### `w3up delegate <did>`
+
+> Delegate capabilities to an agent did.
+
+```sh
+w3up delegate did:12345...
+✔ Wrote delegation to delegation.car
+```
+
+A `delegation.car` file is generated with the UCAN delegation provided to the other agent with did `did:12345...`.
+
+#### `w3up import-delegation <fileName> [alias]`
+
+> Import a UCAN delegation file to access capabilities delegated by other agent
+
+```sh
+w3up import-delegation delegation.car delegator
+✔ Imported delegation for delegator did:key:z6M... from delegation.car successfully.
+```
+
+Once a `delegation.car` is imported, you can switch to the account delegated:
+
+```sh
+w3up switch-account delegator
+✔ now using account: did:key:z6M...
+```
 
 ### Settings management
 
