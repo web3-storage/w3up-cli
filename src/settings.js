@@ -10,6 +10,9 @@ export const MAX_CAR_SIZE = Math.pow(1024, 2) * 512 //512MB
 // export const MAX_CAR_SIZE = Math.pow(1024, 3) * 2 //2GB
 //1800000000 //1.8GB
 
+export const UNIXFS_BLOCK_SIZE = Math.pow(1024, 2) // 1MB
+export const ALLOW_RAW_LEAVES = true // 1MB
+
 const projectName = 'w3-cli'
 
 const W3_STORE_DID =
@@ -39,4 +42,6 @@ export default {
   ACCESS_URL,
   MAX_CAR_SIZE,
   MAX_CAR_SIZE_HUMANIZED: humanizeBytes(MAX_CAR_SIZE),
+  UNIXFS_BLOCK_SIZE,
+  ALLOW_RAW_LEAVES,
 }

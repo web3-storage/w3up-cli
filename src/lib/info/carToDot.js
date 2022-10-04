@@ -25,7 +25,7 @@ function buildLabel(obj) {
       }
       if (typeof val == 'object') {
         if (key == 'content') {
-          if (val?.type) {
+          if (val?.type != undefined) {
             const bytes = val['content']
               ? `|{size|${humanizeBytes(val['content']?.byteLength)}}`
               : ''
@@ -87,7 +87,10 @@ export async function run(bytes, vertical) {
     cur.content = decode(blockIndex.cid, cur.bytes)
 
     /** @type Array<any> */
-    const links = cur.content.Links || cur.content?.entries || []
+    let links = cur.content.Links || cur.content?.entries || []
+    if (links instanceof Function) {
+      links = cur?.content?.entries()
+    }
     const scid = toShortCID(cur.cid)
 
     const label = buildLabel(cur)
@@ -101,7 +104,16 @@ export async function run(bytes, vertical) {
       dot += `\n\t"${scid}" [label="{${label}}" labeljust=l]`
     }
 
-    links.forEach((link) => {
+    for (let link of links) {
+      if (Array.isArray(link)) {
+        const ports = vertical
+          ? 'tailport="e" headport="w"'
+          : 'tailport="s" headport="n"'
+
+        linkDot += `[${ports}]`
+        continue
+      }
+
       const cid = link?.cid || link?.Hash
       const name = link?.name || link?.Name
       linkDot += `\n\t"${scid}" -> "${toShortCID(cid)}" `
@@ -110,7 +122,7 @@ export async function run(bytes, vertical) {
         : 'tailport="s" headport="n"'
 
       linkDot += `[headlabel="${name}" ${ports}]`
-    })
+    }
 
     i++
   }

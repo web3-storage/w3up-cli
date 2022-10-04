@@ -28,8 +28,13 @@ export async function run(bytes) {
       throw 'no blocks'
     }
 
-    output +=
-      blockIndex.cid.toString() + '\tz' + blockIndex.cid.toV0().toString()
+    const cidv1 = blockIndex.cid.toString()
+    let cidv0 = 'N/A'
+    try {
+      cidv0 = 'z' + blockIndex.cid.toV0()
+    } catch (err) {}
+
+    output += `${cidv1}\t${cidv0}`
     output += '\n'
   }
   return output

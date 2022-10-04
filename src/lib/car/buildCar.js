@@ -1,16 +1,18 @@
 // @ts-ignore
 import * as CAR from '@ipld/car'
 import * as UnixFS from '@ipld/unixfs'
+import * as FixedChunker from '@ipld/unixfs/file/chunker/fixed'
 import fs from 'fs'
 import path from 'path'
 import 'web-streams-polyfill'
 
+import { ALLOW_RAW_LEAVES, UNIXFS_BLOCK_SIZE } from '../../settings.js'
 import { isDirectory } from '../../utils.js'
 import { walkDir, wrapFilesWithDir } from './dir.js'
 import { streamFileToBlock } from './file.js'
 
 // Internal unixfs read stream capacity that can hold around 32 blocks
-const CAPACITY = UnixFS.BLOCK_SIZE_LIMIT * 32
+const CAPACITY = UNIXFS_BLOCK_SIZE * 32
 const MAX_CARS_AT_ONCE = 8
 
 /**
@@ -28,8 +30,22 @@ const MAX_CARS_AT_ONCE = 8
 async function createReadableBlockStreamWithWrappingDir(pathName, writable) {
   // Next we create a writer with filesystem like API for encoding files and
   // directories into IPLD blocks that will come out on `readable` end.
-  const writer = UnixFS.createWriter({ writable })
-  //   writer.settings.chunker.context.maxChunkSize = 1024 * 5
+  const writer = UnixFS.createWriter({
+    writable,
+    settings: {
+      // Set blocksize to match current w3 settings, 1MB
+      chunker: FixedChunker.withMaxChunkSize(UNIXFS_BLOCK_SIZE),
+      // Allow raw leaves
+      fileChunkEncoder: ALLOW_RAW_LEAVES
+        ? UnixFS.UnixFSRawLeaf
+        : UnixFS.UnixFSLeaf,
+      smallFileEncoder: ALLOW_RAW_LEAVES
+        ? UnixFS.UnixFSRawLeaf
+        : UnixFS.UnixFSLeaf,
+    },
+  })
+
+  console.log('hi', writer.settings)
 
   // hold files to wrap with dir.
   let files = []
