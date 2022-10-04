@@ -103,8 +103,9 @@ Commands:
   w3up info                                 Print information about cli
 
 Options:
-  --version  Show version number                                       [boolean]
-  --help     Show help                                                 [boolean]
+    --version  Show version number                                       [boolean]
+-p, --profile  Select profile                                            [boolean]
+    --help     Show help                                                 [boolean]
 
 Examples:
   w3up id                                 ID: did:key:z6MkiWm...
