@@ -1,14 +1,12 @@
 import ora from 'ora'
 
 import { getClient } from '../client.js'
-import { logToFile } from '../lib/logging.js'
-import { hasID } from '../validation.js'
+import { hasSetupAccount } from '../validation.js'
 
 const exe = async (/** @type {{ profile: string | undefined; }} */ args) => {
   const view = ora({ text: 'Checking identity', spinner: 'line' })
   try {
     const client = getClient(args.profile)
-    hasID(client)
     const { agent, account } = await client.identity()
     const response = await client.whoami()
 
@@ -34,12 +32,12 @@ Access Account: ${response}`)
  * @type {import('yargs').CommandBuilder} yargs
  * @returns {import('yargs').Argv<{}>}
  */
-const builder = (yargs) => yargs.check(() => hasID())
+const builder = (yargs) => yargs.check(hasSetupAccount)
 
 export default {
   command: 'whoami',
   describe: 'Show your current UCAN Identity',
-  // builder,
+  builder,
   handler: exe,
   exampleOut: `DID:12345...`,
   exampleIn: '$0 whoami',

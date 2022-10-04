@@ -2,6 +2,7 @@ import fs from 'fs'
 import ora from 'ora'
 
 import { getClient } from '../client.js'
+import { hasSetupAccount } from '../validation.js'
 
 /**
  * @typedef {import('yargs').Arguments<{did?:string, profile: string}>} DelegateArgs
@@ -26,7 +27,7 @@ const exe = async ({ did, profile }) => {
  * @type {import('yargs').CommandBuilder} yargs
  * @returns {import('yargs').Argv<{}>}
  */
-const build = (yargs) => yargs
+const build = (yargs) => yargs.check(hasSetupAccount)
 
 const id = {
   command: 'delegate <did>',

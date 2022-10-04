@@ -2,7 +2,7 @@ import fs from 'fs'
 import ora from 'ora'
 
 import { getClient } from '../client.js'
-import { isPath } from '../validation.js'
+import { hasID, isPath } from '../validation.js'
 
 /**
  * @typedef {{fileName?:string, alias?:string, profile: string}} ImportDelegation
@@ -36,7 +36,7 @@ const exe = async ({ fileName, alias = '', profile }) => {
  * @type {import('yargs').CommandBuilder} yargs
  * @returns {import('yargs').Argv<{}>}
  */
-const builder = (yargs) => yargs.check(checkFileName)
+const builder = (yargs) => yargs.check(hasID).check(checkFileName)
 
 /**
  *

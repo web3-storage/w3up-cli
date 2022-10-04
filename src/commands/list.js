@@ -2,7 +2,7 @@ import ora, { oraPromise } from 'ora'
 
 import { getClient } from '../client.js'
 import { buildSimpleConsoleTable } from '../utils.js'
-import { hasID } from '../validation.js'
+import { hasID, hasSetupAccount } from '../validation.js'
 
 /**
  * @typedef {{verbose?:boolean, profile: string}} List
@@ -90,14 +90,12 @@ const exe = async (argv) => {
 
 /** @type {import('yargs').CommandBuilder} yargs */
 const builder = (yargs) =>
-  yargs
-    // .check(() => hasID())
-    .option('verbose', {
-      type: 'boolean',
-      alias: 'verbose',
-      showInHelp: true,
-      describe: 'Show more columns in the list, such as the Uploaded CAR CID',
-    })
+  yargs.check(hasSetupAccount).option('verbose', {
+    type: 'boolean',
+    alias: 'verbose',
+    showInHelp: true,
+    describe: 'Show more columns in the list, such as the Uploaded CAR CID',
+  })
 
 export default {
   command: 'list',

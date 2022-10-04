@@ -1,6 +1,6 @@
 import ora from 'ora'
 
-import { getClient, settings } from '../client.js'
+import { getClient, getSettings } from '../client.js'
 
 /**
  * @typedef {{reset?:boolean, profile: string}} Id
@@ -16,7 +16,7 @@ const exe = async (args) => {
   const view = ora({ spinner: 'line' })
 
   if (args.reset) {
-    settings.clear()
+    getSettings(args.profile)?.clear()
   }
 
   const client = getClient(args.profile)

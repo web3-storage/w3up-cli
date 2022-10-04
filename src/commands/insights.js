@@ -3,11 +3,11 @@ import * as API from '@ucanto/interface'
 import { parseLink } from '@ucanto/server'
 import ora from 'ora'
 
-import client from '../client.js'
-import { hasID, isCID } from '../validation.js'
+import { getClient } from '../client.js'
+import { hasSetupAccount, isCID } from '../validation.js'
 
 /**
- * @typedef {{cid?:API.Link, ws?:boolean, subscribe?:boolean, insight_data?: any}} Insights
+ * @typedef {{cid?:API.Link, ws?:boolean, subscribe?:boolean, insight_data?: any, profile?:string}} Insights
  * @typedef {import('yargs').Arguments<Insights>} InsightsArgs
  */
 
@@ -16,13 +16,14 @@ import { hasID, isCID } from '../validation.js'
  * @param {InsightsArgs} argv
  * @returns {Promise<void>}
  */
-const exe = async ({ cid, ws, subscribe }) => {
+const exe = async ({ cid, ws, subscribe, profile }) => {
   const spinner = ora({ text: `Getting insights for ${cid}`, spinner: 'line' })
   const shouldWS = ws || subscribe
 
   if (shouldWS) {
     spinner.fail(`⚠️Subscriptions not yet supported ⚠️`)
   } else {
+    const client = getClient(profile)
     /***
      * @type Insights
      */
@@ -34,15 +35,12 @@ const exe = async ({ cid, ws, subscribe }) => {
  * @type {import('yargs').CommandBuilder} yargs
  */
 const builder = (yargs) =>
-  yargs
-    .check(() => hasID())
-    .check(checkCID)
-    .option('subscribe', {
-      type: 'boolean',
-      alias: 'ws',
-      showInHelp: true,
-      describe: 'Get a Subscription to incoming insights',
-    })
+  yargs.check(hasSetupAccount).check(checkCID).option('subscribe', {
+    type: 'boolean',
+    alias: 'ws',
+    showInHelp: true,
+    describe: 'Get a Subscription to incoming insights',
+  })
 
 /**
  * @param {InsightsArgs} argv

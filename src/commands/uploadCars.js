@@ -4,11 +4,17 @@ import path from 'path'
 // @ts-ignore
 import toIterator from 'stream-to-it'
 
-import client from '../client.js'
+import { getClient } from '../client.js'
 import { getAllFiles, isDirectory } from '../lib/car/file.js'
 import { logToFile } from '../lib/logging.js'
 import { MAX_CAR_SIZE } from '../settings.js'
-import { hasID, isCarFile, isPath, resolvePath } from '../validation.js'
+import {
+  checkPath,
+  hasID,
+  hasSetupAccount,
+  isCarFile,
+  resolvePath,
+} from '../validation.js'
 
 //gotta start somewhere. 3 is fine.
 const MAX_CONNECTION_POOL_SIZE = 3
@@ -43,7 +49,7 @@ export async function uploadExistingCar(filePath, view) {
 }
 
 /**
- * @typedef {{path?:string}} Upload
+ * @typedef {{path?:string, profile?:string}} Upload
  * @typedef {import('yargs').Arguments<Upload>} UploadArgs
  */
 
@@ -99,20 +105,7 @@ const exe = async (argv) => {
  * @type {import('yargs').CommandBuilder} yargs
  * @returns {import('yargs').Argv<{}>}
  */
-const builder = (yargs) => yargs.check(() => hasID()).check(checkPath)
-
-/**
- * @param {UploadArgs} argv
- */
-const checkPath = ({ path }) => {
-  try {
-    return isPath(path)
-  } catch (err) {
-    throw new Error(
-      `${path} is probably not a valid path to a file or directory: \n${err}`
-    )
-  }
-}
+const builder = (yargs) => yargs.check(hasSetupAccount).check(checkPath)
 
 export default {
   command: ['upload-cars <path>'],

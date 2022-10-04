@@ -3,11 +3,11 @@ import * as API from '@ucanto/interface'
 import { parseLink } from '@ucanto/server'
 import ora from 'ora'
 
-import client from '../client.js'
-import { hasID, isCID } from '../validation.js'
+import { getClient } from '../client.js'
+import { hasID, hasSetupAccount, isCID } from '../validation.js'
 
 /**
- * @typedef {{cid?:API.Link}} Remove
+ * @typedef {{cid?:API.Link, profile?:string}} Remove
  * @typedef {import('yargs').Arguments<Remove>} RemoveArgs
  */
 
@@ -16,9 +16,9 @@ import { hasID, isCID } from '../validation.js'
  * @param {RemoveArgs} argv
  * @returns {Promise<void>}
  */
-const exe = async ({ cid }) => {
+const exe = async ({ cid, profile }) => {
   const view = ora(`Unlinking ${cid}...`).start()
-  const res = await client.remove(parseLink(cid))
+  const res = await getClient(profile).remove(parseLink(cid))
   view.succeed(`${res.toString()}`)
 }
 
@@ -26,7 +26,7 @@ const exe = async ({ cid }) => {
  * @type {import('yargs').CommandBuilder} yargs
  * @returns {import('yargs').Argv<{}>}
  */
-const builder = (yargs) => yargs.check(() => hasID()).check(checkCID)
+const builder = (yargs) => yargs.check(hasSetupAccount).check(checkCID)
 
 /**
  * @param {RemoveArgs} argv

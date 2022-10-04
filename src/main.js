@@ -54,7 +54,6 @@ export const main = async () => {
 
     //registration
     .command(id)
-    //     .command(setup)
     //     .example(id.exampleIn, id.exampleOut)
 
     .command(register)
@@ -83,7 +82,8 @@ export const main = async () => {
     .command(switchAccount)
 
     //insights
-    .command(insights)
+    // false description hides command.
+    .command(insights.command, false, insights.handler)
 
     //utilities
     .command(inspectCar)
