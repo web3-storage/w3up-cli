@@ -20,7 +20,7 @@ const exe = async ({ fileName, alias = '' }) => {
   if (fileName) {
     try {
       const bytes = await fs.promises.readFile(fileName)
-      const imported = await client.importDelegation(bytes)
+      const imported = await client.importDelegation(bytes, alias)
       const did = imported?.issuer?.did()
 
       view.succeed(

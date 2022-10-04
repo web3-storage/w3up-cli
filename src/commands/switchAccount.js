@@ -35,8 +35,9 @@ const exe = async ({ did, alias }) => {
   if (alias) {
     const found = choices.find((x) => x.alias == alias)
     if (found) {
-      const del = settings.set('delegation', found || null)
-      console.log(`now using account: ${del?.issuer?.did()}`)
+      const del = found.value
+      settings.set('delegation', del)
+      console.log(`now using account: ${del}`)
     } else {
       console.log(
         `No account with alias ${alias} found. Here are your current accounts:\n`
