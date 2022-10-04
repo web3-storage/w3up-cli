@@ -43,7 +43,7 @@ const exe = async ({ did, alias, profile }) => {
       console.log(
         `No account with alias ${alias} found. Here are your current accounts:\n`
       )
-      listAccounts.handler()
+      listAccounts.handler({ profile })
     }
   } else if (did) {
   } else {
