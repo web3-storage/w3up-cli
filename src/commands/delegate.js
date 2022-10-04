@@ -15,7 +15,7 @@ import client from '../client.js'
 const exe = async ({ did }) => {
   const view = ora({ spinner: 'line' })
 
-  const delegation = await client.makeDelegation(did)
+  const delegation = await client.makeDelegation({ to: did })
   fs.writeFileSync('delegation.car', delegation, 'binary')
 
   view.succeed('Wrote delegation to delegation.car')
