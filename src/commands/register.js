@@ -1,12 +1,11 @@
-import Inquirer from 'inquirer'
 import ora from 'ora'
 
-import client from '../client.js'
+import { getClient } from '../client.js'
 import { logToFile } from '../lib/logging.js'
 import { hasID, isEmail } from '../validation.js'
 
 /**
- * @typedef {{email?:string}} Register
+ * @typedef {{email?:string, profile: string}} Register
  * @typedef {import('yargs').Arguments<Register>} RegisterArgs
  */
 
@@ -16,15 +15,18 @@ import { hasID, isEmail } from '../validation.js'
  * @returns {Promise<void>}
  */
 const exe = async (argv) => {
-  const { email } = argv
+  const { email, profile } = argv
+  const client = getClient(profile)
   // TODO: https://github.com/nftstorage/w3up-cli/issues/15
   // this can hang if there's network disconnectivity.
+
   const view = ora({
     text: `Registering ${email}, check your email for the link.`,
     spinner: 'line',
   }).start()
 
   try {
+    hasID(client)
     let result = await client.register(email)
     if (result) {
       view.succeed(`Registration succeeded: ${email}`)
@@ -40,7 +42,7 @@ const exe = async (argv) => {
  * @type {import('yargs').CommandBuilder} yargs
  * @returns {import('yargs').Argv<{}>}
  */
-const builder = (yargs) => yargs.check(() => hasID()).check(checkEmail)
+// const builder = (yargs) => yargs.check(() => hasID()).check(checkEmail)
 
 /**
  * @param {RegisterArgs} argv
@@ -56,6 +58,6 @@ const checkEmail = (argv) => {
 export default {
   command: 'register <email>',
   describe: 'Register your UCAN Identity with w3up',
-  builder,
+  // builder,
   handler: exe,
 }

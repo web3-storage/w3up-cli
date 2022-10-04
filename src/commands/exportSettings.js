@@ -3,11 +3,11 @@ import fs from 'fs'
 import Inquirer from 'inquirer'
 import ora from 'ora'
 
-import { settings } from '../client.js'
+import { getClient } from '../client.js'
 import { resolvePath } from '../validation.js'
 
 /**
- * @typedef {{filename?:string}} ExportSettings
+ * @typedef {{filename?:string, profile: string}} ExportSettings
  * @typedef {import('yargs').Arguments<ExportSettings>} ExportSettingsArgs
  */
 
@@ -17,8 +17,9 @@ import { resolvePath } from '../validation.js'
  * @param {ExportSettingsArgs} args
  * @returns {Promise<void>}
  */
-const exe = async ({ filename }) => {
+const exe = async ({ filename, profile }) => {
   const view = ora().start()
+  const client = getClient(profile)
 
   view.stopAndPersist({
     text: 'These values give anyone the power to act as you, are you sure you want to export them?',
@@ -30,7 +31,7 @@ const exe = async ({ filename }) => {
   })
 
   if (show) {
-    const store = settings.store
+    const store = client.settings.store
     if (store.secret) {
       store.secret = Buffer.from(store.secret).toString('base64')
     }

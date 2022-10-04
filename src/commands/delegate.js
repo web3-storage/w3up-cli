@@ -1,10 +1,10 @@
 import fs from 'fs'
-import ora, { oraPromise } from 'ora'
+import ora from 'ora'
 
-import client from '../client.js'
+import { getClient } from '../client.js'
 
 /**
- * @typedef {import('yargs').Arguments<{did?:string}>} DelegateArgs
+ * @typedef {import('yargs').Arguments<{did?:string, profile: string}>} DelegateArgs
  */
 
 /**
@@ -12,8 +12,9 @@ import client from '../client.js'
  * @param {DelegateArgs} argv
  * @returns {Promise<void>}
  */
-const exe = async ({ did }) => {
+const exe = async ({ did, profile }) => {
   const view = ora({ spinner: 'line' })
+  const client = getClient(profile)
 
   const delegation = await client.makeDelegation({ to: did })
   fs.writeFileSync('delegation.car', delegation, 'binary')

@@ -32,6 +32,12 @@ export const main = async () => {
   const argv = await yargs
     .scriptName('w3up')
     .usage('Usage:\n  $0 <cmd> [options]')
+    .option('p', {
+      alias: 'profile',
+      type: 'string',
+      describe: 'Select profile.',
+      default: 'main',
+    })
     .command({
       command: '*',
       handler() {
@@ -97,7 +103,7 @@ export const main = async () => {
     .recommendCommands()
     .strict()
     .wrap(yargs.terminalWidth())
-    .epilog('Docs:\n  https://github.com/nftstorage/w3up-cli').argv
+    .epilog('Docs:\n  https://github.com/web3-storage/w3up-cli').argv
 
   return argv
 }

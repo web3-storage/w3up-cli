@@ -59,14 +59,17 @@ export const isPath = (targetPath) => {
   return false
 }
 
-export const hasID = () => {
-  if (!settings.has('secret') && !settings.has('account_secret')) {
+export const hasID = (client) => {
+  if (
+    !client.settings.has('secret') &&
+    !client.settings.has('account_secret')
+  ) {
     throw new Error(`You have not setup an id, please run w3up id first.`)
   }
   return true
 }
-export const hasEmail = () => {
-  if (!settings.has('email')) {
+export const hasEmail = (client) => {
+  if (!client.settings.has('email')) {
     throw new Error(
       `You have not setup an email, please run w3up register <email> first.`
     )

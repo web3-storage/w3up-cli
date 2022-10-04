@@ -6,7 +6,7 @@ import path from 'path'
 // @ts-ignore
 import toIterator from 'stream-to-it'
 
-import client from '../client.js'
+import { getClient } from '../client.js'
 import { buildCar } from '../lib/car/buildCar.js'
 import { logToFile } from '../lib/logging.js'
 import { MAX_CAR_SIZE } from '../settings.js'
@@ -14,22 +14,21 @@ import { bytesToCarCID } from '../utils.js'
 import { hasID, isPath, resolvePath } from '../validation.js'
 
 /**
- * @typedef {{path?:string, split?:boolean}} Upload
+ * @typedef {{path?: string;split?: boolean; profile: string}} Upload
  * @typedef {import('yargs').Arguments<Upload>} UploadArgs
- */
-
-/**
  * @async
  * @param {string} filePath - The path to generate car uploads for.
  * @param {import('ora').Ora} view
  * @param {boolean} [split] - The path to generate car uploads for.
+ * @param {string} [profile]
  * @returns {Promise<void>}
  */
 async function generateCarUploads(
   filePath,
   view,
   split = false,
-  chunkSize = 512
+  chunkSize = 512,
+  profile
 ) {
   chunkSize = Math.pow(1024, 2) * chunkSize
   const resolvedPath = path.resolve(filePath)
@@ -52,6 +51,8 @@ async function generateCarUploads(
       } else {
         cids.push(await bytesToCarCID(car.bytes))
       }
+
+      const client = getClient(profile)
       /**
        * @type any
        */
@@ -98,7 +99,8 @@ const exe = async (argv) => {
     )
   }
   const view = ora({ text: `Uploading ${_path}...`, spinner: 'line' }).start()
-  await generateCarUploads(_path, view, split, chunkSize)
+
+  await generateCarUploads(_path, view, split, chunkSize, argv.profile)
 }
 
 /**
@@ -107,7 +109,7 @@ const exe = async (argv) => {
  */
 const builder = (yargs) =>
   yargs
-    .check(() => hasID())
+    // .check(() => hasID())
     .check(checkPath)
     .option('chunk-size', {
       type: 'number',
