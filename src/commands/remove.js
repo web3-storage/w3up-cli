@@ -31,13 +31,7 @@ const builder = (yargs) => yargs.check(hasSetupAccount).check(checkCID)
 /**
  * @param {RemoveArgs} argv
  */
-const checkCID = ({ cid }) => {
-  try {
-    return isCID(cid)
-  } catch (err) {
-    throw new Error(`${cid} is probably not a valid CID: \n${err}`)
-  }
-}
+const checkCID = ({ cid }) => isCID(cid)
 
 //TODO allow list of CIDs
 // https://github.com/nftstorage/w3up-cli/issues/20

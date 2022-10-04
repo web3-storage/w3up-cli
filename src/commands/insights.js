@@ -45,13 +45,7 @@ const builder = (yargs) =>
 /**
  * @param {InsightsArgs} argv
  */
-const checkCID = ({ cid }) => {
-  try {
-    return isCID(cid)
-  } catch (err) {
-    throw new Error(`${cid} is probably not a valid CID: \n${err}`)
-  }
-}
+const checkCID = ({ cid }) => isCID(cid)
 
 const insights = {
   command: 'insights <cid>',

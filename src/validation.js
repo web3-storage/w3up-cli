@@ -24,9 +24,13 @@ export const isEmail = (email) => {
  */
 export const isCID = (cid) => {
   if (!cid) {
-    throw 'A CID was not provided'
+    throw 'Empty CID was provided'
   }
-  parseLink(cid)
+  try {
+    parseLink(cid)
+  } catch (err) {
+    throw new Error(`${cid} is probably not a valid CID\n${err}`)
+  }
   return true
 }
 
