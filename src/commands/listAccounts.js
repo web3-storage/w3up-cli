@@ -1,8 +1,8 @@
-import client, { settings } from '../client.js'
+import { getClient } from '../client.js'
 import { buildSimpleConsoleTable } from '../utils.js'
 
 /**
- * @typedef {{}} ListAccounts
+ * @typedef {{ profile: string }} ListAccounts
  * @typedef {import('yargs').Arguments<ListAccounts>} ListAccountsArgs
  */
 
@@ -11,10 +11,11 @@ import { buildSimpleConsoleTable } from '../utils.js'
  * @param {ListAccountsArgs} argv
  * @returns {Promise<void>}
  */
-const exe = async ({} = {}) => {
+const exe = async ({ profile }) => {
+  const client = getClient(profile)
   const id = await client.account()
-  const selected = settings.get('delegation')
-  const delegations = settings.get('delegations')
+  const selected = client.settings.get('delegation')
+  const delegations = client.settings.get('delegations')
 
   const table = buildSimpleConsoleTable(['selected', 'alias', 'did'])
   for (const [did, del] of Object.entries(delegations)) {

@@ -1,24 +1,25 @@
-import ora, { oraPromise } from 'ora'
+import ora from 'ora'
 
-import client, { settings } from '../client.js'
+import { getClient, settings } from '../client.js'
 
 /**
- * @typedef {{reset?:boolean}} Id
+ * @typedef {{reset?:boolean, profile: string}} Id
  * @typedef {import('yargs').Arguments<Id>} IdArgs
  */
 
 /**
  * @async
- * @param {IdArgs} argv
+ * @param {IdArgs} args
  * @returns {Promise<void>}
  */
-const exe = async ({ reset }) => {
+const exe = async (args) => {
   const view = ora({ spinner: 'line' })
 
-  if (reset) {
+  if (args.reset) {
     settings.clear()
   }
 
+  const client = getClient(args.profile)
   const identity = await client.identity()
 
   view.succeed('Agent DID: ' + identity.agent.did())

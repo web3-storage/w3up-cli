@@ -3,11 +3,11 @@ import fs from 'fs'
 import Inquirer from 'inquirer'
 import ora from 'ora'
 
-import client, { settings } from '../client.js'
+import { getClient } from '../client.js'
 import { isPath } from '../validation.js'
 
 /**
- * @typedef {{fileName?:string}} ImportSettings
+ * @typedef {{fileName?:string, profile: string}} ImportSettings
  * @typedef {import('yargs').Arguments<ImportSettings>} ImportSettingsArgs
  */
 
@@ -16,8 +16,9 @@ import { isPath } from '../validation.js'
  * @param {ImportSettingsArgs} argv
  * @returns {Promise<void>}
  */
-const exe = async ({ fileName }) => {
+const exe = async ({ fileName, profile }) => {
   const spinner = ora('export')
+  const client = getClient(profile)
   spinner.stopAndPersist({
     text: 'These values will overwrite your old id/account and you will lose access, are you sure you want to proceed?',
   })
@@ -29,18 +30,18 @@ const exe = async ({ fileName }) => {
 
   if (show && fileName) {
     try {
-      settings.clear()
+      client.settings.clear()
       const json = fs.readFileSync(fileName, { encoding: 'utf-8' })
       const imported = JSON.parse(json)
 
       function importBuffer(key) {
         const parsed = Buffer.from(imported[key], 'base64')
         if (parsed) {
-          settings.set(key, parsed)
+          client.settings.set(key, parsed)
         }
       }
 
-      if (settings && imported) {
+      if (client.settings && imported) {
         for (var key of Object.keys(imported)) {
           if (
             key == 'secret' ||
@@ -60,14 +61,17 @@ const exe = async ({ fileName }) => {
               }
             }
 
-            settings.set('delegations', delegations)
+            client.settings.set('delegations', delegations)
           } else {
-            settings.set(key, imported[key])
+            client.settings.set(key, imported[key])
           }
         }
       }
 
-      if (!settings.has('account_secret') || !settings.has('agent_secret')) {
+      if (
+        !client.settings.has('account_secret') ||
+        !client.settings.has('agent_secret')
+      ) {
         await client.identity()
       }
 

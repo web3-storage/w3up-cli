@@ -1,12 +1,11 @@
 import fs from 'fs'
-import Inquirer from 'inquirer'
 import ora from 'ora'
 
-import client, { settings } from '../client.js'
+import { getClient } from '../client.js'
 import { isPath } from '../validation.js'
 
 /**
- * @typedef {{fileName?:string, alias?:string}} ImportDelegation
+ * @typedef {{fileName?:string, alias?:string, profile: string}} ImportDelegation
  * @typedef {import('yargs').Arguments<ImportDelegation>} ImportDelegationArgs
  */
 
@@ -15,8 +14,9 @@ import { isPath } from '../validation.js'
  * @param {ImportDelegationArgs} argv
  * @returns {Promise<void>}
  */
-const exe = async ({ fileName, alias = '' }) => {
+const exe = async ({ fileName, alias = '', profile }) => {
   const view = ora('export')
+  const client = getClient(profile)
   if (fileName) {
     try {
       const bytes = await fs.promises.readFile(fileName)

@@ -2,11 +2,11 @@
 import { Delegation } from '@ucanto/server'
 import inquirer from 'inquirer'
 
-import client, { settings } from '../client.js'
+import { getClient } from '../client.js'
 import listAccounts from './listAccounts.js'
 
 /**
- * @typedef {{did?:string, alias?:string}} SwitchAccounts
+ * @typedef {{did?:string, alias?:string, profile: string}} SwitchAccounts
  * @typedef {import('yargs').Arguments<SwitchAccounts>} SwitchAccountsArgs
  */
 
@@ -15,8 +15,9 @@ import listAccounts from './listAccounts.js'
  * @param {SwitchAccountsArgs} argv
  * @returns {Promise<void>}
  */
-const exe = async ({ did, alias }) => {
-  const delegations = settings.get('delegations')
+const exe = async ({ did, alias, profile }) => {
+  const client = getClient(profile)
+  const delegations = client.settings.get('delegations')
   if (!delegations) {
     console.log('No delegations.')
     return
@@ -36,7 +37,7 @@ const exe = async ({ did, alias }) => {
     const found = choices.find((x) => x.alias == alias)
     if (found) {
       const del = found.value
-      settings.set('delegation', del)
+      client.settings.set('delegation', del)
       console.log(`now using account: ${del}`)
     } else {
       console.log(
@@ -46,27 +47,27 @@ const exe = async ({ did, alias }) => {
     }
   } else if (did) {
   } else {
-    await inquirerPick(choices)
+    await inquirerPick(choices, client)
   }
 }
 
 /**
- * @param {import('@ucanto/interface').SigningPrincipal<number>} id
  * @param {{ name: string; value: any; }[]} choices
+ * @param {any} client
  */
-async function inquirerPick(choices) {
+async function inquirerPick(choices, client) {
   await inquirer
     .prompt([
       {
         type: 'list',
         name: 'Choose an account',
         choices,
-        default: settings.get('delegation'),
+        default: client.settings.get('delegation'),
       },
     ])
     .then((answers) => {
       const del = answers['Choose an account']
-      settings.set('delegation', del)
+      client.settings.set('delegation', del)
       console.log(`now using account: ${del}`)
     })
 }

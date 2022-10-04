@@ -1,16 +1,16 @@
 import ora, { oraPromise } from 'ora'
 
-import client from '../client.js'
+import { getClient } from '../client.js'
 import { buildSimpleConsoleTable } from '../utils.js'
 import { hasID } from '../validation.js'
 
 /**
- * @typedef {{verbose?:boolean}} List
+ * @typedef {{verbose?:boolean, profile: string}} List
  * @typedef {import('yargs').Arguments<List>} ListArgs
  */
 
 /**
- * @param {Array<any>} list
+ * @param {Array<any>} item
  * @param {boolean} verbose
  * @returns {Array<any>}
  */
@@ -62,7 +62,7 @@ const formatOutput = (listResponse, verbose = false) => {
  */
 const exe = async (argv) => {
   const verbose = argv.verbose
-
+  const client = getClient(argv.profile)
   const view = ora()
   /** @type any */
   const listResponse = await oraPromise(client.list(), {
@@ -91,7 +91,7 @@ const exe = async (argv) => {
 /** @type {import('yargs').CommandBuilder} yargs */
 const builder = (yargs) =>
   yargs
-    .check(() => hasID())
+    // .check(() => hasID())
     .option('verbose', {
       type: 'boolean',
       alias: 'verbose',

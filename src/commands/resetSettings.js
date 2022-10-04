@@ -1,13 +1,13 @@
 import Inquirer from 'inquirer'
 import ora from 'ora'
 
-import { settings } from '../client.js'
+import { getClient } from '../client.js'
 
 /**
  * @async
  * @returns {Promise<void>}
  */
-const exe = async () => {
+const exe = async (args) => {
   const view = ora('reset')
   view.stopAndPersist({
     text: `This will delete your settings, are you sure?
@@ -16,6 +16,8 @@ const exe = async () => {
 `,
   })
 
+  const client = getClient(args.profile)
+
   const { reset } = await Inquirer.prompt({
     name: 'reset',
     type: 'confirm',
@@ -23,7 +25,7 @@ const exe = async () => {
   })
 
   if (reset) {
-    settings.clear()
+    client.settings.clear()
     view.succeed('Settings cleared.')
   } else {
     view.info('exiting')
