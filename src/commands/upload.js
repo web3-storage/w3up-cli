@@ -9,9 +9,8 @@ import toIterator from 'stream-to-it'
 import { getClient } from '../client.js'
 import { buildCar } from '../lib/car/buildCar.js'
 import { logToFile } from '../lib/logging.js'
-import { MAX_CAR_SIZE } from '../settings.js'
 import { bytesToCarCID } from '../utils.js'
-import { hasID, isPath, resolvePath } from '../validation.js'
+import { checkPath, hasID, hasSetupAccount } from '../validation.js'
 
 /**
  * @typedef {{path?: string;split?: boolean; profile: string}} Upload
@@ -109,7 +108,7 @@ const exe = async (argv) => {
  */
 const builder = (yargs) =>
   yargs
-    // .check(() => hasID())
+    .check(hasSetupAccount)
     .check(checkPath)
     .option('chunk-size', {
       type: 'number',
@@ -121,19 +120,6 @@ const builder = (yargs) =>
       describe:
         'Split the data into multiple when cars when size limit is hit.',
     })
-
-/**
- * @param {UploadArgs} argv
- */
-const checkPath = ({ path }) => {
-  try {
-    return isPath(path)
-  } catch (err) {
-    throw new Error(
-      `${path} is probably not a valid path to a file or directory: \n${err}`
-    )
-  }
-}
 
 export default {
   command: ['upload <path>', 'import <path>'],

@@ -37,12 +37,7 @@ const checkTarget = ({ cid }) => {
   }
 
   const _cid = cid.split('/')[0]
-
-  try {
-    return isCID(_cid)
-  } catch (err) {
-    throw new Error(`${_cid} is probably not a valid CID: \n${err}`)
-  }
+  return isCID(_cid)
 }
 
 const openCmd = {

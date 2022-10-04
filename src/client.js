@@ -15,27 +15,28 @@ const serialize = ({ ...data }) =>
 const deserialize = (text) => CBOR.codec.decode(Buffer.from(text, 'binary'))
 
 // @ts-ignore
-export const settings = new Conf({
-  projectName: cliSettings.projectName,
-  fileExtension: 'cbor',
-  serialize,
-  deserialize,
-})
+// export const settings = new Conf({
+//   projectName: cliSettings.projectName,
+//   fileExtension: 'cbor',
+//   serialize,
+//   deserialize,
+// })
 
-const client = new W3Client({
-  //@ts-ignore
-  serviceDID: cliSettings.W3_STORE_DID,
-  serviceURL: cliSettings.SERVICE_URL,
-  //@ts-ignore
-  accessDID: cliSettings.ACCESS_DID,
-  accessURL: cliSettings.ACCESS_URL,
-  settings,
-})
+// const client = new W3Client({
+//   //@ts-ignore
+//   serviceDID: cliSettings.W3_STORE_DID,
+//   serviceURL: cliSettings.SERVICE_URL,
+//   //@ts-ignore
+//   accessDID: cliSettings.ACCESS_DID,
+//   accessURL: cliSettings.ACCESS_URL,
+//   settings,
+// })
+//
+// export default client
 
-export default client
-
-export function getClient(profile = 'main') {
-  const settings = new Conf({
+export function getSettings(profile = 'main') {
+  // @ts-ignore
+  return new Conf({
     projectName: 'w3up',
     projectSuffix: '',
     configName: profile,
@@ -43,6 +44,10 @@ export function getClient(profile = 'main') {
     serialize,
     deserialize,
   })
+}
+
+export function getClient(profile = 'main') {
+  const settings = getSettings(profile)
 
   const client = new W3Client({
     //@ts-ignore

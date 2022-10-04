@@ -3,6 +3,7 @@ import { Delegation } from '@ucanto/server'
 import inquirer from 'inquirer'
 
 import { getClient } from '../client.js'
+import { hasID } from '../validation.js'
 import listAccounts from './listAccounts.js'
 
 /**
@@ -77,7 +78,7 @@ async function inquirerPick(choices, client) {
  * @returns {import('yargs').Argv<{}>}
  */
 const builder = (yargs) =>
-  yargs.option('did', {
+  yargs.check(hasID).option('did', {
     type: 'string',
     showInHelp: true,
     describe: 'select account by did',
