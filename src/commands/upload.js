@@ -18,17 +18,12 @@ import { checkPath, hasID, hasSetupAccount } from '../validation.js'
  * @async
  * @param {string} filePath - The path to generate car uploads for.
  * @param {import('ora').Ora} view
- * @param {boolean} [split] - The path to generate car uploads for.
  * @param {string} [profile]
  * @returns {Promise<void>}
  */
-async function generateCarUploads(
-  filePath,
-  view,
-  split = false,
-  chunkSize = 512,
-  profile
-) {
+async function generateCarUploads(filePath, view, chunkSize = 512, profile) {
+  const client = getClient(profile)
+
   chunkSize = Math.pow(1024, 2) * chunkSize
   const resolvedPath = path.resolve(filePath)
   try {
@@ -45,13 +40,7 @@ async function generateCarUploads(
     for await (const car of toIterator(stream)) {
       count++
       roots = roots.concat(car.roots)
-      if (car.roots && car.roots?.length > 0) {
-        rootCarCID = await bytesToCarCID(car.bytes)
-      } else {
-        cids.push(await bytesToCarCID(car.bytes))
-      }
-
-      const client = getClient(profile)
+      cids.push(await bytesToCarCID(car.bytes))
       /**
        * @type any
        */
@@ -62,12 +51,12 @@ async function generateCarUploads(
 
     console.log('data CIDs:\n', roots.map((x) => x.toString()).join('\n'))
     if (count > 1) {
-      console.log('root car:\n', rootCarCID?.toString())
-      console.log('shard cars:\n', cids.join('\n '))
       //       console.log('linking other cars:', cids)
       //       const linkingResponse = await client.linkcars(rootCarCID, cids)
       //       console.log('other', linkingResponse)
     }
+    const uploadAddResult = await client.uploadAdd(roots[0], cids)
+    console.log('hi', uploadAddResult)
   } catch (err) {
     view.fail('Upload did not complete successfully, check w3up-failure.log')
     logToFile('upload', err)
@@ -81,8 +70,7 @@ async function generateCarUploads(
  */
 const exe = async (argv) => {
   const _path = argv.path
-  const split = argv.split
-  const chunkSize = argv.chunkSize || 512
+  const chunkSize = Number(argv.chunkSize) || 512
 
   if (chunkSize < 1 || chunkSize > 512) {
     return Promise.reject('Chunk size must be between 1 and 512')
@@ -99,7 +87,7 @@ const exe = async (argv) => {
   }
   const view = ora({ text: `Uploading ${_path}...`, spinner: 'line' }).start()
 
-  await generateCarUploads(_path, view, split, chunkSize, argv.profile)
+  await generateCarUploads(_path, view, chunkSize, argv.profile)
 }
 
 /**

@@ -10,21 +10,6 @@ import { hasID, hasSetupAccount } from '../validation.js'
  */
 
 /**
- * @param {Array<any>} item
- * @param {boolean} verbose
- * @returns {Array<any>}
- */
-function itemToTable(item, verbose = false) {
-  const at = new Intl.DateTimeFormat('en-US').format(item.uploadedAt)
-  let out = [at.toLocaleString(), item.rootContentCID]
-  if (verbose) {
-    out.push([item.carCID])
-  }
-
-  return out
-}
-
-/**
  * @typedef {{
  *  results: Array<any>
  *  count: number
@@ -36,6 +21,28 @@ function itemToTable(item, verbose = false) {
  */
 
 /**
+ * @param {Array<any>} item
+ * @param {boolean} verbose
+ * @returns {Array<any>}
+ */
+function itemToTable(item, verbose = false) {
+  let at = item.uploadedAt
+  if (Date.parse(at)) {
+    at = Date.parse(at)
+  }
+
+  at = new Intl.DateTimeFormat('en-US', {
+    month: '2-digit',
+    day: '2-digit',
+    year: 'numeric',
+  }).format(at)
+  //   let out = [at.toLocaleString(), item.dataCID] //, item.carCID]
+  let out = [at.toLocaleString(), item.payloadCID]
+
+  return out
+}
+
+/**
  *
  * @param {PagedListResponse} listResponse
  * @param {boolean} verbose
@@ -44,7 +51,7 @@ function itemToTable(item, verbose = false) {
 const formatOutput = (listResponse, verbose = false) => {
   const list = listResponse?.results || []
 
-  const head = ['Date', 'Data CID']
+  const head = ['Date', 'car CID']
   if (verbose) {
     head.push('Car CID')
   }
@@ -70,6 +77,7 @@ const exe = async (argv) => {
     spinner: 'line',
   })
 
+  //   console.log('list', listResponse)
   // You can delete this later (9/27/2022)
   // its extremely short-term to prevent collisions with old api
   if (Array.isArray(listResponse)) {

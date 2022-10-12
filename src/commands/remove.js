@@ -18,7 +18,7 @@ import { hasID, hasSetupAccount, isCID } from '../validation.js'
  */
 const exe = async ({ cid, profile }) => {
   const view = ora(`Unlinking ${cid}...`).start()
-  const res = await getClient(profile).remove(parseLink(cid))
+  const res = await getClient(profile).removeUpload(parseLink(cid))
   view.succeed(`${res.toString()}`)
 }
 
