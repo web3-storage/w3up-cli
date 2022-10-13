@@ -8,7 +8,13 @@ import { getClient } from '../client.js'
 import { isPath } from '../validation.js'
 
 /**
- * @typedef {{fileName?:string, profile: string}} ImportSettings
+ * @typedef ImportSettings
+ * @property {string} [fileName]
+ * @property {string} [profile]
+ * @property {boolean} [yes]
+ */
+
+/**
  * @typedef {import('yargs').Arguments<ImportSettings>} ImportSettingsArgs
  */
 
@@ -17,17 +23,23 @@ import { isPath } from '../validation.js'
  * @param {ImportSettingsArgs} argv
  * @returns {Promise<void>}
  */
-const exe = async ({ fileName, profile }) => {
+const exe = async ({ fileName, profile, yes = false }) => {
   const spinner = ora('export')
   const client = getClient(profile)
-  spinner.stopAndPersist({
-    text: 'These values will overwrite your old id/account and you will lose access, are you sure you want to proceed?',
-  })
+  let show = yes
 
-  const { show } = await Inquirer.prompt({
-    name: 'show',
-    type: 'confirm',
-  })
+  if (!show) {
+    spinner.stopAndPersist({
+      text: 'These values will overwrite your old id/account and you will lose access, are you sure you want to proceed?',
+    })
+
+    const input = await Inquirer.prompt({
+      name: 'show',
+      type: 'confirm',
+    })
+
+    show = input.show
+  }
 
   if (show && fileName) {
     try {
@@ -52,7 +64,13 @@ const exe = async ({ fileName, profile }) => {
  * @type {import('yargs').CommandBuilder} yargs
  * @returns {import('yargs').Argv<{}>}
  */
-const builder = (yargs) => yargs.check(checkFileName)
+const builder = (yargs) =>
+  yargs.check(checkFileName).option('yes', {
+    type: 'boolean',
+    alias: 'y',
+    showInHelp: true,
+    describe: 'Skip any prompts with "yes" as input.',
+  })
 
 /**
  *
