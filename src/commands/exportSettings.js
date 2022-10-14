@@ -1,4 +1,4 @@
-import { Delegation, UCAN } from '@ucanto/core'
+import { exportSettings } from '@web3-storage/w3up-client'
 import fs from 'fs'
 import Inquirer from 'inquirer'
 import ora from 'ora'
@@ -7,7 +7,14 @@ import { getClient } from '../client.js'
 import { resolvePath } from '../validation.js'
 
 /**
- * @typedef {{filename?:string, profile: string}} ExportSettings
+ * @typedef ExportSettings
+ * @property {string} [filename]
+ * @property {string} [profile]
+ * @property {boolean} [stdout]
+ * @property {boolean} [yes]
+ */
+
+/**
  * @typedef {import('yargs').Arguments<ExportSettings>} ExportSettingsArgs
  */
 
@@ -17,40 +24,33 @@ import { resolvePath } from '../validation.js'
  * @param {ExportSettingsArgs} args
  * @returns {Promise<void>}
  */
-const exe = async ({ filename, profile }) => {
-  const view = ora().start()
+const exe = async ({ filename, profile, stdout = false, yes = false }) => {
   const client = getClient(profile)
 
-  view.stopAndPersist({
-    text: 'These values give anyone the power to act as you, are you sure you want to export them?',
-  })
+  if (stdout) {
+    const store = exportSettings(client.settings)
+    process.stdout.write(JSON.stringify(store))
+    return
+  }
 
-  const { show } = await Inquirer.prompt({
-    name: 'show',
-    type: 'confirm',
-  })
+  const view = ora().start()
+  let show = yes
+
+  if (!show) {
+    view.stopAndPersist({
+      text: 'These values give anyone the power to act as you, are you sure you want to export them?',
+    })
+    const input = await Inquirer.prompt({
+      name: 'show',
+      type: 'confirm',
+    })
+    show = input.show
+  }
 
   if (show) {
-    const store = client.settings.store
-    if (store.secret) {
-      store.secret = Buffer.from(store.secret).toString('base64')
-    }
-    if (store.agent_secret) {
-      store.agent_secret = Buffer.from(store.agent_secret).toString('base64')
-    }
-    if (store.account_secret) {
-      store.account_secret = Buffer.from(store.account_secret).toString(
-        'base64'
-      )
-    }
-
-    for (const [did, del] of Object.entries(store.delegations)) {
-      //       console.log('what', del)
-      const imported = Delegation.import([del?.ucan?.root])
-      store.delegations[did] = { ucan: UCAN.format(imported), alias: del.alias }
-    }
-
+    const store = exportSettings(client.settings)
     const settingsJson = JSON.stringify(store, null, 2)
+
     if (filename) {
       fs.writeFileSync(resolvePath(filename), settingsJson)
       view.succeed('Settings written to:' + filename)
@@ -64,13 +64,28 @@ const exe = async ({ filename, profile }) => {
   }
 }
 
-const exportSettings = {
+/**
+ * @type {import('yargs').CommandBuilder} yargs
+ */
+const builder = (yargs) =>
+  yargs
+    .option('stdout', {
+      type: 'boolean',
+      showInHelp: true,
+      describe: 'Output a machine readable format to stdout',
+    })
+    .option('yes', {
+      type: 'boolean',
+      alias: 'y',
+      showInHelp: true,
+      describe: 'Skip any prompts with "yes" as input.',
+    })
+
+export default {
   command: 'export-settings [filename]', //[] means optional arg.
   describe: 'Export a settings json file',
-  builder: {},
+  builder,
   handler: exe,
   exampleOut: `DID:12345`,
   exampleIn: '$0 export-settings',
 }
-
-export default exportSettings

@@ -1,4 +1,5 @@
-import { Delegation, UCAN } from '@ucanto/core'
+// @ts-ignore
+import { importSettings } from '@web3-storage/w3up-client'
 import fs from 'fs'
 import Inquirer from 'inquirer'
 import ora from 'ora'
@@ -7,7 +8,13 @@ import { getClient } from '../client.js'
 import { isPath } from '../validation.js'
 
 /**
- * @typedef {{fileName?:string, profile: string}} ImportSettings
+ * @typedef ImportSettings
+ * @property {string} [fileName]
+ * @property {string} [profile]
+ * @property {boolean} [yes]
+ */
+
+/**
  * @typedef {import('yargs').Arguments<ImportSettings>} ImportSettingsArgs
  */
 
@@ -16,64 +23,35 @@ import { isPath } from '../validation.js'
  * @param {ImportSettingsArgs} argv
  * @returns {Promise<void>}
  */
-const exe = async ({ fileName, profile }) => {
+const exe = async ({ fileName, profile, yes = false }) => {
   const spinner = ora('export')
   const client = getClient(profile)
-  spinner.stopAndPersist({
-    text: 'These values will overwrite your old id/account and you will lose access, are you sure you want to proceed?',
-  })
+  let show = yes
 
-  const { show } = await Inquirer.prompt({
-    name: 'show',
-    type: 'confirm',
-  })
+  if (!show) {
+    spinner.stopAndPersist({
+      text: 'These values will overwrite your old id/account and you will lose access, are you sure you want to proceed?',
+    })
+
+    const input = await Inquirer.prompt({
+      name: 'show',
+      type: 'confirm',
+    })
+
+    show = input.show
+  }
 
   if (show && fileName) {
     try {
       client.settings.clear()
       const json = fs.readFileSync(fileName, { encoding: 'utf-8' })
-      const imported = JSON.parse(json)
+      const imported = await importSettings(json)
 
-      function importBuffer(key) {
-        const parsed = Buffer.from(imported[key], 'base64')
-        if (parsed) {
-          client.settings.set(key, parsed)
-        }
+      for (const [key, value] of imported.entries()) {
+        client.settings.set(key, value)
       }
 
-      if (client.settings && imported) {
-        for (var key of Object.keys(imported)) {
-          if (
-            key == 'secret' ||
-            key == 'agent_secret' ||
-            key == 'account_secret'
-          ) {
-            importBuffer(key)
-          } else if (key == 'delegations') {
-            const delegations = {}
-
-            for (const [did, del] of Object.entries(imported.delegations)) {
-              const ucan = UCAN.parse(del?.ucan)
-              const root = await UCAN.write(ucan)
-              delegations[did] = {
-                ucan: Delegation.create({ root }),
-                alias: del.alias,
-              }
-            }
-
-            client.settings.set('delegations', delegations)
-          } else {
-            client.settings.set(key, imported[key])
-          }
-        }
-      }
-
-      if (
-        !client.settings.has('account_secret') ||
-        !client.settings.has('agent_secret')
-      ) {
-        await client.identity()
-      }
+      await client.identity()
 
       spinner.succeed(`Imported settings from ${fileName} successfully.`)
     } catch (err) {
@@ -86,7 +64,13 @@ const exe = async ({ fileName, profile }) => {
  * @type {import('yargs').CommandBuilder} yargs
  * @returns {import('yargs').Argv<{}>}
  */
-const builder = (yargs) => yargs.check(checkFileName)
+const builder = (yargs) =>
+  yargs.check(checkFileName).option('yes', {
+    type: 'boolean',
+    alias: 'y',
+    showInHelp: true,
+    describe: 'Skip any prompts with "yes" as input.',
+  })
 
 /**
  *
@@ -95,7 +79,7 @@ const builder = (yargs) => yargs.check(checkFileName)
  */
 const checkFileName = ({ fileName }) => isPath(fileName)
 
-const importSettings = {
+export default {
   command: 'import-settings <fileName>',
   describe: 'Import a settings.json file',
   builder,
@@ -103,5 +87,3 @@ const importSettings = {
   exampleOut: `You have successfully imported settings.json!`,
   exampleIn: '$0 import-settings settings.json',
 }
-
-export default importSettings

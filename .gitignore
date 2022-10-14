@@ -3,3 +3,4 @@ test_cars
 dist
 .env
 w3up-failure.log
+settings.json
