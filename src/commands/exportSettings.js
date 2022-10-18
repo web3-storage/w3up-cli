@@ -24,7 +24,7 @@ import { resolvePath } from '../validation.js'
  * @param {ExportSettingsArgs} args
  * @returns {Promise<void>}
  */
-const exe = async ({ filename, profile, stdout = false, yes = false }) => {
+const handler = async ({ filename, profile, stdout = false, yes = false }) => {
   const client = getClient(profile)
 
   if (stdout) {
@@ -85,7 +85,7 @@ export default {
   command: 'export-settings [filename]', //[] means optional arg.
   describe: 'Export a settings json file',
   builder,
-  handler: exe,
+  handler,
   exampleOut: `DID:12345`,
   exampleIn: '$0 export-settings',
 }

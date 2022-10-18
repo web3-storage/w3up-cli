@@ -14,7 +14,7 @@ import { hasID, isEmail } from '../validation.js'
  * @param {RegisterArgs} argv
  * @returns {Promise<void>}
  */
-const exe = async (argv) => {
+const handler = async (argv) => {
   const { email, profile } = argv
   const client = getClient(profile)
   // TODO: https://github.com/nftstorage/w3up-cli/issues/15
@@ -59,5 +59,5 @@ export default {
   command: 'register <email>',
   describe: 'Register your UCAN Identity with w3up',
   builder,
-  handler: exe,
+  handler,
 }

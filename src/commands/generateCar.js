@@ -36,7 +36,7 @@ export const writeFileLocally = async (car, outPath = 'output.car') => {
  * @param {GenerateCarArgs} argv
  * @returns {Promise<void>}
  */
-const exe = async ({ filePath = '', split = false }) => {
+const handler = async ({ filePath = '', split = false }) => {
   const resolvedPath = path.normalize(filePath)
 
   /** @type import('ora').Options */
@@ -99,13 +99,11 @@ const builder = (yargs) =>
  */
 const checkPath = ({ filePath }) => isPath(filePath)
 
-const generateCar = {
+export default {
   command: 'generate-car <filePath>',
   describe: 'From an input file, locally generate a CAR file.',
   builder,
-  handler: exe,
+  handler,
   exampleIn: '$0 generate-car ../duck.png duck.car',
   exampleOut: `CAR created ../duck.png => duck.car`,
 }
-
-export default generateCar

@@ -79,7 +79,7 @@ async function generateCarUploads(
  * @param {UploadArgs} argv
  * @returns {Promise<void>}
  */
-const exe = async (argv) => {
+const handler = async (argv) => {
   const _path = argv.path
   const split = argv.split
   const chunkSize = argv.chunkSize || 512
@@ -126,7 +126,7 @@ export default {
   command: ['upload <path>'],
   describe: 'Upload any file or directory to your account',
   builder,
-  handler: exe,
+  handler,
   exampleIn: '$0 upload ../../duck.png',
   exampleOut: `uploaded bafy...`,
 }

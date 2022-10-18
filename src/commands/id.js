@@ -12,7 +12,7 @@ import { getClient, getProfileSettings } from '../client.js'
  * @param {IdArgs} args
  * @returns {Promise<void>}
  */
-const exe = async (args) => {
+const handler = async (args) => {
   const view = ora({ spinner: 'line' })
 
   if (args.reset) {
@@ -37,13 +37,11 @@ const builder = (yargs) =>
     describe: 'reset settings and generate id.',
   })
 
-const id = {
+export default {
   command: 'id',
   describe: 'Generate a UCAN Identity',
   builder,
-  handler: exe,
+  handler,
   exampleOut: `ID loaded: did:key:z6MkiWm...`,
   exampleIn: '$0 id',
 }
-
-export default id

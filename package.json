@@ -8,6 +8,7 @@
   "bin": {
     "w3up": "./src/cli.js"
   },
+  "repository": "web3-storage/w3up-cli",
   "keywords": [
     "w3up"
   ],

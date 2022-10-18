@@ -14,7 +14,7 @@ import { hasID, isPath } from '../validation.js'
  * @param {ImportDelegationArgs} argv
  * @returns {Promise<void>}
  */
-const exe = async ({ fileName, alias = '', profile }) => {
+const handler = async ({ fileName, alias = '', profile }) => {
   const view = ora('export')
   const client = getClient(profile)
   if (fileName) {
@@ -50,5 +50,5 @@ export default {
   describe:
     'Import a delegation.car file for access to an account (and give it an optional alias).',
   builder,
-  handler: exe,
+  handler,
 }
