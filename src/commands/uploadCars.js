@@ -22,10 +22,11 @@ const MAX_CONNECTION_POOL_SIZE = 3
 /**
  * @async
  * @param {string} filePath - The path to generate car uploads for.
+ * @param {any} client - The client to upload with.
  * @param {import('ora').Ora} view
  * @returns {Promise<void>}
  */
-export async function uploadExistingCar(filePath, view) {
+export async function uploadExistingCar(filePath, client, view) {
   try {
     const { size } = await fs.promises.stat(filePath)
     if (size > MAX_CAR_SIZE) {
@@ -58,12 +59,14 @@ export async function uploadExistingCar(filePath, view) {
  * @param {UploadArgs} argv
  * @returns {Promise<void>}
  */
-const exe = async (argv) => {
+const handler = async (argv) => {
   const _path = argv.path
   const view = ora({
     text: `Uploading all cars within ${_path}...`,
     spinner: 'line',
   }).start()
+
+  const client = getClient(argv.profile)
 
   if (!_path) {
     return Promise.reject('You must Specify a Path')
@@ -97,7 +100,7 @@ const exe = async (argv) => {
   }
 
   for await (const car of toIterator(stream.readable)) {
-    uploadExistingCar(car, view)
+    uploadExistingCar(car, client, view)
   }
 }
 
@@ -111,7 +114,7 @@ export default {
   command: ['upload-cars <path>'],
   describe: 'Walk a file directory, and upload any found cars to an account',
   builder,
-  handler: exe,
+  handler,
   exampleIn: '$0 upload-cars ducks/',
   exampleOut: `<show all cars uploaded>`,
 }

@@ -10,6 +10,38 @@ import { hasID, hasSetupAccount } from '../validation.js'
  */
 
 /**
+ * @typedef UploadItem
+ * @property {string} rootContentCID
+ * @property {string} carCID
+ * @property {number} uploadedAt
+ */
+
+/**
+ * @template T
+ * @typedef ListResult<T>
+ * @property {number} count
+ * @property {number} pages
+ * @property {number} page
+ * @property {number} pageSize
+ * @property {Array<T>} results
+ */
+
+/**
+ * @param {UploadItem} item
+ * @param {boolean} verbose
+ * @returns {Array<any>}
+ */
+function itemToTable(item, verbose = false) {
+  const at = new Intl.DateTimeFormat('en-US').format(item.uploadedAt)
+  let out = [at.toLocaleString(), item.rootContentCID]
+  if (verbose) {
+    out.push(item.carCID)
+  }
+
+  return out
+}
+
+/**
  * @typedef {{
  *  results: Array<any>
  *  count: number
@@ -25,22 +57,22 @@ import { hasID, hasSetupAccount } from '../validation.js'
  * @param {boolean} verbose
  * @returns {Array<any>}
  */
-function itemToTable(item, verbose = false) {
-  let at = item.uploadedAt
-  if (Date.parse(at)) {
-    at = Date.parse(at)
-  }
-
-  at = new Intl.DateTimeFormat('en-US', {
-    month: '2-digit',
-    day: '2-digit',
-    year: 'numeric',
-  }).format(at)
-  //   let out = [at.toLocaleString(), item.dataCID] //, item.carCID]
-  let out = [at.toLocaleString(), item.payloadCID]
-
-  return out
-}
+// function itemToTable(item, verbose = false) {
+//   let at = item.uploadedAt
+//   if (Date.parse(at)) {
+//     at = Date.parse(at)
+//   }
+//
+//   at = new Intl.DateTimeFormat('en-US', {
+//     month: '2-digit',
+//     day: '2-digit',
+//     year: 'numeric',
+//   }).format(at)
+//   //   let out = [at.toLocaleString(), item.dataCID] //, item.carCID]
+//   let out = [at.toLocaleString(), item.payloadCID]
+//
+//   return out
+// }
 
 /**
  *
@@ -67,7 +99,7 @@ const formatOutput = (listResponse, verbose = false) => {
  * @param {ListArgs} argv
  * @returns {Promise<any>}
  */
-const exe = async (argv) => {
+const handler = async (argv) => {
   const verbose = argv.verbose
   const client = getClient(argv.profile)
   const view = ora()
@@ -109,7 +141,7 @@ export default {
   command: 'list',
   describe: 'List your uploads',
   builder,
-  handler: exe,
+  handler,
   exampleOut: `bafy...\nbafy...`,
   exampleIn: '$0 list',
 }

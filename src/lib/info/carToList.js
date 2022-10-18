@@ -1,6 +1,8 @@
 import { CarIndexer } from '@ipld/car/indexer'
 import { CarReader } from '@ipld/car/reader'
 
+import { toOutput } from './common.js'
+
 /**
  * @async
  * @param {Buffer|Uint8Array} bytes
@@ -15,7 +17,7 @@ export async function run(bytes) {
 
   output += 'ROOTS:\n'
   for (const root of roots) {
-    output += root.toString() + '\tz' + root.toV0().toString()
+    output += toOutput(root)
   }
 
   output += '\n\nCIDS:\n'
@@ -28,9 +30,7 @@ export async function run(bytes) {
       throw 'no blocks'
     }
 
-    output +=
-      blockIndex.cid.toString() + '\tz' + blockIndex.cid.toV0().toString()
-    output += '\n'
+    output += `${toOutput(blockIndex.cid)}\n`
   }
   return output
 }

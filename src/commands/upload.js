@@ -68,7 +68,7 @@ async function generateCarUploads(filePath, view, chunkSize = 512, profile) {
  * @param {UploadArgs} argv
  * @returns {Promise<void>}
  */
-const exe = async (argv) => {
+const handler = async (argv) => {
   const _path = argv.path
   const chunkSize = Number(argv.chunkSize) || 512
 
@@ -110,10 +110,11 @@ const builder = (yargs) =>
     })
 
 export default {
-  command: ['upload <path>', 'import <path>'],
+  //   command: ['upload <path>', 'import <path>'],
+  command: ['upload <path>'],
   describe: 'Upload any file or directory to your account',
   builder,
-  handler: exe,
+  handler,
   exampleIn: '$0 upload ../../duck.png',
   exampleOut: `uploaded bafy...`,
 }

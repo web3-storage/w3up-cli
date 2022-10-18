@@ -13,7 +13,7 @@ import { hasSetupAccount } from '../validation.js'
  * @param {DelegateArgs} argv
  * @returns {Promise<void>}
  */
-const exe = async ({ did, profile }) => {
+const handler = async ({ did, profile }) => {
   const view = ora({ spinner: 'line' })
   const client = getClient(profile)
 
@@ -27,13 +27,11 @@ const exe = async ({ did, profile }) => {
  * @type {import('yargs').CommandBuilder} yargs
  * @returns {import('yargs').Argv<{}>}
  */
-const build = (yargs) => yargs.check(hasSetupAccount)
+const builder = (yargs) => yargs.check(hasSetupAccount)
 
-const id = {
+export default {
   command: 'delegate <did>',
   describe: 'Delegate permissions to another DID',
-  builder: build,
-  handler: exe,
+  builder,
+  handler,
 }
-
-export default id

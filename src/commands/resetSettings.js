@@ -7,7 +7,7 @@ import { getClient } from '../client.js'
  * @async
  * @returns {Promise<void>}
  */
-const exe = async (args) => {
+const handler = async (args) => {
   const view = ora('reset')
   view.stopAndPersist({
     text: `This will delete your settings, are you sure?
@@ -36,7 +36,7 @@ export default {
   command: 'reset-settings',
   describe: 'Delete all local settings',
   builder: {},
-  handler: exe,
+  handler,
   exampleOut: `Settings cleared.`,
   exampleIn: '$0 reset-settings',
 }

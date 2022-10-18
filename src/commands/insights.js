@@ -16,7 +16,7 @@ import { hasSetupAccount, isCID } from '../validation.js'
  * @param {InsightsArgs} argv
  * @returns {Promise<void>}
  */
-const exe = async ({ cid, ws, subscribe, profile }) => {
+const handler = async ({ cid, ws, subscribe, profile }) => {
   const spinner = ora({ text: `Getting insights for ${cid}`, spinner: 'line' })
   const shouldWS = ws || subscribe
 
@@ -47,13 +47,11 @@ const builder = (yargs) =>
  */
 const checkCID = ({ cid }) => isCID(cid)
 
-const insights = {
+export default {
   command: 'insights <cid>',
   describe: 'Get insights for a CID',
   builder,
-  handler: exe,
+  handler,
   exampleOut: `example output goes here`,
   exampleIn: '$0 insights',
 }
-
-export default insights

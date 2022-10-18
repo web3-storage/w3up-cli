@@ -16,7 +16,7 @@ import { hasID, hasSetupAccount, isCID } from '../validation.js'
  * @param {RemoveArgs} argv
  * @returns {Promise<void>}
  */
-const exe = async ({ cid, profile }) => {
+const handler = async ({ cid, profile }) => {
   const view = ora(`Unlinking ${cid}...`).start()
   const res = await getClient(profile).removeUpload(parseLink(cid))
   view.succeed(`${res.toString()}`)
@@ -39,7 +39,7 @@ export default {
   command: ['remove <cid>', 'unlink <cid>'],
   describe: 'Unlink a CID from your account.',
   builder,
-  handler: exe,
+  handler,
   exampleIn: '$0 remove bafy...',
   exampleOut: `unlinked bafy...`,
 }

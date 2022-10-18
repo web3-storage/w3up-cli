@@ -14,7 +14,7 @@ import { buildSimpleConsoleTable } from '../utils.js'
  * @param {ListAccountsArgs} argv
  * @returns {Promise<void>}
  */
-const exe = async ({ profile }) => {
+const handler = async ({ profile }) => {
   const client = getClient(profile)
   const id = await client.account()
   const selected = client.settings.get('delegation')
@@ -43,5 +43,5 @@ export default {
   command: 'accounts',
   describe: 'List all accounts.',
   builder,
-  handler: exe,
+  handler,
 }

@@ -70,3 +70,17 @@ export function toShortCID(cid) {
   let str = cid.toString()
   return str.substring(0, 4) + '...' + str.substring(str.length - 4, str.length)
 }
+
+/**
+ * @param {CID} cid
+ */
+export function toOutput(cid) {
+  const cidv1 = cid.toString()
+  let cidv0 = 'N/A'
+
+  try {
+    cidv0 = 'z' + cid.toV0().toString()
+  } catch (err) {}
+
+  return `${cidv1}\t${cidv0}`
+}
