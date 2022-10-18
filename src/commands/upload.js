@@ -122,7 +122,8 @@ const builder = (yargs) =>
     })
 
 export default {
-  command: ['upload <path>', 'import <path>'],
+  //   command: ['upload <path>', 'import <path>'],
+  command: ['upload <path>'],
   describe: 'Upload any file or directory to your account',
   builder,
   handler,
