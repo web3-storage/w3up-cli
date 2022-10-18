@@ -16,7 +16,7 @@ import listAccounts from './listAccounts.js'
  * @param {SwitchAccountsArgs} argv
  * @returns {Promise<void>}
  */
-const exe = async ({ did, alias, profile }) => {
+const handler = async ({ did, alias, profile }) => {
   const client = getClient(profile)
   const delegations = client.settings.get('delegations')
   if (!delegations) {
@@ -88,5 +88,5 @@ export default {
   command: 'switch-account [alias]',
   describe: 'Select from accounts, including imported ones.',
   builder,
-  handler: exe,
+  handler,
 }

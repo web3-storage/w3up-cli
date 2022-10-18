@@ -14,7 +14,7 @@ import { isCID } from '../validation.js'
  * @param {CidArgs} argv
  * @returns {Promise<void>}
  */
-const exe = async ({ cid }) => {
+const handler = async ({ cid }) => {
   try {
     open(`${OPEN_WITH_SERVICE_URL}${cid}`)
   } catch (err) {
@@ -40,13 +40,11 @@ const checkTarget = ({ cid }) => {
   return isCID(_cid)
 }
 
-const openCmd = {
+export default {
   command: 'open <cid>',
   describe: 'Open a CID in your browser on w3s.link',
   builder,
-  handler: exe,
+  handler,
   exampleIn: '$0 open bafy...',
   exampleOut: `# opens ${OPEN_WITH_SERVICE_URL}/bafy... in your browser`,
 }
-
-export default openCmd

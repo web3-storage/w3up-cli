@@ -3,7 +3,11 @@ import ora from 'ora'
 import { getClient } from '../client.js'
 import { hasSetupAccount } from '../validation.js'
 
-const exe = async (/** @type {{ profile: string | undefined; }} */ args) => {
+/**
+ * @param {{ profile: string | undefined; }} args
+ * @returns {Promise<any>}
+ */
+const handler = async (args) => {
   const view = ora({ text: 'Checking identity', spinner: 'line' })
   try {
     const client = getClient(args.profile)
@@ -23,8 +27,6 @@ Access Account: ${response}`)
     }
   } catch (error) {
     view.fail(error.message)
-    // view.fail('Could not check identity, check w3up-failure.log')
-    // logToFile('whoami', error)
   }
 }
 
@@ -38,7 +40,7 @@ export default {
   command: 'whoami',
   describe: 'Show your current UCAN Identity',
   builder,
-  handler: exe,
+  handler,
   exampleOut: `DID:12345...`,
   exampleIn: '$0 whoami',
 }

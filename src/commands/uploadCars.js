@@ -59,7 +59,7 @@ export async function uploadExistingCar(filePath, client, view) {
  * @param {UploadArgs} argv
  * @returns {Promise<void>}
  */
-const exe = async (argv) => {
+const handler = async (argv) => {
   const _path = argv.path
   const view = ora({
     text: `Uploading all cars within ${_path}...`,
@@ -114,7 +114,7 @@ export default {
   command: ['upload-cars <path>'],
   describe: 'Walk a file directory, and upload any found cars to an account',
   builder,
-  handler: exe,
+  handler,
   exampleIn: '$0 upload-cars ducks/',
   exampleOut: `<show all cars uploaded>`,
 }

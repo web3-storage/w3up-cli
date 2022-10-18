@@ -16,7 +16,7 @@ import { isPath, resolvePath } from '../validation.js'
  * @param {CarInfoArgs} argv
  * @returns {Promise<void>}
  */
-const exe = async ({
+const handler = async ({
   path = '/',
   dot = false,
   vertical = false,
@@ -59,15 +59,13 @@ const builder = (yargs) =>
  */
 const checkPath = ({ path }) => isPath(path)
 
-const upload = {
+export default {
   command: 'inspect-car <path>',
   describe: 'Generate an examination file from a <path> to a CAR ',
   builder,
-  handler: exe,
+  handler,
   exampleIn: '$0 inspect-car ../duck.car --tree',
   exampleOut: `roots
 └─┬ bafy...
   └── duck.png`,
 }
-
-export default upload

@@ -16,7 +16,7 @@ import { isPath } from '../validation.js'
  * @param {ImportSettingsArgs} argv
  * @returns {Promise<void>}
  */
-const exe = async ({ fileName, profile }) => {
+const handler = async ({ fileName, profile }) => {
   const spinner = ora('export')
   const client = getClient(profile)
   spinner.stopAndPersist({
@@ -99,7 +99,7 @@ const importSettings = {
   command: 'import-settings <fileName>',
   describe: 'Import a settings.json file',
   builder,
-  handler: exe,
+  handler,
   exampleOut: `You have successfully imported settings.json!`,
   exampleIn: '$0 import-settings settings.json',
 }

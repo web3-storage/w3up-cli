@@ -17,7 +17,7 @@ import { resolvePath } from '../validation.js'
  * @param {ExportSettingsArgs} args
  * @returns {Promise<void>}
  */
-const exe = async ({ filename, profile }) => {
+const handler = async ({ filename, profile }) => {
   const view = ora().start()
   const client = getClient(profile)
 
@@ -45,7 +45,6 @@ const exe = async ({ filename, profile }) => {
     }
 
     for (const [did, del] of Object.entries(store.delegations)) {
-      //       console.log('what', del)
       const imported = Delegation.import([del?.ucan?.root])
       store.delegations[did] = { ucan: UCAN.format(imported), alias: del.alias }
     }
@@ -64,13 +63,11 @@ const exe = async ({ filename, profile }) => {
   }
 }
 
-const exportSettings = {
+export default {
   command: 'export-settings [filename]', //[] means optional arg.
   describe: 'Export a settings json file',
   builder: {},
-  handler: exe,
+  handler,
   exampleOut: `DID:12345`,
   exampleIn: '$0 export-settings',
 }
-
-export default exportSettings
