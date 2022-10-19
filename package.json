@@ -18,7 +18,7 @@
   "scripts": {
     "pretest": "npm run prettier && npm run typecheck",
     "test": "echo 'no tests exist'",
-    "typecheck": "tsc --build",
+    "typecheck": "tsc --noEmit",
     "prettier": "prettier --ignore-unknown --ignore-path .gitignore --check ./src",
     "prettier:fix": "prettier --ignore-unknown --write --ignore-path .gitignore .",
     "test:coverage": "vitest run --coverage",

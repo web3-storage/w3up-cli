@@ -27,7 +27,7 @@ export const isCID = (cid) => {
     throw 'Empty CID was provided'
   }
   try {
-    parseLink(cid)
+    parseLink(cid?.toString() || '')
   } catch (err) {
     throw new Error(`${cid} is probably not a valid CID\n${err}`)
   }

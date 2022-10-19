@@ -1,5 +1,4 @@
 import * as API from '@ucanto/interface'
-// @ts-ignore
 import { parseLink } from '@ucanto/server'
 import ora from 'ora'
 
@@ -24,10 +23,9 @@ const handler = async ({ cid, ws, subscribe, profile }) => {
     spinner.fail(`⚠️Subscriptions not yet supported ⚠️`)
   } else {
     const client = getClient(profile)
-    /***
-     * @type Insights
-     */
-    const insights = await client.insights(parseLink(cid))
+    // @ts-expect-error
+    const insights = await client.insights(parseLink(cid?.toString() || ''))
+    // @ts-expect-error
     spinner.succeed(JSON.stringify(insights?.insight_data, null, 2))
   }
 }

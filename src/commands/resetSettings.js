@@ -4,7 +4,12 @@ import ora from 'ora'
 import { getClient } from '../client.js'
 
 /**
- * @async
+ * @typedef {{profile?: string}} ResetSettings
+ * @typedef {import('yargs').Arguments<ResetSettings>} ResetSettingsArgs
+ */
+
+/**
+ * @param {ResetSettingsArgs} args
  * @returns {Promise<void>}
  */
 const handler = async (args) => {

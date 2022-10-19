@@ -7,7 +7,7 @@ import { hasID } from '../validation.js'
 import listAccounts from './listAccounts.js'
 
 /**
- * @typedef {{did?:string, alias?:string, profile: string}} SwitchAccounts
+ * @typedef {{did?:string, alias?:string, profile?: string}} SwitchAccounts
  * @typedef {import('yargs').Arguments<SwitchAccounts>} SwitchAccountsArgs
  */
 
@@ -44,6 +44,8 @@ const handler = async ({ did, alias, profile }) => {
       console.log(
         `No account with alias ${alias} found. Here are your current accounts:\n`
       )
+
+      // @ts-expect-error
       listAccounts.handler({ profile })
     }
   } else if (did) {

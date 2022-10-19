@@ -5,7 +5,8 @@ import { getClient } from '../client.js'
 import { hasSetupAccount } from '../validation.js'
 
 /**
- * @typedef {import('yargs').Arguments<{did?:string, profile: string}>} DelegateArgs
+ * @typedef {{did?:`did:${string}`, profile?: string}} Delegate
+ * @typedef {import('yargs').Arguments<Delegate>} DelegateArgs
  */
 
 /**
@@ -16,6 +17,11 @@ import { hasSetupAccount } from '../validation.js'
 const handler = async ({ did, profile }) => {
   const view = ora({ spinner: 'line' })
   const client = getClient(profile)
+
+  if (!did) {
+    view.fail('You must provide a did to delegate to.')
+    return
+  }
 
   const delegation = await client.makeDelegation({ to: did })
   fs.writeFileSync('delegation.car', delegation, 'binary')

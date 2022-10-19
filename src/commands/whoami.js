@@ -4,7 +4,12 @@ import { getClient } from '../client.js'
 import { hasSetupAccount } from '../validation.js'
 
 /**
- * @param {{ profile: string | undefined; }} args
+ * @typedef {{profile?: string}} WhoAmI
+ * @typedef {import('yargs').Arguments<WhoAmI>} WhoAmIArgs
+ */
+
+/**
+ * @param {WhoAmIArgs} args
  * @returns {Promise<any>}
  */
 const handler = async (args) => {
@@ -15,7 +20,7 @@ const handler = async (args) => {
     const response = await client.whoami()
 
     if (response?.error) {
-      //@ts-ignore
+      //@ts-expect-error
       view.fail(response?.message)
     } else if (response == null) {
       view.fail('Account not found.')
@@ -26,6 +31,7 @@ Account: ${account.did()}
 Access Account: ${response}`)
     }
   } catch (error) {
+    // @ts-expect-error
     view.fail(error.message)
   }
 }

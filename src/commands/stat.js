@@ -5,15 +5,14 @@ import { buildSimpleConsoleTable } from '../utils.js'
 import { hasSetupAccount } from '../validation.js'
 
 /**
- * @typedef {{verbose?:boolean, profile?: string}} List
- * @typedef {import('yargs').Arguments<List>} ListArgs
+ * @typedef {{verbose?:boolean, profile?: string}} Stat
+ * @typedef {import('yargs').Arguments<Stat>} StatArgs
  */
 
 /**
- * @typedef UploadItem
- * @property {string} dataCID
+ * @typedef StoreItem
  * @property {string} carCID
- * @property {number} uploadedAt
+ * @property {string} uploadedAt
  */
 
 /**
@@ -27,38 +26,42 @@ import { hasSetupAccount } from '../validation.js'
  */
 
 /**
- * @param {UploadItem} item
+ * @param {StoreItem} item
  * @param {boolean} verbose
- * @returns {Array<any>}
+ * @returns {Array<string>}
  */
 function itemToTable(item, verbose = false) {
-  const uploadedAt = new Intl.DateTimeFormat('en-US', {
-    month: '2-digit',
-    day: '2-digit',
-    year: 'numeric',
-  })
-    .format(item.uploadedAt)
-    .toLocaleString()
+  let at = item.uploadedAt
+  let uploadedAt = ''
+  if (Date.parse(at)) {
+    uploadedAt = new Intl.DateTimeFormat('en-US', {
+      month: '2-digit',
+      day: '2-digit',
+      year: 'numeric',
+    })
+      .format(Date.parse(at))
+      .toLocaleString()
+  }
 
-  let out = [uploadedAt, item.dataCID]
+  let out = [uploadedAt, item.carCID]
   if (verbose) {
-    out.push(item.carCID)
+    // show application did?
   }
   return out
 }
 
 /**
  *
- * @param {ListResult<UploadItem>} listResponse
+ * @param {ListResult<StoreItem>} listResponse
  * @param {boolean} verbose
  * @returns {string}
  */
 const formatOutput = (listResponse, verbose = false) => {
   const list = listResponse?.results || []
 
-  const head = ['Date']
+  const head = ['Date', 'Car CID']
   if (verbose) {
-    head.push('Car CID')
+    head.push('Application DID')
   }
   const table = buildSimpleConsoleTable(head)
   for (const upload of list) {
@@ -69,39 +72,38 @@ const formatOutput = (listResponse, verbose = false) => {
 
 /**
  * @async
- * @param {ListArgs} argv
+ * @param {StatArgs} argv
  * @returns {Promise<any>}
  */
 const handler = async (argv) => {
   const verbose = argv.verbose
   const client = getClient(argv.profile)
   const view = ora()
-
   /** @type any */
   const listResponse = await oraPromise(client.list(), {
-    text: `Listing Uploads...`,
+    text: `Listing linked cars...`,
     spinner: 'line',
   })
 
   if (!listResponse?.results?.length) {
-    view.info(`You don't seem to have any uploads yet!`)
+    view.info(`You don't seem to have linked cars!`)
   } else {
     console.log(formatOutput(listResponse, verbose))
   }
 }
 
 /** @type {import('yargs').CommandBuilder} yargs */
-const builder = (yargs) =>
-  yargs.check(hasSetupAccount).option('verbose', {
-    type: 'boolean',
-    alias: 'verbose',
-    showInHelp: true,
-    describe: 'Show more columns in the list, such as the Uploaded CAR CID',
-  })
+const builder = (yargs) => yargs.check(hasSetupAccount)
+//     .option('verbose', {
+//     type: 'boolean',
+//     alias: 'verbose',
+//     showInHelp: true,
+//     describe: 'Show more columns in the list',
+//   })
 
 export default {
-  command: 'list',
-  describe: 'List your uploads',
+  command: 'stat',
+  describe: 'stat (list) the linked cars in your account',
   builder,
   handler,
   exampleOut: `bafy...\nbafy...`,

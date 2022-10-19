@@ -5,7 +5,7 @@ import { getClient } from '../client.js'
 import { buildSimpleConsoleTable } from '../utils.js'
 
 /**
- * @typedef {{ profile: string }} ListAccounts
+ * @typedef {{ profile?: string }} ListAccounts
  * @typedef {import('yargs').Arguments<ListAccounts>} ListAccountsArgs
  */
 

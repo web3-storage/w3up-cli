@@ -13,9 +13,11 @@ import { bytesToCarCID } from '../utils.js'
 import { checkPath, hasID, hasSetupAccount } from '../validation.js'
 
 /**
- * @typedef {{path?: string;split?: boolean; profile: string}} Upload
+ * @typedef {{path?: string, split?: boolean, profile?: string}} Upload
  * @typedef {import('yargs').Arguments<Upload>} UploadArgs
- * @async
+ */
+
+/**
  * @param {string} filePath - The path to generate car uploads for.
  * @param {import('ora').Ora} view
  * @param {string} [profile]
@@ -41,20 +43,14 @@ async function generateCarUploads(filePath, view, chunkSize = 512, profile) {
       count++
       roots = roots.concat(car.roots)
       cids.push(await bytesToCarCID(car.bytes))
-      /**
-       * @type any
-       */
-      await client.upload(car.bytes).then((response) => {
-        view.succeed(response)
-      })
+
+      const result = await client.upload(car.bytes)
+      // @ts-expect-error
+      view.succeed(result)
     }
 
     console.log('data CIDs:\n', roots.map((x) => x.toString()).join('\n'))
-    if (count > 1) {
-      //       console.log('linking other cars:', cids)
-      //       const linkingResponse = await client.linkcars(rootCarCID, cids)
-      //       console.log('other', linkingResponse)
-    }
+    console.log('car CIDs:\n', cids.map((x) => x.toString()).join('\n'))
     const uploadAddResult = await client.uploadAdd(roots[0], cids)
     console.log('hi', uploadAddResult)
   } catch (err) {

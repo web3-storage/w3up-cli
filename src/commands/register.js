@@ -5,7 +5,7 @@ import { logToFile } from '../lib/logging.js'
 import { hasID, isEmail } from '../validation.js'
 
 /**
- * @typedef {{email?:string, profile: string}} Register
+ * @typedef {{email?:string, profile?: string}} Register
  * @typedef {import('yargs').Arguments<Register>} RegisterArgs
  */
 
@@ -26,7 +26,8 @@ const handler = async (argv) => {
   }).start()
 
   try {
-    hasID(client)
+    // @ts-expect-error
+    hasID({ profile })
     let result = await client.register(email)
     if (result) {
       view.succeed(`Registration succeeded: ${email}`)

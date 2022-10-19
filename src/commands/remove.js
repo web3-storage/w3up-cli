@@ -18,7 +18,10 @@ import { hasID, hasSetupAccount, isCID } from '../validation.js'
  */
 const handler = async ({ cid, profile }) => {
   const view = ora(`Unlinking ${cid}...`).start()
-  const res = await getClient(profile).removeUpload(parseLink(cid))
+  const res = await getClient(profile).removeUpload(
+    // @ts-expect-error
+    parseLink(cid?.toString() || '')
+  )
   view.succeed(`${res.toString()}`)
 }
 

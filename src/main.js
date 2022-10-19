@@ -16,6 +16,7 @@ import open from './commands/open.js'
 import register from './commands/register.js'
 import remove from './commands/remove.js'
 import resetSettings from './commands/resetSettings.js'
+import stat from './commands/stat.js'
 // import setup from './commands/setup.js'
 import switchAccount from './commands/switchAccount.js'
 import upload from './commands/upload.js'
@@ -62,6 +63,7 @@ export const main = async () => {
 
     //general usage
     .command(list)
+    .command(stat)
     //     .example(list.exampleIn, list.exampleOut)
     .command(upload)
     //     .example(upload.exampleIn, upload.exampleOut)
@@ -83,7 +85,7 @@ export const main = async () => {
 
     //insights
     // false description hides command.
-    .command(insights.command, false, insights.handler)
+//     .command(insights.command, false, insights.handler)
 
     //utilities
     .command(inspectCar)

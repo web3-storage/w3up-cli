@@ -5,7 +5,7 @@ import { getClient } from '../client.js'
 import { hasID, isPath } from '../validation.js'
 
 /**
- * @typedef {{fileName?:string, alias?:string, profile: string}} ImportDelegation
+ * @typedef {{fileName?:string, alias?:string, profile?: string}} ImportDelegation
  * @typedef {import('yargs').Arguments<ImportDelegation>} ImportDelegationArgs
  */
 
