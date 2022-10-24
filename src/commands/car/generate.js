@@ -6,11 +6,11 @@ import path from 'path'
 // @ts-ignore
 import toIterator from 'stream-to-it'
 
-import { buildCar } from '../lib/car/buildCar.js'
-import { logToFile } from '../lib/logging.js'
-import { MAX_CAR_SIZE } from '../settings.js'
-import { bytesToCarCID } from '../utils.js'
-import { isPath, resolvePath } from '../validation.js'
+import { buildCar } from '../../lib/car/buildCar.js'
+import { logToFile } from '../../lib/logging.js'
+import { MAX_CAR_SIZE } from '../../settings.js'
+import { bytesToCarCID } from '../../utils.js'
+import { isPath, resolvePath } from '../../validation.js'
 
 /**
  * @typedef {object} GenerateCar
@@ -100,7 +100,7 @@ const builder = (yargs) =>
 const checkPath = ({ filePath }) => isPath(filePath)
 
 export default {
-  command: 'generate-car <filePath>',
+  command: 'generate <filePath>',
   describe: 'From an input file, locally generate a CAR file.',
   builder,
   handler,

@@ -34,25 +34,31 @@ async function generateCarUploads(filePath, view, chunkSize = 512, profile) {
     let roots = []
     /** @type Array<CID> */
     let cids = []
-    let count = 0
     let rootCarCID
 
     const uploadPromises = []
 
     for await (const car of toIterator(stream)) {
-      count++
       roots = roots.concat(car.roots)
       cids.push(await bytesToCarCID(car.bytes))
 
       const result = await client.upload(car.bytes)
-      // @ts-expect-error
+      if (result.error) {
+        // @ts-expect-error
+        throw new Error(result?.cause?.message)
+      }
       view.succeed(result)
+    }
+
+    const uploadAddResult = await client.uploadAdd(roots[0], cids)
+    // @ts-expect-error
+    if (uploadAddResult.error) {
+      // @ts-expect-error
+      throw new Error(uploadAddResult?.cause?.message)
     }
 
     console.log('data CIDs:\n', roots.map((x) => x.toString()).join('\n'))
     console.log('car CIDs:\n', cids.map((x) => x.toString()).join('\n'))
-    const uploadAddResult = await client.uploadAdd(roots[0], cids)
-    console.log('hi', uploadAddResult)
   } catch (err) {
     view.fail('Upload did not complete successfully, check w3up-failure.log')
     logToFile('upload', err)

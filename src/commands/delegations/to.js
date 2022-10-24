@@ -1,8 +1,8 @@
 import fs from 'fs'
 import ora from 'ora'
 
-import { getClient } from '../client.js'
-import { hasSetupAccount } from '../validation.js'
+import { getClient } from '../../client.js'
+import { hasSetupAccount } from '../../validation.js'
 
 /**
  * @typedef {{did?:`did:${string}`, profile?: string}} Delegate
@@ -36,7 +36,7 @@ const handler = async ({ did, profile }) => {
 const builder = (yargs) => yargs.check(hasSetupAccount)
 
 export default {
-  command: 'delegate <did>',
+  command: 'to <did>',
   describe: 'Delegate permissions to another DID',
   builder,
   handler,

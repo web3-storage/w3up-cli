@@ -1,7 +1,7 @@
 import Inquirer from 'inquirer'
 import ora from 'ora'
 
-import { getClient } from '../client.js'
+import { getClient } from '../../client.js'
 
 /**
  * @typedef {{profile?: string}} ResetSettings
@@ -38,7 +38,7 @@ const handler = async (args) => {
 }
 
 export default {
-  command: 'reset-settings',
+  command: 'reset',
   describe: 'Delete all local settings',
   builder: {},
   handler,

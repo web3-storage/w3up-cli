@@ -4,8 +4,8 @@ import fs from 'fs'
 import Inquirer from 'inquirer'
 import ora from 'ora'
 
-import { getClient } from '../client.js'
-import { isPath } from '../validation.js'
+import { getClient } from '../../client.js'
+import { isPath } from '../../validation.js'
 
 /**
  * @typedef ImportSettings
@@ -80,7 +80,7 @@ const builder = (yargs) =>
 const checkFileName = ({ fileName }) => isPath(fileName)
 
 export default {
-  command: 'import-settings <fileName>',
+  command: 'import <fileName>',
   describe: 'Import a settings.json file',
   builder,
   handler,

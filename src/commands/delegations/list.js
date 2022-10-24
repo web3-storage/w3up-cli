@@ -1,8 +1,8 @@
 // @ts-ignore
 import { Delegation, UCAN } from '@ucanto/server'
 
-import { getClient } from '../client.js'
-import { buildSimpleConsoleTable } from '../utils.js'
+import { getClient } from '../../client.js'
+import { buildSimpleConsoleTable } from '../../utils.js'
 
 /**
  * @typedef {{ profile?: string }} ListAccounts
@@ -24,11 +24,6 @@ const handler = async ({ profile }) => {
   for (const [did, del] of Object.entries(delegations)) {
     const cur = selected == did
     table.push([cur ? '*' : '', del.alias, did])
-    const imported = Delegation.import([del.ucan.root])
-
-    const decoded = UCAN.decode(del.ucan.root.bytes)
-    console.log('hi', decoded.issuer.did())
-    console.log('hi', decoded.audience.did())
   }
   console.log(table.toString())
 }
@@ -40,8 +35,8 @@ const handler = async ({ profile }) => {
 const builder = (yargs) => yargs
 
 export default {
-  command: 'accounts',
-  describe: 'List all accounts.',
+  command: 'list',
+  describe: 'List all delegations (including from account to self).',
   builder,
   handler,
 }

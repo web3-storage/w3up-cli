@@ -1,17 +1,17 @@
 import ora, { oraPromise } from 'ora'
 
-import { getClient } from '../client.js'
-import { buildSimpleConsoleTable } from '../utils.js'
-import { hasSetupAccount } from '../validation.js'
+import { getClient } from '../../client.js'
+import { buildSimpleConsoleTable } from '../../utils.js'
+import { hasSetupAccount } from '../../validation.js'
 
 /**
- * @typedef {{verbose?:boolean, profile?: string}} Stat
- * @typedef {import('yargs').Arguments<Stat>} StatArgs
+ * @typedef {{verbose?:boolean, delim?:string, stdout?:boolean, profile?: string}} List
+ * @typedef {import('yargs').Arguments<List>} ListArgs
  */
 
 /**
  * @typedef StoreItem
- * @property {string} carCID
+ * @property {string} payloadCID
  * @property {string} uploadedAt
  */
 
@@ -43,7 +43,7 @@ function itemToTable(item, verbose = false) {
       .toLocaleString()
   }
 
-  let out = [uploadedAt, item.carCID]
+  let out = [uploadedAt, item.payloadCID]
   if (verbose) {
     // show application did?
   }
@@ -72,38 +72,61 @@ const formatOutput = (listResponse, verbose = false) => {
 
 /**
  * @async
- * @param {StatArgs} argv
+ * @param {ListArgs} argv
  * @returns {Promise<any>}
  */
 const handler = async (argv) => {
   const verbose = argv.verbose
   const client = getClient(argv.profile)
   const view = ora()
+  if (argv.stdout) {
+    const delim = argv.delim || '\t'
+    const listResponse = await client.stat()
+    const output = listResponse?.results
+      ?.map(
+        (x) => `${new Date(x.uploadedAt).toISOString()}${delim}${x.payloadCID}`
+      )
+      .join('\n')
+    process.stdout.write(`${output}\n`)
+    return
+  }
+
   /** @type any */
-  const listResponse = await oraPromise(client.list(), {
+  const listResponse = await oraPromise(client.stat(), {
     text: `Listing linked cars...`,
     spinner: 'line',
   })
 
   if (!listResponse?.results?.length) {
-    view.info(`You don't seem to have linked cars!`)
+    if (!listResponse.error) {
+      view.info(`You don't seem to have linked cars!`)
+    } else {
+      view.fail(listResponse.cause.message)
+    }
   } else {
     console.log(formatOutput(listResponse, verbose))
   }
 }
 
 /** @type {import('yargs').CommandBuilder} yargs */
-const builder = (yargs) => yargs.check(hasSetupAccount)
-//     .option('verbose', {
-//     type: 'boolean',
-//     alias: 'verbose',
-//     showInHelp: true,
-//     describe: 'Show more columns in the list',
-//   })
+const builder = (yargs) =>
+  yargs
+    .check(hasSetupAccount)
+    .option('stdout', {
+      type: 'boolean',
+      showInHelp: true,
+      describe: 'Output a machine readable format to stdout',
+    })
+    .option('delim', {
+      type: 'string',
+      showInHelp: true,
+      implies: 'stdout',
+      describe: 'The delimiter to use when using stdout',
+    })
 
 export default {
-  command: 'stat',
-  describe: 'stat (list) the linked cars in your account',
+  command: ['list', 'stat'],
+  describe: 'List the linked cars in your account.',
   builder,
   handler,
   exampleOut: `bafy...\nbafy...`,

@@ -2,9 +2,9 @@
 import { Delegation } from '@ucanto/server'
 import inquirer from 'inquirer'
 
-import { getClient } from '../client.js'
-import { hasID } from '../validation.js'
-import listAccounts from './listAccounts.js'
+import { getClient } from '../../client.js'
+import { hasID } from '../../validation.js'
+import listAccounts from './list.js'
 
 /**
  * @typedef {{did?:string, alias?:string, profile?: string}} SwitchAccounts
@@ -87,8 +87,8 @@ const builder = (yargs) =>
   })
 
 export default {
-  command: 'switch-account [alias]',
-  describe: 'Select from accounts, including imported ones.',
+  command: 'switch [alias]',
+  describe: 'Select from delegations, including imported ones.',
   builder,
   handler,
 }

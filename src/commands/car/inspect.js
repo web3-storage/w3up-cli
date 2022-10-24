@@ -1,9 +1,9 @@
 import fs from 'fs'
 
-import { run as carToDot } from '../lib/info/carToDot.js'
-import { run as carToList } from '../lib/info/carToList.js'
-import { run as carToTree } from '../lib/info/carToTree.js'
-import { isPath, resolvePath } from '../validation.js'
+import { run as carToDot } from '../../lib/info/carToDot.js'
+import { run as carToList } from '../../lib/info/carToList.js'
+import { run as carToTree } from '../../lib/info/carToTree.js'
+import { isPath, resolvePath } from '../../validation.js'
 
 /**
  * @typedef {{path?:string, dot?:boolean, vertical?:boolean}} CarInfo
@@ -60,7 +60,7 @@ const builder = (yargs) =>
 const checkPath = ({ path }) => isPath(path)
 
 export default {
-  command: 'inspect-car <path>',
+  command: 'inspect <path>',
   describe: 'Generate an examination file from a <path> to a CAR ',
   builder,
   handler,
