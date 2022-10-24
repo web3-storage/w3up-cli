@@ -1,7 +1,7 @@
 import ora, { oraPromise } from 'ora'
 
 import { getClient } from '../../client.js'
-import { buildSimpleConsoleTable } from '../../utils.js'
+import { buildSimpleConsoleTable, humanizeBytes } from '../../utils.js'
 import { hasSetupAccount } from '../../validation.js'
 
 /**
@@ -13,6 +13,7 @@ import { hasSetupAccount } from '../../validation.js'
  * @typedef StoreItem
  * @property {string} payloadCID
  * @property {string} uploadedAt
+ * @property {number} size
  */
 
 /**
@@ -44,6 +45,11 @@ function itemToTable(item, verbose = false) {
   }
 
   let out = [uploadedAt, item.payloadCID]
+
+  if (item.size) {
+    const size = humanizeBytes(item.size)
+    out.push(size)
+  }
   if (verbose) {
     // show application did?
   }
@@ -59,7 +65,7 @@ function itemToTable(item, verbose = false) {
 const formatOutput = (listResponse, verbose = false) => {
   const list = listResponse?.results || []
 
-  const head = ['Date', 'Car CID']
+  const head = ['Date', 'Car CID', 'Size']
   if (verbose) {
     head.push('Application DID')
   }

@@ -35,19 +35,22 @@ async function generateCarUploads(filePath, view, chunkSize = 512, profile) {
     /** @type Array<CID> */
     let cids = []
     let rootCarCID
+    let origin = null
 
     const uploadPromises = []
 
     for await (const car of toIterator(stream)) {
       roots = roots.concat(car.roots)
-      cids.push(await bytesToCarCID(car.bytes))
+      const cid = await bytesToCarCID(car.bytes)
+      cids.push(cid)
 
-      const result = await client.upload(car.bytes)
+      const result = await client.upload(car.bytes, origin)
       if (result.error) {
         // @ts-expect-error
         throw new Error(result?.cause?.message)
       }
       view.succeed(result)
+      origin = cid
     }
 
     const uploadAddResult = await client.uploadAdd(roots[0], cids)
