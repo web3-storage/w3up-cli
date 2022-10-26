@@ -1022,10 +1022,10 @@
   resolved "https://registry.yarnpkg.com/@web3-storage/multipart-parser/-/multipart-parser-1.0.0.tgz#6b69dc2a32a5b207ba43e556c25cc136a56659c4"
   integrity sha512-BEO6al7BYqcnfX15W2cnGR+Q566ACXAT9UQykORCWW80lmkpWsnEob6zJS1ZVBKsSJC8+7vJkHwlp+lXG1UCdw==
 
-"@web3-storage/w3up-client@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@web3-storage/w3up-client/-/w3up-client-3.0.0.tgz#acc07eec99d5ed66aca5138fc881eb746f0c239a"
-  integrity sha512-mxZDnIU2YCxCsGxQ2RZ7sOXVsALIoBvhQ+4axM2Ujlf+f0wjo1iH3SHTcwhsvghBZIKScBD9yz6Ygk3kHCRRCQ==
+"@web3-storage/w3up-client@^3.0.1":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@web3-storage/w3up-client/-/w3up-client-3.0.1.tgz#f9308cdb6869950ee76d12fd9a5f981756416d0d"
+  integrity sha512-Yxt0TLLDr/vk7HpJfeimOceBT5P+xvhFcWbo/lVpChiMQsvCMOL00Y0UTAIVSFJkL6nB4XAGz+eNlOF7ZYhCZQ==
   dependencies:
     "@ucanto/client" "^1.0.1"
     "@ucanto/core" "^1.0.1"
