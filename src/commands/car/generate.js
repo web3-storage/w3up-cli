@@ -83,9 +83,7 @@ const handler = async ({ filePath = '', split = false }) => {
   }
 }
 
-/**
- * @type {import('yargs').CommandBuilder} yargs
- */
+/** @type {import('yargs').CommandBuilder} yargs */
 const builder = (yargs) =>
   yargs.check(checkPath).option('split', {
     type: 'boolean',

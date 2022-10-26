@@ -7,6 +7,7 @@ export default {
   command: 'delegate <cmd>',
   describe: 'Manage delegations',
   handler: () => {},
+  // @ts-expect-error
   builder: (yargs) =>
     yargs.command([
       createDelegation,

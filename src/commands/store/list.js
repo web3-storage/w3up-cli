@@ -88,8 +88,10 @@ const handler = async (argv) => {
   if (argv.stdout) {
     const delim = argv.delim || '\t'
     const listResponse = await client.stat()
+    // @ts-expect-error
     const output = listResponse?.results
       ?.map(
+        // @ts-expect-error
         (x) => `${new Date(x.uploadedAt).toISOString()}${delim}${x.payloadCID}`
       )
       .join('\n')

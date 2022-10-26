@@ -6,6 +6,7 @@ export default {
   command: 'settings <cmd>',
   describe: 'Manage settings',
   handler: () => {},
+  // @ts-expect-error
   builder: (yargs) =>
     yargs.command([exportSettings, importSettings, resetSettings]),
 }
