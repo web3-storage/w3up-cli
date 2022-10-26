@@ -1,3 +1,5 @@
+// @ts-expect-error
+import * as CAR from '@ipld/car'
 import fs from 'fs'
 import ora from 'ora'
 import path from 'path'
@@ -8,6 +10,7 @@ import { getClient } from '../client.js'
 import { getAllFiles, isDirectory } from '../lib/car/file.js'
 import { logToFile } from '../lib/logging.js'
 import { MAX_CAR_SIZE } from '../settings.js'
+import { bytesToCarCID } from '../utils.js'
 import {
   checkPath,
   hasID,
@@ -24,7 +27,7 @@ const MAX_CONNECTION_POOL_SIZE = 3
  * @param {string} filePath - The path to generate car uploads for.
  * @param {any} client - The client to upload with.
  * @param {import('ora').Ora} view
- * @returns {Promise<void>}
+ * @returns {Promise<Buffer|void>}
  */
 export async function uploadExistingCar(filePath, client, view) {
   try {
@@ -42,6 +45,7 @@ export async function uploadExistingCar(filePath, client, view) {
 
     if (response) {
       view.succeed(`${response}`)
+      return buffer
     }
   } catch (err) {
     view.fail('Upload did not complete successfully, check w3up-failure.log')
@@ -62,7 +66,7 @@ export async function uploadExistingCar(filePath, client, view) {
 const handler = async (argv) => {
   const _path = argv.path
   const view = ora({
-    text: `Uploading all cars within ${_path}...`,
+    text: `Uploading ${_path}...`,
     spinner: 'line',
   }).start()
 
@@ -73,10 +77,6 @@ const handler = async (argv) => {
   }
 
   const targetPath = path.resolve(_path)
-
-  if (!isDirectory(targetPath)) {
-    return Promise.reject('Path must be directory for bulk uploads.')
-  }
 
   const stream = new TransformStream(
     {},
@@ -100,7 +100,17 @@ const handler = async (argv) => {
   }
 
   for await (const car of toIterator(stream.readable)) {
-    uploadExistingCar(car, client, view)
+    uploadExistingCar(car, client, view).then(async (buffer) => {
+      if (buffer) {
+        const bytes = Uint8Array.from(buffer)
+        const reader = await CAR.CarReader.fromBytes(bytes)
+        const roots = await reader.getRoots()
+        const cid = await bytesToCarCID(bytes)
+        for (const root of roots) {
+          await client.uploadAdd(root, [cid])
+        }
+      }
+    })
   }
 }
 

@@ -1,10 +1,15 @@
 import Inquirer from 'inquirer'
 import ora from 'ora'
 
-import { getClient } from '../client.js'
+import { getClient } from '../../client.js'
 
 /**
- * @async
+ * @typedef {{profile?: string}} ResetSettings
+ * @typedef {import('yargs').Arguments<ResetSettings>} ResetSettingsArgs
+ */
+
+/**
+ * @param {ResetSettingsArgs} args
  * @returns {Promise<void>}
  */
 const handler = async (args) => {
@@ -33,7 +38,7 @@ const handler = async (args) => {
 }
 
 export default {
-  command: 'reset-settings',
+  command: 'reset',
   describe: 'Delete all local settings',
   builder: {},
   handler,

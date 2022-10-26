@@ -2,12 +2,12 @@
 import { Delegation } from '@ucanto/server'
 import inquirer from 'inquirer'
 
-import { getClient } from '../client.js'
-import { hasID } from '../validation.js'
-import listAccounts from './listAccounts.js'
+import { getClient } from '../../client.js'
+import { hasID } from '../../validation.js'
+import listAccounts from './list.js'
 
 /**
- * @typedef {{did?:string, alias?:string, profile: string}} SwitchAccounts
+ * @typedef {{did?:string, alias?:string, profile?: string}} SwitchAccounts
  * @typedef {import('yargs').Arguments<SwitchAccounts>} SwitchAccountsArgs
  */
 
@@ -44,6 +44,8 @@ const handler = async ({ did, alias, profile }) => {
       console.log(
         `No account with alias ${alias} found. Here are your current accounts:\n`
       )
+
+      // @ts-expect-error
       listAccounts.handler({ profile })
     }
   } else if (did) {
@@ -85,8 +87,8 @@ const builder = (yargs) =>
   })
 
 export default {
-  command: 'switch-account [alias]',
-  describe: 'Select from accounts, including imported ones.',
+  command: 'switch [alias]',
+  describe: 'Select from delegations, including imported ones.',
   builder,
   handler,
 }

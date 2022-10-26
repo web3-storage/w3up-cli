@@ -51,6 +51,10 @@ export async function bytesToCarCID(bytes) {
   return CID.createV1(0x202, digest)
 }
 
+/**
+ * @param {Array<string>} head
+ * @returns
+ */
 export function buildSimpleConsoleTable(head) {
   const table = new Table({
     truncate: false,

@@ -27,7 +27,7 @@ export const isCID = (cid) => {
     throw 'Empty CID was provided'
   }
   try {
-    parseLink(cid)
+    parseLink(cid?.toString() || '')
   } catch (err) {
     throw new Error(`${cid} is probably not a valid CID\n${err}`)
   }
@@ -101,8 +101,37 @@ export const hasEmail = ({ profile }) => {
 /**
  * @param {import('yargs').Arguments<{profile?:string}>} argv
  */
+export const hasOtherDelegation = ({ profile }) => {
+  const settings = getProfileSettings(profile)
+
+  if (!settings.has('delegation')) {
+    return false
+  }
+
+  const delegations = settings.get('delegations')
+  const delegation = settings.get('delegation')
+
+  if (delegations[delegation].alias != 'self') {
+    return true
+  } else {
+    return false
+  }
+}
+
+/**
+ * @param {import('yargs').Arguments<{profile?:string}>} argv
+ */
 export function hasSetupAccount(argv) {
-  return hasID(argv) && hasEmail(argv)
+  try {
+    return hasID(argv) && hasEmail(argv)
+  } catch (accountError) {
+    if (hasOtherDelegation(argv)) {
+      return true
+    }
+    throw (
+      accountError + '\nYou can also import a delegation from another account.'
+    )
+  }
 }
 
 /**

@@ -13,22 +13,19 @@ import { bytesToCarCID } from '../utils.js'
 import { checkPath, hasID, hasSetupAccount } from '../validation.js'
 
 /**
- * @typedef {{path?: string;split?: boolean; profile: string}} Upload
+ * @typedef {{path?: string, split?: boolean, profile?: string}} Upload
  * @typedef {import('yargs').Arguments<Upload>} UploadArgs
- * @async
+ */
+
+/**
  * @param {string} filePath - The path to generate car uploads for.
  * @param {import('ora').Ora} view
- * @param {boolean} [split] - The path to generate car uploads for.
  * @param {string} [profile]
  * @returns {Promise<void>}
  */
-async function generateCarUploads(
-  filePath,
-  view,
-  split = false,
-  chunkSize = 512,
-  profile
-) {
+async function generateCarUploads(filePath, view, chunkSize = 512, profile) {
+  const client = getClient(profile)
+
   chunkSize = Math.pow(1024, 2) * chunkSize
   const resolvedPath = path.resolve(filePath)
   try {
@@ -37,37 +34,34 @@ async function generateCarUploads(
     let roots = []
     /** @type Array<CID> */
     let cids = []
-    let count = 0
     let rootCarCID
+    let origin = null
 
     const uploadPromises = []
 
     for await (const car of toIterator(stream)) {
-      count++
       roots = roots.concat(car.roots)
-      if (car.roots && car.roots?.length > 0) {
-        rootCarCID = await bytesToCarCID(car.bytes)
-      } else {
-        cids.push(await bytesToCarCID(car.bytes))
-      }
+      const cid = await bytesToCarCID(car.bytes)
+      cids.push(cid)
 
-      const client = getClient(profile)
-      /**
-       * @type any
-       */
-      await client.upload(car.bytes).then((response) => {
-        view.succeed(response)
-      })
+      const result = await client.upload(car.bytes, origin)
+      if (result.error) {
+        // @ts-expect-error
+        throw new Error(result?.cause?.message)
+      }
+      view.succeed(result)
+      origin = cid
+    }
+
+    const uploadAddResult = await client.uploadAdd(roots[0], cids)
+    // @ts-expect-error
+    if (uploadAddResult.error) {
+      // @ts-expect-error
+      throw new Error(uploadAddResult?.cause?.message)
     }
 
     console.log('data CIDs:\n', roots.map((x) => x.toString()).join('\n'))
-    if (count > 1) {
-      console.log('root car:\n', rootCarCID?.toString())
-      console.log('shard cars:\n', cids.join('\n '))
-      //       console.log('linking other cars:', cids)
-      //       const linkingResponse = await client.linkcars(rootCarCID, cids)
-      //       console.log('other', linkingResponse)
-    }
+    console.log('car CIDs:\n', cids.map((x) => x.toString()).join('\n'))
   } catch (err) {
     view.fail('Upload did not complete successfully, check w3up-failure.log')
     logToFile('upload', err)
@@ -81,8 +75,7 @@ async function generateCarUploads(
  */
 const handler = async (argv) => {
   const _path = argv.path
-  const split = argv.split
-  const chunkSize = argv.chunkSize || 512
+  const chunkSize = Number(argv.chunkSize) || 512
 
   if (chunkSize < 1 || chunkSize > 512) {
     return Promise.reject('Chunk size must be between 1 and 512')
@@ -99,7 +92,7 @@ const handler = async (argv) => {
   }
   const view = ora({ text: `Uploading ${_path}...`, spinner: 'line' }).start()
 
-  await generateCarUploads(_path, view, split, chunkSize, argv.profile)
+  await generateCarUploads(_path, view, chunkSize, argv.profile)
 }
 
 /**

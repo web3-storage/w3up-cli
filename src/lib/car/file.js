@@ -57,13 +57,17 @@ export const isDirectory = (target) => {
 
 /**
  * @todo Make a depth flag?
- * @param {string} targetDirectory
+ * @param {string} target
  * @returns {string[]}
  * @description Given any directory, recursively walk and return all files in a list.
  */
-export const getAllFiles = (targetDirectory) => {
-  return fs.readdirSync(targetDirectory).flatMap((item) => {
-    const path = `${targetDirectory}/${item}`
+export const getAllFiles = (target) => {
+  if (!isDirectory(target)) {
+    return [target]
+  }
+
+  return fs.readdirSync(target).flatMap((item) => {
+    const path = `${target}/${item}`
     if (fs.statSync(path).isDirectory()) {
       return getAllFiles(path)
     }

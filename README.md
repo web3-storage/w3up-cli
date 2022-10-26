@@ -73,58 +73,41 @@ w3up --help
 An example of the current output is shown below, but please note that we're rapidly improving `w3up`, and there may be some delay between changes in the code and updates to this README. If you notice that they have diverged before we do, please [open an issue][new-gh-issue] and let us know!
 
 ```
-Usage:
-  w3up <cmd> [options]
+Quickstart:
+1. Generate Your identity
+	 - w3up id 			 Create an id
+	 - w3up register <email> 	 Register
+2. Upload to W3 Up
+	 - w3up upload <filename> 	 Upload a file or directory
+3. Verify
+	 - w3up list 			 View your upload
+
+w3up
 
 Commands:
-  w3up id                                   Generate a UCAN Identity
-  w3up register <email>                     Register your UCAN Identity with w3up
-  w3up whoami                               Show your current UCAN Identity
-  w3up list                                 List your uploads
-  w3up upload <path>                        Upload any file or directory to your account
-                                                                  [aliases: import]
-  w3up upload-cars <path>                   Walk a file directory, and upload any
-                                             found cars to an account
-  w3up remove <cid>                         Unlink a CID from your account.
-                                                                  [aliases: unlink]
-  w3up import-settings <fileName>           Import a settings json file
-  w3up export-settings [filename]           Export a settings json file
-  w3up reset-settings                       Delete all local settings
-  w3up delegate <did>                       Delegate capabilities to another DID
-  w3up accounts                             List all accounts.
-  w3up import-delegation <fileName> [alias] Import a delegation.car file for access to an account (and gi
-                                             ve it an optional alias).
-  w3up switch-account [alias]               Select from accounts, including imported ones.
-  w3up insights <cid>                       Get insights for a CID
-  w3up inspect-car <path>                   Generate an examination file from a <p
-                                             ath> to a CAR
-  w3up generate-car <filePath> [outPath]    From an input file, locally generate a
-                                             CAR file.
-  w3up info                                 Print information about cli
+  w3up id                  Generate a UCAN Identity
+  w3up register <email>    Register your UCAN Identity with w3up
+  w3up whoami              Show your current UCAN Identity
+  w3up list                List your uploads                                                                     [aliases: uploads]
+  w3up upload <path>       Upload any file or directory to your account
+  w3up upload-cars <path>  Walk a file directory, and upload any found cars to an account
+  w3up open <cid>          Open a CID in your browser on w3s.link
+  w3up settings <cmd>      Manage settings
+  w3up store <cmd>         Manage car files in w3up.
+  w3up uploads <cmd>       Manage uploads
+  w3up delegate <cmd>      Manage delegations
+  w3up car <cmd>           CAR file specific commands
+  w3up info                Print information about cli
+
+Global:
+  -p, --profile  Select profile.                                                                         [string] [default: "main"]
 
 Options:
-    --version  Show version number                                       [boolean]
-    -p, --profile  Select profile                                        [string] [default: "main"]
-    --help     Show help                                                 [boolean]
-
-Examples:
-  w3up id                                 ID: did:key:z6MkiWm...
-  w3up whoami                             Agent: did:12345...
-                                          Account: did:12345...
-  w3up list                               bafy...
-                                          bafy...
-  w3up upload ../../duck.png              uploaded bafy...
-  w3up upload-cars ducks/                 <show all cars uploaded>
-  w3up remove bafy...                     unlinked bafy...
-  w3up inspect-car ../duck.car --tree     roots
-                                          └─┬ bafy...
-                                            └── duck.png
-  w3up generate-car ../duck.png duck.car  CAR created ../duck.png => duck.car
-  w3up info
+      --version  Show version number                                                                                      [boolean]
+      --help     Show help                                                                                                [boolean]
 
 Docs:
-  https://github.com/nftstorage/w3up-cli
-
+  https://github.com/web3-storage/w3up-cli
 ```
 
 ### Registration
@@ -182,7 +165,7 @@ After creating your identity and registering with w3up, you should be able to st
 
 1. [`w3up upload`](#upload)
 2. [`w3up list`](#list)
-3. [`w3up remove`](#remove)
+3. [`w3up upload remove`](#upload remove)
 
 #### `upload`
 
@@ -224,9 +207,10 @@ The [`upload`](#upload) command described above accepts regular files and direct
 w3up upload-cars <path>
 ```
 
-The `path` argument must point to a directory containing one or more CAR files. If there are nested directories, each will be recursively walked and all discovered CAR files will be uploaded.
+The `path` argument must point to a directory containing one or more CAR files OR a single car file.
+If there are nested directories, each will be recursively walked and all discovered CAR files will be uploaded.
 
-#### `list`
+#### `list` (same as uploads list)
 
 > Prints a list of [CIDs][concepts-cid] for all files uploaded thus far.
 
@@ -238,18 +222,20 @@ You should see something similar to this:
 
 ```
 ✔ Listing Uploads...
-✔ CIDs:
-bagbaieraq7mqnbxwetsl53fs776rcink4ar6ow5u5imrb3di6klochw2fdfq
+Date         Data CID
+--------     --------
+10/23/2022   bafybeia3btd7atvtolzanvj3jm6aftgwyvbix5i653ibvqtpb3hzvgagie
+10/23/2022   bafybeia5rtlmap55es6e4yq26eope3yq5pebh3brsdoozqtcde37x7ixb4
+10/23/2022   bafybeif3zdwoudgy3qu24mt7qqau4xvt476q3h75vi7lkujyst33ii3mnu
 ```
 
-Note that `list` currently shows the CID of the [Content Archive (CAR)](#about-content-archives-cars) that was uploaded and does not yet include the root CID of the content graph within the CAR.
+This lists the "root" or content CIDs associated with your account.
+use the --verbose flag to also see the car CID that contains the content.
 
-#### `remove`
-
-> Unlinks an uploaded CID, disassociating it from your account.
+If you want a "machine readable" format, use the --stdout flag to get plaintext tab seperated.
 
 ```sh
-w3up remove <cid>
+w3up upload remove <cid>
 ```
 
 This will dis-associate an uploaded asset from your account. If you run `w3up list` after unlinking a file, you should not see it in the list. If you want to re-associate the file with your account, use `w3up upload` and re-upload the file. In situations when a file has been previously uploaded, the upload command will not need to actually upload the file, it will just relink it.
@@ -262,14 +248,14 @@ When using [`w3up upload`](#upload), your files are packed into a [Content Archi
 
 `w3up` provides some commands for creating and working with CAR files. For more, see the [guide to working with Content Archives](https://web3.storage/docs/how-tos/work-with-car-files/) in the [Web3.Storage docs](https://web3.storage/docs).
 
-#### `generate-car`
+#### `car generate`
 
 > Encodes a file or directory to CAR format.
 
-The `generate-car` command accepts a path to a file or directory and creates a CAR file that can be uploaded with [`upload-cars`](#upload-cars).
+The `car generate` command accepts a path to a file or directory and creates a CAR file that can be uploaded with [`upload-cars`](#upload-cars).
 
 ```sh
-w3up generate-car test.txt
+w3up car generate test.txt
 ```
 
 ```
@@ -280,7 +266,7 @@ roots:
 
 As with the [`upload` command](#upload), two CIDs are printed in the `generate-car` output. The first CID is for the CAR file itself, while the root CID identifies the content within the CAR. Use the root CID when requesting content from IPFS, e.g. with `ipfs get` or from an HTTP gateway.
 
-#### `inspect-car`
+#### `car inspect`
 
 > Print the CID of all blocks in a CAR file.
 
@@ -301,7 +287,7 @@ Note that each CID is printed twice, once in the current CID version 1 format, a
 You can also see the tree structure of the CAR file by passing in the `--tree` flag to `inspect-car`:
 
 ```sh
-w3up inspect-car --tree test.car
+w3up car inspect --tree test.car
 ```
 
 ```
@@ -316,7 +302,7 @@ Finally, passing the `--dot` flag will output a description of the graph structu
 
 Once you have an identity registered with w3up, you can delegate capabilities to other agents.
 
-#### `w3up delegate <did>`
+#### `w3up delegate to <did>`
 
 > Delegate capabilities to an agent did.
 
@@ -327,7 +313,7 @@ w3up delegate did:12345...
 
 A `delegation.car` file is generated with the UCAN delegation provided to the other agent with did `did:12345...`.
 
-#### `w3up import-delegation <fileName> [alias]`
+#### `w3up delegate import <fileName> [alias]`
 
 > Import a UCAN delegation file to access capabilities delegated by other agent
 
@@ -338,36 +324,57 @@ w3up import-delegation delegation.car delegator
 
 Once a `delegation.car` is imported, you can switch to the account delegated:
 
+#### `w3up delegate switch [alias]`
+
 ```sh
-w3up switch-account delegator
+w3up delegate switch delegator
 ✔ now using account: did:key:z6M...
+```
+
+If no alias is passed, a menu appears allowing you to choose the delegation.
+
+#### `w3up delegate list`
+
+```sh
+selected   alias      did
+--------   --------   --------
+*          self       did:key:z6MkiL...
+           delegator  did:key:z6MkiB...
 ```
 
 ### Settings management
 
 There are a few commands for working with your settings.
 
-Settings are stored in a binary configuration file in a `w3up-cli-nodejs` folder inside the [default configuration location for your platform](https://github.com/sindresorhus/env-paths#pathsconfig).
+Settings are stored in a binary configuration file in a `w3up` folder inside the [default configuration location for your platform](https://github.com/sindresorhus/env-paths#pathsconfig).
 
 Rather than work with the binary settings file directly, it's convenient to use the [`import-settings`](#import-settings) and [`export-settings`](#export-settings) commands, which convert the binary format to JSON.
 
-#### `export-settings`
+#### `settings export [filename]`
 
 > Exports your account settings to a file named `settings.json` in the current directory.
 
 **Important**: this file contains your private identity key and must be kept in a secure location!
 
-#### `import-settings`
+#### `settings import [filename]`
 
 > Loads account settings from a `settings.json` file in the current directory.
 
-#### `reset-settings`
+#### `settings reset`
 
 > Deletes your account settings.
 
 **Important:** this command completely removes the binary configuration file containing your identity key from your local machine. If you have not exported your settings, you will lose access to the identity and will need to generate and register a new one.
 
 ### Other commands
+
+#### `uploads` or `upload list`
+
+> Does the same as list
+
+#### `uploads remove <cid>`
+
+> Removes a logical upload (content CID) from your account while keeping the car in w3up.
 
 #### `insights`
 

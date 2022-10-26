@@ -984,10 +984,10 @@
   dependencies:
     web-streams-polyfill "^3.1.1"
 
-"@web3-storage/access@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@web3-storage/access/-/access-2.0.0.tgz#0a749ef608a012c7a9a0cd191629e31b26d69b8d"
-  integrity sha512-8VfDXvAjp7CPSj4j/RogN+r0g5fZHL+CDJcQQW/ah/O31vPSV9El/Sk/HC3vbQWgF0Ype9ur8MsJv4Zq3UjOvg==
+"@web3-storage/access@^2.1.1":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/@web3-storage/access/-/access-2.1.1.tgz#8ba3f5f0aaf15a1703924a9e9d5471ae0e1fca96"
+  integrity sha512-8MGs3gY6dn/KrJE+X4GDnwrPXaPgm5lvGJKFJpMdYVBtTUjfWQx9mhdYErs2nE2JEt9tKubCfe1rgodZ1b+7gA==
   dependencies:
     "@ipld/car" "^4.1.5"
     "@ipld/dag-ucan" "3.0.0-beta"
@@ -1022,10 +1022,10 @@
   resolved "https://registry.yarnpkg.com/@web3-storage/multipart-parser/-/multipart-parser-1.0.0.tgz#6b69dc2a32a5b207ba43e556c25cc136a56659c4"
   integrity sha512-BEO6al7BYqcnfX15W2cnGR+Q566ACXAT9UQykORCWW80lmkpWsnEob6zJS1ZVBKsSJC8+7vJkHwlp+lXG1UCdw==
 
-"@web3-storage/w3up-client@^2.3.0":
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/@web3-storage/w3up-client/-/w3up-client-2.3.0.tgz#ff8a5376f5560e3ace7a40c3f3fb220d95affb8d"
-  integrity sha512-iwZEKxRJJmzfq4T/chShwN0eGiP+xIA+Ggxf3tz5DIIaQAYAQrvrL2if+jvMnVyyynL3ZPrKtXCstNflibicyQ==
+"@web3-storage/w3up-client@^3.0.1":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@web3-storage/w3up-client/-/w3up-client-3.0.1.tgz#f9308cdb6869950ee76d12fd9a5f981756416d0d"
+  integrity sha512-Yxt0TLLDr/vk7HpJfeimOceBT5P+xvhFcWbo/lVpChiMQsvCMOL00Y0UTAIVSFJkL6nB4XAGz+eNlOF7ZYhCZQ==
   dependencies:
     "@ucanto/client" "^1.0.1"
     "@ucanto/core" "^1.0.1"
@@ -1034,7 +1034,7 @@
     "@ucanto/server" "^1.0.2"
     "@ucanto/transport" "^1.0.1"
     "@ucanto/validator" "^1.0.2"
-    "@web3-storage/access" "^2.0.0"
+    "@web3-storage/access" "^2.1.1"
     cross-fetch "^3.1.5"
 
 "@zxing/text-encoding@0.9.0":

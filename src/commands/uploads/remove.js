@@ -3,8 +3,8 @@ import * as API from '@ucanto/interface'
 import { parseLink } from '@ucanto/server'
 import ora from 'ora'
 
-import { getClient } from '../client.js'
-import { hasID, hasSetupAccount, isCID } from '../validation.js'
+import { getClient } from '../../client.js'
+import { hasID, hasSetupAccount, isCID } from '../../validation.js'
 
 /**
  * @typedef {{cid?:API.Link, profile?:string}} Remove
@@ -18,7 +18,10 @@ import { hasID, hasSetupAccount, isCID } from '../validation.js'
  */
 const handler = async ({ cid, profile }) => {
   const view = ora(`Unlinking ${cid}...`).start()
-  const res = await getClient(profile).remove(parseLink(cid))
+  const res = await getClient(profile).removeUpload(
+    // @ts-expect-error
+    parseLink(cid?.toString() || '')
+  )
   view.succeed(`${res.toString()}`)
 }
 

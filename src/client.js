@@ -1,6 +1,4 @@
-// @ts-ignore
 import * as CBOR from '@ucanto/transport/cbor'
-// @ts-ignore
 import W3Client from '@web3-storage/w3up-client'
 import Conf from 'conf'
 
@@ -14,12 +12,15 @@ const serialize = ({ ...data }) =>
  */
 const deserialize = (text) => CBOR.codec.decode(Buffer.from(text, 'binary'))
 
-// TODO this will go away later?
+/**
+ * @param {any} profileSettings
+ */
 function mergeSettings(profileSettings) {
   if (profileSettings.size) {
     return
   }
 
+  // @ts-expect-error
   const oldSettings = new Conf({
     projectName: cliSettings.projectName,
     fileExtension: 'cbor',
@@ -33,7 +34,7 @@ function mergeSettings(profileSettings) {
 }
 
 export function getProfileSettings(profile = 'main') {
-  // @ts-ignore
+  // @ts-expect-error
   const profileSettings = new Conf({
     projectName: 'w3up',
     projectSuffix: '',
@@ -53,10 +54,10 @@ export function getClient(profile = 'main') {
   const settings = getProfileSettings(profile)
 
   const client = new W3Client({
-    //@ts-ignore
+    // @ts-expect-error
     serviceDID: cliSettings.W3_STORE_DID,
     serviceURL: cliSettings.SERVICE_URL,
-    //@ts-ignore
+    // @ts-expect-error
     accessDID: cliSettings.ACCESS_DID,
     accessURL: cliSettings.ACCESS_URL,
     settings,

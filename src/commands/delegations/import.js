@@ -1,11 +1,11 @@
 import fs from 'fs'
 import ora from 'ora'
 
-import { getClient } from '../client.js'
-import { hasID, isPath } from '../validation.js'
+import { getClient } from '../../client.js'
+import { hasID, isPath } from '../../validation.js'
 
 /**
- * @typedef {{fileName?:string, alias?:string, profile: string}} ImportDelegation
+ * @typedef {{fileName?:string, alias?:string, profile?: string}} ImportDelegation
  * @typedef {import('yargs').Arguments<ImportDelegation>} ImportDelegationArgs
  */
 
@@ -46,7 +46,7 @@ const builder = (yargs) => yargs.check(hasID).check(checkFileName)
 const checkFileName = ({ fileName }) => isPath(fileName)
 
 export default {
-  command: 'import-delegation <fileName> [alias]',
+  command: 'import <fileName> [alias]',
   describe:
     'Import a delegation.car file for access to an account (and give it an optional alias).',
   builder,

@@ -3,8 +3,8 @@ import fs from 'fs'
 import Inquirer from 'inquirer'
 import ora from 'ora'
 
-import { getClient } from '../client.js'
-import { resolvePath } from '../validation.js'
+import { getClient } from '../../client.js'
+import { resolvePath } from '../../validation.js'
 
 /**
  * @typedef ExportSettings
@@ -48,7 +48,7 @@ const handler = async ({ filename, profile, stdout = false, yes = false }) => {
   }
 
   if (show) {
-    const store = exportSettings(client.settings)
+    const store = await exportSettings(client.settings)
     const settingsJson = JSON.stringify(store, null, 2)
 
     if (filename) {
@@ -82,7 +82,7 @@ const builder = (yargs) =>
     })
 
 export default {
-  command: 'export-settings [filename]', //[] means optional arg.
+  command: 'export [filename]', //[] means optional arg.
   describe: 'Export a settings json file',
   builder,
   handler,

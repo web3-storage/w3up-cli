@@ -3,7 +3,7 @@ import ora from 'ora'
 import { getClient, getProfileSettings } from '../client.js'
 
 /**
- * @typedef {{reset?:boolean, profile: string}} Id
+ * @typedef {{reset?:boolean, profile?: string}} Id
  * @typedef {import('yargs').Arguments<Id>} IdArgs
  */
 
