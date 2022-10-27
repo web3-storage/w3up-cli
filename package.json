@@ -28,7 +28,7 @@
     "@ipld/unixfs": "^1.1.0-dev",
     "@ucanto/server": "^1.0.2",
     "@web-std/stream": "^1.0.1",
-    "@web3-storage/w3up-client": "^3.0.1",
+    "@web3-storage/w3up-client": "link:/Users/hd/code/w3up-client",
     "archy": "^1.0.0",
     "cli-table": "^0.3.11",
     "conf": "^10.2.0",

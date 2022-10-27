@@ -21,7 +21,6 @@ const handler = async (args) => {
 
   const client = getClient(args.profile)
   const identity = await client.identity()
-
   view.succeed('Agent DID: ' + identity.agent.did())
   view.succeed('Account DID: ' + identity.account.did())
 }

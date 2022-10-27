@@ -23,9 +23,9 @@ function mergeSettings(profileSettings) {
   // @ts-expect-error
   const oldSettings = new Conf({
     projectName: cliSettings.projectName,
-    fileExtension: 'cbor',
-    serialize,
-    deserialize,
+    fileExtension: 'json',
+    // serialize,
+    // deserialize,
   })
 
   if (oldSettings.size) {
@@ -39,9 +39,9 @@ export function getProfileSettings(profile = 'main') {
     projectName: 'w3up',
     projectSuffix: '',
     configName: profile,
-    fileExtension: 'cbor',
-    serialize,
-    deserialize,
+    fileExtension: 'json',
+    // serialize,
+    // deserialize,
   })
 
   // TODO: remove this when no longer needed.
@@ -54,10 +54,8 @@ export function getClient(profile = 'main') {
   const settings = getProfileSettings(profile)
 
   const client = new W3Client({
-    // @ts-expect-error
     serviceDID: cliSettings.W3_STORE_DID,
     serviceURL: cliSettings.SERVICE_URL,
-    // @ts-expect-error
     accessDID: cliSettings.ACCESS_DID,
     accessURL: cliSettings.ACCESS_URL,
     settings,
