@@ -13,7 +13,7 @@ const ignoredKeysForLabel = ['blockLength', 'offset', 'blockOffset']
  * @param {object} obj - The node data.
  * @returns {string} - The built label.
  */
-function buildLabel(obj) {
+function buildLabel (obj) {
   const label = Object.entries(obj)
     .map(([key, val]) => {
       if (ignoredKeysForLabel.includes(key)) {
@@ -56,7 +56,7 @@ function buildLabel(obj) {
  * @param {boolean} vertical - should the graph output be 'vertical' (i.e. rankdir LR)
  * @returns {Promise<string>} the DOT format output of the DAG in the car.
  */
-export async function run(bytes, vertical) {
+export async function run (bytes, vertical) {
   const indexer = await CarIndexer.fromBytes(bytes)
   const reader = await CarReader.fromBytes(bytes)
   /** @type {{roots:Array<any>, blocks:any}} */

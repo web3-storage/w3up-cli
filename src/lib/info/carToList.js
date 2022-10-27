@@ -7,7 +7,7 @@ import { CarReader } from '@ipld/car/reader'
  * @param {Buffer|Uint8Array} bytes
  * @returns {Promise<string>} A simple list of all CIDs in the car.
  */
-export async function run(bytes) {
+export async function run (bytes) {
   const indexer = await CarIndexer.fromBytes(bytes)
   const reader = await CarReader.fromBytes(bytes)
   let output = 'CIDv1\t\t\t\t\t\t\t\tCIDv0\n'

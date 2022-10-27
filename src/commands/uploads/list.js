@@ -29,7 +29,7 @@ import ora, { oraPromise } from 'ora'
  * @param {number} date
  * @returns {string}
  */
-function parseDate(date) {
+function parseDate (date) {
   return new Intl.DateTimeFormat('en-US', {
     month: '2-digit',
     day: '2-digit',
@@ -44,7 +44,7 @@ function parseDate(date) {
  * @param {boolean} verbose
  * @returns {Array<any>}
  */
-function itemToTable(item, verbose = false) {
+function itemToTable (item, verbose = false) {
   const uploadedAt = parseDate(item.uploadedAt)
   const out = [uploadedAt, item.dataCID]
   if (verbose) {

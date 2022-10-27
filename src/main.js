@@ -34,14 +34,14 @@ export const main = async () => {
     .group('profile', 'Global:')
     .command({
       command: '*',
-      handler() {
+      handler () {
         printQuickstart()
         yargs.showHelp()
       }
     })
     .command({
       command: 'completion',
-      handler() {
+      handler () {
         yargs.showCompletionScript()
       }
     })

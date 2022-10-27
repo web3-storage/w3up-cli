@@ -30,7 +30,7 @@ import ora, { oraPromise } from 'ora'
  * @param {boolean} verbose
  * @returns {Array<string>}
  */
-function itemToTable(item, verbose = false) {
+function itemToTable (item, verbose = false) {
   const at = item.uploadedAt
   let uploadedAt = ''
   if (Date.parse(at)) {

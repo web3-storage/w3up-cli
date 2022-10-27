@@ -120,7 +120,7 @@ export const hasOtherDelegation = ({ profile }) => {
 /**
  * @param {import('yargs').Arguments<{profile?:string}>} argv
  */
-export function hasSetupAccount(argv) {
+export function hasSetupAccount (argv) {
   try {
     return hasID(argv) && hasEmail(argv)
   } catch (accountError) {

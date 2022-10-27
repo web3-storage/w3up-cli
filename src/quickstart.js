@@ -9,6 +9,6 @@ Quickstart:
 \t - w3up list \t\t\t View your upload
 `
 
-export default function printQuickstart() {
+export default function printQuickstart () {
   console.log(quickstart)
 }

@@ -14,7 +14,7 @@ import archy from 'archy'
  * @param {Buffer|Uint8Array} bytes
  * @returns {Promise<string>} the DOT format output of the DAG in the car.
  */
-export async function run(bytes) {
+export async function run (bytes) {
   const indexer = await CarIndexer.fromBytes(bytes)
   const reader = await CarReader.fromBytes(bytes)
   /** @type Array<CID> */
@@ -69,7 +69,7 @@ export async function run(bytes) {
  * @param {Map<CID, Block>} blockMap
  * @return {TreeNode}
  */
-function walkTree(cid, name, blockMap) {
+function walkTree (cid, name, blockMap) {
   const block = blockMap.get(cid)
 
   const label = name.length > 0 ? name : cid
