@@ -21,7 +21,7 @@ export async function run(bytes) {
   const roots = reader._header.roots // a little naughty but we need gory details
 
   /** @type TreeNode */
-  let output = {
+  const output = {
     label: 'roots',
     nodes: []
   }
@@ -45,13 +45,13 @@ export async function run(bytes) {
 
     blockMap.set(blockIndex.cid.toString(), {
       cid: blockIndex.cid.toString(),
-      links: links
+      links
     })
 
     if (isRoot) {
       contentRoots.push({
         cid: blockIndex.cid.toString(),
-        links: links
+        links
       })
     }
   }

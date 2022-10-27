@@ -32,7 +32,7 @@ async function generateCarUploads(filePath, view, chunkSize = 512, profile) {
     /** @type Array<CID> */
     let roots = []
     /** @type Array<CID> */
-    let cids = []
+    const cids = []
     let rootCarCID
     let origin = null
 
@@ -86,7 +86,7 @@ const handler = async (argv) => {
 
   if (path.extname(_path) === '.car') {
     console.warn(
-      `Your upload is already .car format\nYou may need the upload-cars command for existing .car files. This will wrap your .car file in another .car file`
+      'Your upload is already .car format\nYou may need the upload-cars command for existing .car files. This will wrap your .car file in another .car file'
     )
   }
   const view = ora({ text: `Uploading ${_path}...`, spinner: 'line' }).start()
@@ -119,5 +119,5 @@ export default {
   builder,
   handler,
   exampleIn: '$0 upload ../../duck.png',
-  exampleOut: `uploaded bafy...`
+  exampleOut: 'uploaded bafy...'
 }

@@ -41,6 +41,6 @@ export default {
   describe: 'Delete all local settings',
   builder: {},
   handler,
-  exampleOut: `Settings cleared.`,
+  exampleOut: 'Settings cleared.',
   exampleIn: '$0 reset-settings'
 }

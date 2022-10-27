@@ -27,7 +27,7 @@ const handler = async (argv) => {
   try {
     // @ts-expect-error
     hasID({ profile })
-    let result = await client.register(email)
+    const result = await client.register(email)
     if (result) {
       view.succeed(`Registration succeeded: ${email}`)
     }

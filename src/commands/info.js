@@ -14,6 +14,6 @@ export default {
   describe: 'Print information about cli',
   builder: {},
   handler,
-  exampleOut: ``,
+  exampleOut: '',
   exampleIn: '$0 info'
 }

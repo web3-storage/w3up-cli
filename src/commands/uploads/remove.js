@@ -35,7 +35,7 @@ const builder = (yargs) => yargs.check(hasSetupAccount).check(checkCID)
  */
 const checkCID = ({ cid }) => isCID(cid)
 
-//TODO allow list of CIDs
+// TODO allow list of CIDs
 // https://github.com/nftstorage/w3up-cli/issues/20
 export default {
   command: ['remove <cid>', 'unlink <cid>'],
@@ -43,5 +43,5 @@ export default {
   builder,
   handler,
   exampleIn: '$0 remove bafy...',
-  exampleOut: `unlinked bafy...`
+  exampleOut: 'unlinked bafy...'
 }

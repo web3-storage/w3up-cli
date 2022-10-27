@@ -50,7 +50,7 @@ const handler = async ({ filePath = '', split = false }) => {
     /** @type Array<CID> */
     let roots = []
     let rootCarCID = ''
-    let carCIDS = []
+    const carCIDS = []
     let count = 0
 
     for await (const car of toIterator(stream)) {
@@ -71,14 +71,14 @@ const handler = async ({ filePath = '', split = false }) => {
     console.log('roots:\n', roots.map((x) => x.toString()).join('\n'))
     if (count > 1) {
       console.log('root car:\n', rootCarCID?.toString())
-      //TODO:
-      //client.link()
+      // TODO:
+      // client.link()
     }
   } catch (err) {
     // @ts-ignore
     view.fail(err.toString())
     logToFile('generate-car', err)
-    process.exit(1) //force exit in case other async things are running.
+    process.exit(1) // force exit in case other async things are running.
   }
 }
 
@@ -102,5 +102,5 @@ export default {
   builder,
   handler,
   exampleIn: '$0 generate-car ../duck.png duck.car',
-  exampleOut: `CAR created ../duck.png => duck.car`
+  exampleOut: 'CAR created ../duck.png => duck.car'
 }

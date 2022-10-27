@@ -46,7 +46,7 @@ export const main = async () => {
       }
     })
 
-    //registration
+    // registration
     .command(id)
     .command(register)
     .command(whoami)

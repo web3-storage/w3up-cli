@@ -31,7 +31,7 @@ import ora, { oraPromise } from 'ora'
  * @returns {Array<string>}
  */
 function itemToTable(item, verbose = false) {
-  let at = item.uploadedAt
+  const at = item.uploadedAt
   let uploadedAt = ''
   if (Date.parse(at)) {
     uploadedAt = new Intl.DateTimeFormat('en-US', {
@@ -43,7 +43,7 @@ function itemToTable(item, verbose = false) {
       .toLocaleString()
   }
 
-  let out = [uploadedAt, item.payloadCID]
+  const out = [uploadedAt, item.payloadCID]
 
   if (item.size) {
     const size = humanizeBytes(item.size)
@@ -100,13 +100,13 @@ const handler = async (argv) => {
 
   /** @type any */
   const listResponse = await oraPromise(client.stat(), {
-    text: `Listing linked cars...`,
+    text: 'Listing linked cars...',
     spinner: 'line'
   })
 
   if (!listResponse?.results?.length) {
     if (!listResponse.error) {
-      view.info(`You don't seem to have linked cars!`)
+      view.info("You don't seem to have linked cars!")
     } else {
       view.fail(listResponse.cause.message)
     }
@@ -136,6 +136,6 @@ export default {
   describe: 'List the linked cars in your account.',
   builder,
   handler,
-  exampleOut: `bafy...\nbafy...`,
+  exampleOut: 'bafy...\nbafy...',
   exampleIn: '$0 list'
 }

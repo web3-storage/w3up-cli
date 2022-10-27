@@ -19,11 +19,11 @@ export async function walkDir({ writer, pathName, filename }) {
 
   if (isDirectory(filePath)) {
     /** @type {Array<FileDesc>} */
-    let files = []
+    const files = []
     const fileNames = (await fs.promises.readdir(filePath)).filter(
       (x) => !x.startsWith('.')
     )
-    for (var name of fileNames) {
+    for (const name of fileNames) {
       files.push(
         await walkDir({
           writer,

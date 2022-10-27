@@ -81,10 +81,10 @@ const builder = (yargs) =>
     })
 
 export default {
-  command: 'export [filename]', //[] means optional arg.
+  command: 'export [filename]', // [] means optional arg.
   describe: 'Export a settings json file',
   builder,
   handler,
-  exampleOut: `DID:12345`,
+  exampleOut: 'DID:12345',
   exampleIn: '$0 export-settings'
 }

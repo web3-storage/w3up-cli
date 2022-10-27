@@ -19,7 +19,7 @@ const handler = async ({ cid, ws, subscribe, profile }) => {
   const shouldWS = ws || subscribe
 
   if (shouldWS) {
-    spinner.fail(`⚠️Subscriptions not yet supported ⚠️`)
+    spinner.fail('⚠️Subscriptions not yet supported ⚠️')
   } else {
     const client = getClient(profile)
     // @ts-expect-error
@@ -49,6 +49,6 @@ export default {
   describe: 'Get insights for a CID',
   builder,
   handler,
-  exampleOut: `example output goes here`,
+  exampleOut: 'example output goes here',
   exampleIn: '$0 insights'
 }

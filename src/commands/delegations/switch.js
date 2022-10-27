@@ -22,7 +22,7 @@ const handler = async ({ did, alias, profile }) => {
     console.log('No delegations.')
     return
   }
-  let choices = []
+  const choices = []
 
   for (const del of Object.values(delegations)) {
     const imported = Delegation.import([del.ucan.root])

@@ -83,6 +83,6 @@ export default {
   describe: 'Import a settings.json file',
   builder,
   handler,
-  exampleOut: `You have successfully imported settings.json!`,
+  exampleOut: 'You have successfully imported settings.json!',
   exampleIn: '$0 import-settings settings.json'
 }

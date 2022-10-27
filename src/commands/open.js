@@ -32,7 +32,7 @@ const builder = (yargs) => yargs.check(checkTarget)
  */
 const checkTarget = ({ cid }) => {
   if (!cid) {
-    throw new Error(`No valid cid or item was provided to open.`)
+    throw new Error('No valid cid or item was provided to open.')
   }
 
   const _cid = cid.split('/')[0]

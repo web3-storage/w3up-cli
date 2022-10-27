@@ -14,7 +14,7 @@ const ignoredKeysForLabel = ['blockLength', 'offset', 'blockOffset']
  * @returns {string} - The built label.
  */
 function buildLabel(obj) {
-  let label = Object.entries(obj)
+  const label = Object.entries(obj)
     .map(([key, val]) => {
       if (ignoredKeysForLabel.includes(key)) {
         return ''
@@ -22,11 +22,11 @@ function buildLabel(obj) {
       if (key == 'cid') {
         return toShortCID(val)
       }
-      if (typeof val == 'object') {
+      if (typeof val === 'object') {
         if (key == 'content') {
           if (val?.type) {
-            const bytes = val['content']
-              ? `|{size|${humanizeBytes(val['content']?.byteLength)}}`
+            const bytes = val.content
+              ? `|{size|${humanizeBytes(val.content?.byteLength)}}`
               : ''
             // @ts-ignore
             return `{unixfs|${nodeTypeNames[val?.type]}}${bytes}`
@@ -34,7 +34,7 @@ function buildLabel(obj) {
 
           // @ts-ignore
           if (obj.type == 'dagCbor') {
-            let data = val?.id // has metadata id
+            const data = val?.id // has metadata id
             if (data) {
               return `{session_id|${data}}`
             }

@@ -46,7 +46,7 @@ function parseDate(date) {
  */
 function itemToTable(item, verbose = false) {
   const uploadedAt = parseDate(item.uploadedAt)
-  let out = [uploadedAt, item.dataCID]
+  const out = [uploadedAt, item.dataCID]
   if (verbose) {
     out.push(item.carCID)
   }
@@ -102,13 +102,13 @@ const handler = async (argv) => {
 
   /** @type any */
   const listResponse = await oraPromise(client.list(), {
-    text: `Listing Uploads...`,
+    text: 'Listing Uploads...',
     spinner: 'line'
   })
 
   if (!listResponse?.results?.length) {
     if (!listResponse.error) {
-      view.info(`You don't seem to have any uploads yet!`)
+      view.info("You don't seem to have any uploads yet!")
     } else {
       view.fail(listResponse.cause.message)
     }
@@ -144,6 +144,6 @@ export default {
   describe: 'List your uploads',
   builder,
   handler,
-  exampleOut: `bafy...\nbafy...`,
+  exampleOut: 'bafy...\nbafy...',
   exampleIn: '$0 list'
 }

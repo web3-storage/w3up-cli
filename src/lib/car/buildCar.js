@@ -40,11 +40,11 @@ async function createReadableBlockStreamWithWrappingDir(pathName, writable) {
     const fileNames = (await fs.promises.readdir(pathName)).filter(
       (x) => !x.startsWith('.')
     )
-    for (var name of fileNames) {
+    for (const name of fileNames) {
       files.push(
         await walkDir({
           writer,
-          pathName: pathName,
+          pathName,
           filename: name
         })
       )
@@ -87,7 +87,7 @@ export async function buildCar(pathName, carsize, failAtSplit = false) {
 
   // create the first buffer.
   let carWriter = createCarWriter(carsize)
-  let carWriterStream = new TransformStream(
+  const carWriterStream = new TransformStream(
     {},
     {
       highWaterMark: MAX_CARS_AT_ONCE
@@ -96,11 +96,11 @@ export async function buildCar(pathName, carsize, failAtSplit = false) {
       highWaterMark: MAX_CARS_AT_ONCE
     }
   )
-  let carStreamWriter = carWriterStream.writable.getWriter()
+  const carStreamWriter = carWriterStream.writable.getWriter()
 
   async function readAll() {
     // Keep track of written cids, so that blocks are not duplicated across cars.
-    let writtenCids = new Set()
+    const writtenCids = new Set()
 
     // track the last written block, so we know the root of the dag.
     /** @type Block */

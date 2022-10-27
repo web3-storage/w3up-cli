@@ -41,6 +41,6 @@ export default {
   describe: 'Generate a UCAN Identity',
   builder,
   handler,
-  exampleOut: `ID loaded: did:key:z6MkiWm...`,
+  exampleOut: 'ID loaded: did:key:z6MkiWm...',
   exampleIn: '$0 id'
 }

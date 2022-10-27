@@ -67,7 +67,7 @@ export function decode(cid, bytes) {
  * @returns {string} The shortned CID.
  */
 export function toShortCID(cid) {
-  let str = cid.toString()
+  const str = cid.toString()
   return str.substring(0, 4) + '...' + str.substring(str.length - 4, str.length)
 }
 

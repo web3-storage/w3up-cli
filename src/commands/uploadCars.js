@@ -18,7 +18,7 @@ import path from 'path'
 // @ts-ignore
 import toIterator from 'stream-to-it'
 
-//gotta start somewhere. 3 is fine.
+// gotta start somewhere. 3 is fine.
 const MAX_CONNECTION_POOL_SIZE = 3
 
 /**
@@ -84,7 +84,7 @@ const handler = async (argv) => {
   )
   const writer = stream.writable.getWriter()
 
-  let files = getAllFiles(targetPath)
+  const files = getAllFiles(targetPath)
 
   for (const file of files) {
     const _file = path.resolve(targetPath, file)
@@ -125,5 +125,5 @@ export default {
   builder,
   handler,
   exampleIn: '$0 upload-cars ducks/',
-  exampleOut: `<show all cars uploaded>`
+  exampleOut: '<show all cars uploaded>'
 }
