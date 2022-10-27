@@ -1,8 +1,7 @@
-import ora, { oraPromise } from 'ora'
-
 import { getClient } from '../../client.js'
 import { buildSimpleConsoleTable } from '../../utils.js'
 import { hasSetupAccount } from '../../validation.js'
+import ora, { oraPromise } from 'ora'
 
 /**
  * @typedef {{verbose?:boolean, delim?:string, stdout?:boolean, profile?: string}} List
@@ -34,7 +33,7 @@ function parseDate(date) {
   return new Intl.DateTimeFormat('en-US', {
     month: '2-digit',
     day: '2-digit',
-    year: 'numeric',
+    year: 'numeric'
   })
     .format(date)
     .toLocaleString()
@@ -104,7 +103,7 @@ const handler = async (argv) => {
   /** @type any */
   const listResponse = await oraPromise(client.list(), {
     text: `Listing Uploads...`,
-    spinner: 'line',
+    spinner: 'line'
   })
 
   if (!listResponse?.results?.length) {
@@ -126,18 +125,18 @@ const builder = (yargs) =>
       type: 'boolean',
       alias: 'verbose',
       showInHelp: true,
-      describe: 'Show more columns in the list, such as the Uploaded CAR CID',
+      describe: 'Show more columns in the list, such as the Uploaded CAR CID'
     })
     .option('stdout', {
       type: 'boolean',
       showInHelp: true,
-      describe: 'Output a machine readable format to stdout',
+      describe: 'Output a machine readable format to stdout'
     })
     .option('delim', {
       type: 'string',
       showInHelp: true,
       implies: 'stdout',
-      describe: 'The delimiter to use when using stdout',
+      describe: 'The delimiter to use when using stdout'
     })
 
 export default {
@@ -146,5 +145,5 @@ export default {
   builder,
   handler,
   exampleOut: `bafy...\nbafy...`,
-  exampleIn: '$0 list',
+  exampleIn: '$0 list'
 }

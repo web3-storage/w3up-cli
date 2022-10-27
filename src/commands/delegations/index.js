@@ -13,6 +13,6 @@ export default {
       createDelegation,
       importDelegation,
       listDelegations,
-      switchDelegation,
-    ]),
+      switchDelegation
+    ])
 }

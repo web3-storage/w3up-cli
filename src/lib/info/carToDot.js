@@ -1,8 +1,7 @@
-import { CarIndexer } from '@ipld/car/indexer'
-import { CarReader } from '@ipld/car/reader'
-
 import { humanizeBytes } from '../../utils.js'
 import { codecNames, decode, nodeTypeNames, toShortCID } from './common.js'
+import { CarIndexer } from '@ipld/car/indexer'
+import { CarReader } from '@ipld/car/reader'
 
 const ignoredKeysForLabel = ['blockLength', 'offset', 'blockOffset']
 
@@ -63,7 +62,7 @@ export async function run(bytes, vertical) {
   /** @type {{roots:Array<any>, blocks:any}} */
   const fixture = {
     roots: reader._header.roots, // a little naughty but we need gory details
-    blocks: [],
+    blocks: []
   }
 
   let dot = `digraph { 

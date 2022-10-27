@@ -1,9 +1,8 @@
+import { getClient } from '../client.js'
+import { hasSetupAccount, isCID } from '../validation.js'
 import * as API from '@ucanto/interface'
 import { parseLink } from '@ucanto/server'
 import ora from 'ora'
-
-import { getClient } from '../client.js'
-import { hasSetupAccount, isCID } from '../validation.js'
 
 /**
  * @typedef {{cid?:API.Link, ws?:boolean, subscribe?:boolean, insight_data?: any, profile?:string}} Insights
@@ -37,7 +36,7 @@ const builder = (yargs) =>
     type: 'boolean',
     alias: 'ws',
     showInHelp: true,
-    describe: 'Get a Subscription to incoming insights',
+    describe: 'Get a Subscription to incoming insights'
   })
 
 /**
@@ -51,5 +50,5 @@ export default {
   builder,
   handler,
   exampleOut: `example output goes here`,
-  exampleIn: '$0 insights',
+  exampleIn: '$0 insights'
 }

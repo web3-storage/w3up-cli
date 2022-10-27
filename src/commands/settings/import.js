@@ -1,11 +1,10 @@
 // @ts-ignore
+import { getClient } from '../../client.js'
+import { isPath } from '../../validation.js'
 import { importSettings } from '@web3-storage/w3up-client'
 import fs from 'fs'
 import Inquirer from 'inquirer'
 import ora from 'ora'
-
-import { getClient } from '../../client.js'
-import { isPath } from '../../validation.js'
 
 /**
  * @typedef ImportSettings
@@ -30,12 +29,12 @@ const handler = async ({ fileName, profile, yes = false }) => {
 
   if (!show) {
     spinner.stopAndPersist({
-      text: 'These values will overwrite your old id/account and you will lose access, are you sure you want to proceed?',
+      text: 'These values will overwrite your old id/account and you will lose access, are you sure you want to proceed?'
     })
 
     const input = await Inquirer.prompt({
       name: 'show',
-      type: 'confirm',
+      type: 'confirm'
     })
 
     show = input.show
@@ -69,7 +68,7 @@ const builder = (yargs) =>
     type: 'boolean',
     alias: 'y',
     showInHelp: true,
-    describe: 'Skip any prompts with "yes" as input.',
+    describe: 'Skip any prompts with "yes" as input.'
   })
 
 /**
@@ -85,5 +84,5 @@ export default {
   builder,
   handler,
   exampleOut: `You have successfully imported settings.json!`,
-  exampleIn: '$0 import-settings settings.json',
+  exampleIn: '$0 import-settings settings.json'
 }

@@ -1,7 +1,6 @@
+import { humanizeBytes } from './utils.js'
 import * as API from '@ucanto/interface'
 import { config } from 'dotenv'
-
-import { humanizeBytes } from './utils.js'
 
 config()
 
@@ -35,5 +34,5 @@ export default {
   ACCESS_DID,
   ACCESS_URL,
   MAX_CAR_SIZE,
-  MAX_CAR_SIZE_HUMANIZED: humanizeBytes(MAX_CAR_SIZE),
+  MAX_CAR_SIZE_HUMANIZED: humanizeBytes(MAX_CAR_SIZE)
 }

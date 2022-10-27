@@ -1,9 +1,8 @@
+import { isDirectory } from '../../utils.js'
+import { streamFileToBlock } from './file.js'
 import * as UnixFS from '@ipld/unixfs'
 import fs from 'fs'
 import path from 'path'
-
-import { isDirectory } from '../../utils.js'
-import { streamFileToBlock } from './file.js'
 
 /** @typedef {{name: string, link: any}} FileDesc */
 
@@ -29,14 +28,14 @@ export async function walkDir({ writer, pathName, filename }) {
         await walkDir({
           writer,
           pathName: pathName + '/' + filename,
-          filename: name,
+          filename: name
         })
       )
     }
     return wrapFilesWithDir({
       writer,
       files,
-      dirName: filename,
+      dirName: filename
     })
   }
 
@@ -58,6 +57,6 @@ export async function wrapFilesWithDir({ writer, files, dirName = '' }) {
 
   return {
     name: dirName,
-    link: dirLink,
+    link: dirLink
   }
 }

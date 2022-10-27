@@ -1,11 +1,10 @@
+import { getProfileSettings } from './client.js'
 import * as API from '@ucanto/interface'
 // @ts-ignore
 import { parseLink } from '@ucanto/server'
 import fs from 'fs'
 import path from 'path'
 import { pathToFileURL } from 'url'
-
-import { getProfileSettings } from './client.js'
 
 /**
  *

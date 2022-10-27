@@ -1,10 +1,9 @@
+import { getClient } from '../../client.js'
+import { hasID, hasSetupAccount, isCID } from '../../validation.js'
 import * as API from '@ucanto/interface'
 // @ts-ignore
 import { parseLink } from '@ucanto/server'
 import ora from 'ora'
-
-import { getClient } from '../../client.js'
-import { hasID, hasSetupAccount, isCID } from '../../validation.js'
 
 /**
  * @typedef {{cid?:API.Link, profile?:string}} Remove
@@ -44,5 +43,5 @@ export default {
   builder,
   handler,
   exampleIn: '$0 remove bafy...',
-  exampleOut: `unlinked bafy...`,
+  exampleOut: `unlinked bafy...`
 }

@@ -1,7 +1,6 @@
-import ora from 'ora'
-
 import { getClient } from '../client.js'
 import { hasSetupAccount } from '../validation.js'
+import ora from 'ora'
 
 /**
  * @typedef {{profile?: string}} WhoAmI
@@ -48,5 +47,5 @@ export default {
   builder,
   handler,
   exampleOut: `DID:12345...`,
-  exampleIn: '$0 whoami',
+  exampleIn: '$0 whoami'
 }

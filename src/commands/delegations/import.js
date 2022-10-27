@@ -1,8 +1,7 @@
-import fs from 'fs'
-import ora from 'ora'
-
 import { getClient } from '../../client.js'
 import { hasID, isPath } from '../../validation.js'
+import fs from 'fs'
+import ora from 'ora'
 
 /**
  * @typedef {{fileName?:string, alias?:string, profile?: string}} ImportDelegation
@@ -50,5 +49,5 @@ export default {
   describe:
     'Import a delegation.car file for access to an account (and give it an optional alias).',
   builder,
-  handler,
+  handler
 }

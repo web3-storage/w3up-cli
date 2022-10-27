@@ -15,5 +15,5 @@ export default {
   builder: {},
   handler,
   exampleOut: ``,
-  exampleIn: '$0 info',
+  exampleIn: '$0 info'
 }

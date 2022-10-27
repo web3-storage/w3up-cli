@@ -1,9 +1,8 @@
+import { decode } from './common.js'
 import { CarIndexer } from '@ipld/car/indexer'
 import { CarReader } from '@ipld/car/reader'
 // @ts-ignore
 import archy from 'archy'
-
-import { decode } from './common.js'
 
 // @ts-ignore
 /** @typedef {import('multiformats/cid').CID} CID */
@@ -24,7 +23,7 @@ export async function run(bytes) {
   /** @type TreeNode */
   let output = {
     label: 'roots',
-    nodes: [],
+    nodes: []
   }
 
   /** @type Array<Block> */
@@ -46,13 +45,13 @@ export async function run(bytes) {
 
     blockMap.set(blockIndex.cid.toString(), {
       cid: blockIndex.cid.toString(),
-      links: links,
+      links: links
     })
 
     if (isRoot) {
       contentRoots.push({
         cid: blockIndex.cid.toString(),
-        links: links,
+        links: links
       })
     }
   }
@@ -85,6 +84,6 @@ function walkTree(cid, name, blockMap) {
       .map((x) =>
         walkTree(x.cid.toString(), x?.name || x?.Name || '', blockMap)
       )
-      .filter((x) => x),
+      .filter((x) => x)
   }
 }

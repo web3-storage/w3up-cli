@@ -1,8 +1,7 @@
-import * as API from '@ucanto/interface'
-import open from 'open'
-
 import { OPEN_WITH_SERVICE_URL } from '../settings.js'
 import { isCID } from '../validation.js'
+import * as API from '@ucanto/interface'
+import open from 'open'
 
 /**
  * @typedef {{cid?:string}} Cid
@@ -46,5 +45,5 @@ export default {
   builder,
   handler,
   exampleIn: '$0 open bafy...',
-  exampleOut: `# opens ${OPEN_WITH_SERVICE_URL}/bafy... in your browser`,
+  exampleOut: `# opens ${OPEN_WITH_SERVICE_URL}/bafy... in your browser`
 }

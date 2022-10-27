@@ -1,9 +1,8 @@
-import fs from 'fs'
-
 import { run as carToDot } from '../../lib/info/carToDot.js'
 import { run as carToList } from '../../lib/info/carToList.js'
 import { run as carToTree } from '../../lib/info/carToTree.js'
 import { isPath, resolvePath } from '../../validation.js'
+import fs from 'fs'
 
 /**
  * @typedef {{path?:string, dot?:boolean, vertical?:boolean}} CarInfo
@@ -20,7 +19,7 @@ const handler = async ({
   path = '/',
   dot = false,
   vertical = false,
-  tree = false,
+  tree = false
 }) => {
   const buffer = fs.readFileSync(resolvePath(path))
 
@@ -41,17 +40,17 @@ const builder = (yargs) =>
     .option('tree', {
       type: 'boolean',
       showInHelp: true,
-      describe: 'output the car as a tree on the command line',
+      describe: 'output the car as a tree on the command line'
     })
     .option('dot', {
       type: 'boolean',
       showInHelp: true,
-      describe: 'output the car as a DOT graph.',
+      describe: 'output the car as a DOT graph.'
     })
     .option('vertical', {
       type: 'boolean',
       showInHelp: true,
-      describe: 'set rankdir LR',
+      describe: 'set rankdir LR'
     })
 
 /**
@@ -67,5 +66,5 @@ export default {
   exampleIn: '$0 inspect-car ../duck.car --tree',
   exampleOut: `roots
 └─┬ bafy...
-  └── duck.png`,
+  └── duck.png`
 }

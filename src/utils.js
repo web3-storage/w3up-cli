@@ -74,9 +74,9 @@ export function buildSimpleConsoleTable(head) {
       'mid-mid': '',
       right: '',
       'right-mid': '',
-      middle: ' ',
+      middle: ' '
     },
-    style: { 'padding-left': 0, 'padding-right': 2, head: ['blue'] },
+    style: { 'padding-left': 0, 'padding-right': 2, head: ['blue'] }
   })
 
   table.push(new Array(head.length).fill('--------'))

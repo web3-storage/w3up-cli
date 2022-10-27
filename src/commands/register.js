@@ -1,8 +1,7 @@
-import ora from 'ora'
-
 import { getClient } from '../client.js'
 import { logToFile } from '../lib/logging.js'
 import { hasID, isEmail } from '../validation.js'
+import ora from 'ora'
 
 /**
  * @typedef {{email?:string, profile?: string}} Register
@@ -22,7 +21,7 @@ const handler = async (argv) => {
 
   const view = ora({
     text: `Registering ${email}, check your email for the link.`,
-    spinner: 'line',
+    spinner: 'line'
   }).start()
 
   try {
@@ -60,5 +59,5 @@ export default {
   command: 'register <email>',
   describe: 'Register your UCAN Identity with w3up',
   builder,
-  handler,
+  handler
 }

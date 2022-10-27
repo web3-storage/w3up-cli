@@ -1,8 +1,7 @@
-import fs from 'fs'
-import ora from 'ora'
-
 import { getClient } from '../../client.js'
 import { hasSetupAccount } from '../../validation.js'
+import fs from 'fs'
+import ora from 'ora'
 
 /**
  * @typedef {{did?:`did:${string}`, profile?: string}} Delegate
@@ -39,5 +38,5 @@ export default {
   command: 'to <did>',
   describe: 'Delegate permissions to another DID',
   builder,
-  handler,
+  handler
 }

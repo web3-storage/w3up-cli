@@ -6,5 +6,5 @@ export default {
   describe: 'Manage car files in w3up.',
   handler: () => {},
   // @ts-expect-error
-  builder: (yargs) => yargs.command([list, remove]),
+  builder: (yargs) => yargs.command([list, remove])
 }

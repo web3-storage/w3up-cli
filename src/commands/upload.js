@@ -1,3 +1,8 @@
+import { getClient } from '../client.js'
+import { buildCar } from '../lib/car/buildCar.js'
+import { logToFile } from '../lib/logging.js'
+import { bytesToCarCID } from '../utils.js'
+import { checkPath, hasID, hasSetupAccount } from '../validation.js'
 import fs from 'fs'
 // @ts-ignore
 import { CID } from 'multiformats/cid'
@@ -5,12 +10,6 @@ import ora from 'ora'
 import path from 'path'
 // @ts-ignore
 import toIterator from 'stream-to-it'
-
-import { getClient } from '../client.js'
-import { buildCar } from '../lib/car/buildCar.js'
-import { logToFile } from '../lib/logging.js'
-import { bytesToCarCID } from '../utils.js'
-import { checkPath, hasID, hasSetupAccount } from '../validation.js'
 
 /**
  * @typedef {{path?: string, split?: boolean, profile?: string}} Upload
@@ -104,14 +103,13 @@ const builder = (yargs) =>
     .check(hasSetupAccount)
     .check(checkPath)
     .option('chunk-size', {
-      type: 'number',
+      type: 'number'
     })
     .option('split', {
       type: 'boolean',
       alias: 'split',
       showInHelp: true,
-      describe:
-        'Split the data into multiple when cars when size limit is hit.',
+      describe: 'Split the data into multiple when cars when size limit is hit.'
     })
 
 export default {
@@ -121,5 +119,5 @@ export default {
   builder,
   handler,
   exampleIn: '$0 upload ../../duck.png',
-  exampleOut: `uploaded bafy...`,
+  exampleOut: `uploaded bafy...`
 }

@@ -19,7 +19,7 @@ export const codecs = {
   [dagPb.code]: dagPb,
   [dagJson.code]: dagJson,
   [raw.code]: raw,
-  [json.code]: json,
+  [json.code]: json
 }
 
 export const codecNames = {
@@ -27,7 +27,7 @@ export const codecNames = {
   [dagPb.code]: 'dagPb',
   [dagJson.code]: 'dagJson',
   [raw.code]: 'raw',
-  [json.code]: 'json',
+  [json.code]: 'json'
   //   [0x202]: 'car',
 }
 
@@ -37,7 +37,7 @@ export const nodeTypeNames = {
   [UnixFS.NodeType.HAMTShard]: 'hamt',
   [UnixFS.NodeType.Metadata]: 'meta',
   [UnixFS.NodeType.Raw]: 'raw',
-  [UnixFS.NodeType.Symlink]: 'sym',
+  [UnixFS.NodeType.Symlink]: 'sym'
 }
 
 /**

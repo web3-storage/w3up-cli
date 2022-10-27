@@ -1,7 +1,6 @@
+import { getClient } from '../../client.js'
 import Inquirer from 'inquirer'
 import ora from 'ora'
-
-import { getClient } from '../../client.js'
 
 /**
  * @typedef {{profile?: string}} ResetSettings
@@ -18,7 +17,7 @@ const handler = async (args) => {
     text: `This will delete your settings, are you sure?
   You will lose access to anything created with your previous key/did.
   If you want to keep the previous settings, use export-settings first.
-`,
+`
   })
 
   const client = getClient(args.profile)
@@ -26,7 +25,7 @@ const handler = async (args) => {
   const { reset } = await Inquirer.prompt({
     name: 'reset',
     type: 'confirm',
-    default: false,
+    default: false
   })
 
   if (reset) {
@@ -43,5 +42,5 @@ export default {
   builder: {},
   handler,
   exampleOut: `Settings cleared.`,
-  exampleIn: '$0 reset-settings',
+  exampleIn: '$0 reset-settings'
 }

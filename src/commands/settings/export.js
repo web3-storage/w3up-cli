@@ -1,10 +1,9 @@
+import { getClient } from '../../client.js'
+import { resolvePath } from '../../validation.js'
 import { exportSettings } from '@web3-storage/w3up-client'
 import fs from 'fs'
 import Inquirer from 'inquirer'
 import ora from 'ora'
-
-import { getClient } from '../../client.js'
-import { resolvePath } from '../../validation.js'
 
 /**
  * @typedef ExportSettings
@@ -38,11 +37,11 @@ const handler = async ({ filename, profile, stdout = false, yes = false }) => {
 
   if (!show) {
     view.stopAndPersist({
-      text: 'These values give anyone the power to act as you, are you sure you want to export them?',
+      text: 'These values give anyone the power to act as you, are you sure you want to export them?'
     })
     const input = await Inquirer.prompt({
       name: 'show',
-      type: 'confirm',
+      type: 'confirm'
     })
     show = input.show
   }
@@ -72,13 +71,13 @@ const builder = (yargs) =>
     .option('stdout', {
       type: 'boolean',
       showInHelp: true,
-      describe: 'Output a machine readable format to stdout',
+      describe: 'Output a machine readable format to stdout'
     })
     .option('yes', {
       type: 'boolean',
       alias: 'y',
       showInHelp: true,
-      describe: 'Skip any prompts with "yes" as input.',
+      describe: 'Skip any prompts with "yes" as input.'
     })
 
 export default {
@@ -87,5 +86,5 @@ export default {
   builder,
   handler,
   exampleOut: `DID:12345`,
-  exampleIn: '$0 export-settings',
+  exampleIn: '$0 export-settings'
 }

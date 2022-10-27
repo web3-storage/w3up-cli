@@ -6,5 +6,5 @@ export default {
   describe: 'CAR file specific commands',
   // @ts-expect-error
   builder: (yargs) => yargs.command([generate, inspect]),
-  handler: () => {},
+  handler: () => {}
 }

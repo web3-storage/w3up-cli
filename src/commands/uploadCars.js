@@ -1,11 +1,4 @@
 // @ts-expect-error
-import * as CAR from '@ipld/car'
-import fs from 'fs'
-import ora from 'ora'
-import path from 'path'
-// @ts-ignore
-import toIterator from 'stream-to-it'
-
 import { getClient } from '../client.js'
 import { getAllFiles, isDirectory } from '../lib/car/file.js'
 import { logToFile } from '../lib/logging.js'
@@ -16,8 +9,14 @@ import {
   hasID,
   hasSetupAccount,
   isCarFile,
-  resolvePath,
+  resolvePath
 } from '../validation.js'
+import * as CAR from '@ipld/car'
+import fs from 'fs'
+import ora from 'ora'
+import path from 'path'
+// @ts-ignore
+import toIterator from 'stream-to-it'
 
 //gotta start somewhere. 3 is fine.
 const MAX_CONNECTION_POOL_SIZE = 3
@@ -67,7 +66,7 @@ const handler = async (argv) => {
   const _path = argv.path
   const view = ora({
     text: `Uploading ${_path}...`,
-    spinner: 'line',
+    spinner: 'line'
   }).start()
 
   const client = getClient(argv.profile)
@@ -126,5 +125,5 @@ export default {
   builder,
   handler,
   exampleIn: '$0 upload-cars ducks/',
-  exampleOut: `<show all cars uploaded>`,
+  exampleOut: `<show all cars uploaded>`
 }

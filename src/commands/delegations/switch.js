@@ -1,10 +1,9 @@
 // @ts-ignore
-import { Delegation } from '@ucanto/server'
-import inquirer from 'inquirer'
-
 import { getClient } from '../../client.js'
 import { hasID } from '../../validation.js'
 import listAccounts from './list.js'
+import { Delegation } from '@ucanto/server'
+import inquirer from 'inquirer'
 
 /**
  * @typedef {{did?:string, alias?:string, profile?: string}} SwitchAccounts
@@ -30,7 +29,7 @@ const handler = async ({ did, alias, profile }) => {
     choices.push({
       name: del.alias + '\t' + imported.issuer.did(),
       alias: del.alias,
-      value: imported.issuer.did(),
+      value: imported.issuer.did()
     })
   }
 
@@ -65,8 +64,8 @@ async function inquirerPick(choices, client) {
         type: 'list',
         name: 'Choose an account',
         choices,
-        default: client.settings.get('delegation'),
-      },
+        default: client.settings.get('delegation')
+      }
     ])
     .then((answers) => {
       const del = answers['Choose an account']
@@ -83,12 +82,12 @@ const builder = (yargs) =>
   yargs.check(hasID).option('did', {
     type: 'string',
     showInHelp: true,
-    describe: 'select account by did',
+    describe: 'select account by did'
   })
 
 export default {
   command: 'switch [alias]',
   describe: 'Select from delegations, including imported ones.',
   builder,
-  handler,
+  handler
 }

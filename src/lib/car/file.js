@@ -19,7 +19,7 @@ export async function fileToBlock({ writer, filename, bytes }) {
 
   return {
     name: filename,
-    link,
+    link
   }
 }
 
@@ -43,7 +43,7 @@ export async function streamFileToBlock({ writer, filePath }) {
 
   return {
     name: path.basename(filePath),
-    link,
+    link
   }
 }
 /**

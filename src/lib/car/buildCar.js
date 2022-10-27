@@ -1,13 +1,12 @@
 // @ts-ignore
+import { isDirectory } from '../../utils.js'
+import { walkDir, wrapFilesWithDir } from './dir.js'
+import { streamFileToBlock } from './file.js'
 import * as CAR from '@ipld/car'
 import * as UnixFS from '@ipld/unixfs'
 import fs from 'fs'
 import path from 'path'
 import 'web-streams-polyfill'
-
-import { isDirectory } from '../../utils.js'
-import { walkDir, wrapFilesWithDir } from './dir.js'
-import { streamFileToBlock } from './file.js'
 
 // Internal unixfs read stream capacity that can hold around 32 blocks
 const CAPACITY = UnixFS.BLOCK_SIZE_LIMIT * 32
@@ -46,7 +45,7 @@ async function createReadableBlockStreamWithWrappingDir(pathName, writable) {
         await walkDir({
           writer,
           pathName: pathName,
-          filename: name,
+          filename: name
         })
       )
     }
@@ -91,10 +90,10 @@ export async function buildCar(pathName, carsize, failAtSplit = false) {
   let carWriterStream = new TransformStream(
     {},
     {
-      highWaterMark: MAX_CARS_AT_ONCE,
+      highWaterMark: MAX_CARS_AT_ONCE
     },
     {
-      highWaterMark: MAX_CARS_AT_ONCE,
+      highWaterMark: MAX_CARS_AT_ONCE
     }
   )
   let carStreamWriter = carWriterStream.writable.getWriter()
@@ -147,6 +146,6 @@ export async function buildCar(pathName, carsize, failAtSplit = false) {
   readAll()
 
   return {
-    stream: carWriterStream.readable,
+    stream: carWriterStream.readable
   }
 }

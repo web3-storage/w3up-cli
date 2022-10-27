@@ -1,8 +1,7 @@
 // @ts-ignore
-import { Delegation, UCAN } from '@ucanto/server'
-
 import { getClient } from '../../client.js'
 import { buildSimpleConsoleTable } from '../../utils.js'
+import { Delegation, UCAN } from '@ucanto/server'
 
 /**
  * @typedef {{ profile?: string }} ListAccounts
@@ -38,5 +37,5 @@ export default {
   command: 'list',
   describe: 'List all delegations (including from account to self).',
   builder,
-  handler,
+  handler
 }
