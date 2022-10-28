@@ -28,7 +28,7 @@ export const main = async (args = hideBin(process.argv)) => {
     .option('p', {
       alias: 'profile',
       type: 'string',
-      describe: 'Select profile.',
+      describe: 'Select profile configuration identifier.',
       default: 'main',
     })
     .group('profile', 'Global:')
