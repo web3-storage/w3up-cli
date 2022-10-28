@@ -24,7 +24,6 @@ const handler = async (args) => {
   saveSettings(client, args.profile)
 
   view.succeed('Agent DID: ' + identity.agent.did())
-  view.succeed('Account DID: ' + identity.account.did())
 }
 /**
  * @type {import('yargs').CommandBuilder} yargs

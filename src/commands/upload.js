@@ -56,8 +56,12 @@ async function generateCarUploads(filePath, view, chunkSize = 512, profile) {
       throw new Error(uploadAddResult?.cause?.message)
     }
 
-    console.log('data CIDs:\n', roots.map((x) => x.toString()).join('\n'))
+    console.log('upload chunk(s) identifier:\n', roots.map((x) => x.toString()).join('\n'))
     console.log('car CIDs:\n', cids.map((x) => x.toString()).join('\n'))
+
+    if (roots && roots.length) {
+      console.log(`IPFS Gateway url:\n https://w3s.link/ipfs/${roots[0].toString()}`)
+    }
   } catch (err) {
     view.fail('Upload did not complete successfully, check w3up-failure.log')
     logToFile('upload', err)
