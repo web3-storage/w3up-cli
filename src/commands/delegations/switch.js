@@ -40,7 +40,7 @@ const handler = async ({ did, alias, profile }) => {
     const found = choices.find((x) => x.alias == alias)
     if (found) {
       const del = found.value
-      settings.set('delegation', del)
+      settings.set('account', del)
       console.log(`now using account: ${del}`)
     } else {
       console.log(
@@ -68,12 +68,12 @@ async function inquirerPick(choices, client) {
         type: 'list',
         name: 'Choose an account',
         choices,
-        default: settings.get('delegation'),
+        default: settings.get('account'),
       },
     ])
     .then((answers) => {
       const del = answers['Choose an account']
-      settings.set('delegation', del)
+      settings.set('account', del)
       console.log(`now using account: ${del}`)
     })
 }
