@@ -25,10 +25,20 @@
     "test:dev": "vitest"
   },
   "dependencies": {
+    "@ucanto/interface": "^1.0.0",
     "@ipld/unixfs": "^1.1.0-dev",
     "@ucanto/server": "^1.0.2",
+    "@ucanto/transport": "^1.0.1",
+    "@ucanto/core": "^1.0.1",
+    "uint8arrays": "^3.1.0",
+    "@ipld/dag-cbor": "^8.0.0",
+    "@ipld/dag-json": "^8.0.11",
+    "@ipld/dag-pb": "^2.1.18",
+    "@ucanto/principal": "^1.0.1",
     "@web-std/stream": "^1.0.1",
-    "@web3-storage/w3up-client": "3.0.2",
+    "@web3-storage/w3up-client": "^3.0.4",
+    "multiformats": "^9.9.0",
+    "@ipld/car": "^4.1.6",
     "archy": "^1.0.0",
     "cli-table": "^0.3.11",
     "conf": "^10.2.0",
@@ -41,7 +51,6 @@
     "yargs": "^17.5.1"
   },
   "devDependencies": {
-    "@trivago/prettier-plugin-sort-imports": "^3.3.0",
     "@types/inquirer": "^9.0.1",
     "@types/yargs": "^17.0.11",
     "chai": "^4.3.6",

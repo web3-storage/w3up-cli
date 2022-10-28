@@ -18,11 +18,10 @@ import whoami from './commands/whoami.js'
 import printQuickstart from './quickstart.js'
 
 /**
- * @type {import('yargs').Argv<{}>} yargs
+ * @param {string[]} args
  */
-const yargs = _yargs(hideBin(process.argv))
-
-export const main = async () => {
+export const main = async (args = hideBin(process.argv)) => {
+  const yargs = _yargs(args)
   const argv = await yargs
     .scriptName('w3up')
     //     .usage('Usage:\n  $0 <cmd> [options]')

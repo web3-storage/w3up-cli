@@ -28,7 +28,7 @@ const handler = async ({ filename, profile, stdout = false, yes = false }) => {
   const client = getClient(profile)
 
   if (stdout) {
-    const store = await exportSettings(client.settings)
+    const store = await exportSettings(await client.settings)
     process.stdout.write(JSON.stringify(store))
     return
   }

@@ -54,9 +54,9 @@ export function getClient(profile = 'main') {
   const settings = getProfileSettings(profile)
 
   const client = new W3Client({
-    serviceDID: cliSettings.W3_STORE_DID,
+    serviceDID: /** @type {`did:${string}`} */ (cliSettings.W3_STORE_DID),
     serviceURL: cliSettings.SERVICE_URL,
-    accessDID: cliSettings.ACCESS_DID,
+    accessDID: /** @type {`did:${string}`} */ (cliSettings.ACCESS_DID),
     accessURL: cliSettings.ACCESS_URL,
     settings,
   })

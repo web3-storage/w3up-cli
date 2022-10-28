@@ -18,7 +18,7 @@ const handler = async ({ profile }) => {
   const client = getClient(profile)
   const id = await client.account()
   const settings = await client.settings
-  const selected = settings.get('delegation')
+  const selected = settings.get('account')
   const delegations = settings.get('delegations')
 
   const table = buildSimpleConsoleTable(['selected', 'alias', 'did'])

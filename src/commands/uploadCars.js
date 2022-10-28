@@ -1,10 +1,10 @@
-// @ts-expect-error
-import * as CAR from '@ipld/car'
+import { CarReader } from '@ipld/car/reader'
 import fs from 'fs'
 import ora from 'ora'
 import path from 'path'
 // @ts-ignore
 import toIterator from 'stream-to-it'
+import { TransformStream } from '@web-std/stream'
 
 import { getClient } from '../client.js'
 import { getAllFiles, isDirectory } from '../lib/car/file.js'
@@ -103,7 +103,7 @@ const handler = async (argv) => {
     uploadExistingCar(car, client, view).then(async (buffer) => {
       if (buffer) {
         const bytes = Uint8Array.from(buffer)
-        const reader = await CAR.CarReader.fromBytes(bytes)
+        const reader = await CarReader.fromBytes(bytes)
         const roots = await reader.getRoots()
         const cid = await bytesToCarCID(bytes)
         for (const root of roots) {
