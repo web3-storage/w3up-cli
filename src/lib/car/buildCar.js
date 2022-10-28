@@ -3,12 +3,11 @@ import * as CAR from '@ipld/car'
 import * as UnixFS from '@ipld/unixfs'
 import fs from 'fs'
 import path from 'path'
-import 'web-streams-polyfill'
 
 import { isDirectory } from '../../utils.js'
 import { walkDir, wrapFilesWithDir } from './dir.js'
 import { streamFileToBlock } from './file.js'
-
+import { TransformStream } from '@web-std/stream'
 // Internal unixfs read stream capacity that can hold around 32 blocks
 const CAPACITY = UnixFS.BLOCK_SIZE_LIMIT * 32
 const MAX_CARS_AT_ONCE = 8

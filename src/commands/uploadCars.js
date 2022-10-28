@@ -5,6 +5,7 @@ import ora from 'ora'
 import path from 'path'
 // @ts-ignore
 import toIterator from 'stream-to-it'
+import { TransformStream } from '@web-std/stream'
 
 import { getClient } from '../client.js'
 import { getAllFiles, isDirectory } from '../lib/car/file.js'
