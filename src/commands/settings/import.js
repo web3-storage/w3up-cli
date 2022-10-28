@@ -43,12 +43,13 @@ const handler = async ({ fileName, profile, yes = false }) => {
 
   if (show && fileName) {
     try {
-      client.settings.clear()
+      const settings = await client.settings
+      settings.clear()
       const json = fs.readFileSync(fileName, { encoding: 'utf-8' })
       const imported = await importSettings(json)
 
       for (const [key, value] of imported.entries()) {
-        client.settings.set(key, value)
+        settings.set(key, value)
       }
 
       await client.identity()

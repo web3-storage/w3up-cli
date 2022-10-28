@@ -38,7 +38,7 @@
     "@web-std/stream": "^1.0.1",
     "@web3-storage/w3up-client": "^3.0.4",
     "multiformats": "^9.9.0",
-    "@ipld/car": "^5.0.0",
+    "@ipld/car": "^4.1.6",
     "archy": "^1.0.0",
     "cli-table": "^0.3.11",
     "conf": "^10.2.0",
