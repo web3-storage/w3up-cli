@@ -1,4 +1,3 @@
-import * as API from '@ucanto/interface'
 import open from 'open'
 
 import { OPEN_WITH_SERVICE_URL } from '../settings.js'

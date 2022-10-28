@@ -1,4 +1,3 @@
-import { exportSettings } from '@web3-storage/w3up-client'
 import fs from 'fs'
 import Inquirer from 'inquirer'
 import ora from 'ora'
@@ -28,7 +27,7 @@ const handler = async ({ filename, profile, stdout = false, yes = false }) => {
   const client = getClient(profile)
 
   if (stdout) {
-    const store = await exportSettings(await client.settings)
+    const store = client.settings
     process.stdout.write(JSON.stringify(store))
     return
   }
@@ -48,7 +47,7 @@ const handler = async ({ filename, profile, stdout = false, yes = false }) => {
   }
 
   if (show) {
-    const store = await exportSettings(await client.settings)
+    const store = client.settings
     const settingsJson = JSON.stringify(store, null, 2)
 
     if (filename) {

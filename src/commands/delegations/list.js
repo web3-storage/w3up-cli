@@ -1,6 +1,5 @@
 // @ts-ignore
 import { Delegation, UCAN } from '@ucanto/server'
-
 import { getClient } from '../../client.js'
 import { buildSimpleConsoleTable } from '../../utils.js'
 
@@ -16,10 +15,9 @@ import { buildSimpleConsoleTable } from '../../utils.js'
  */
 const handler = async ({ profile }) => {
   const client = getClient(profile)
-  const id = await client.account()
-  const settings = await client.settings
-  const selected = settings.get('account')
-  const delegations = settings.get('delegations')
+  const settings = client.settings
+  const selected = settings.account
+  const delegations = settings.delegations
 
   const table = buildSimpleConsoleTable(['selected', 'alias', 'did'])
   for (const [did, del] of Object.entries(delegations)) {

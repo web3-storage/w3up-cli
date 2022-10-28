@@ -1,4 +1,3 @@
-import fs from 'fs'
 // @ts-ignore
 import { CID } from 'multiformats/cid'
 import ora from 'ora'
@@ -10,7 +9,7 @@ import { getClient } from '../client.js'
 import { buildCar } from '../lib/car/buildCar.js'
 import { logToFile } from '../lib/logging.js'
 import { bytesToCarCID } from '../utils.js'
-import { checkPath, hasID, hasSetupAccount } from '../validation.js'
+import { checkPath, hasSetupAccount } from '../validation.js'
 
 /**
  * @typedef {{path?: string, split?: boolean, profile?: string}} Upload
@@ -34,10 +33,7 @@ async function generateCarUploads(filePath, view, chunkSize = 512, profile) {
     let roots = []
     /** @type Array<CID> */
     let cids = []
-    let rootCarCID
     let origin = null
-
-    const uploadPromises = []
 
     for await (const car of toIterator(stream)) {
       roots = roots.concat(car.roots)
