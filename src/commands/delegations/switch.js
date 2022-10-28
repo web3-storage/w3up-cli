@@ -1,6 +1,7 @@
 // @ts-ignore
 import { Delegation } from '@ucanto/server'
 import inquirer from 'inquirer'
+import { stringToDelegation } from '../../encoding.js'
 
 import { getClient } from '../../client.js'
 import { hasID } from '../../validation.js'
@@ -27,7 +28,7 @@ const handler = async ({ did, alias, profile }) => {
   let choices = []
 
   for (const del of Object.values(delegations)) {
-    const imported = Delegation.import([del.ucan.root])
+    const imported = await stringToDelegation(del.ucan) // Delegation.import([del.ucan.root])
     choices.push({
       name: del.alias + '\t' + imported.issuer.did(),
       alias: del.alias,
