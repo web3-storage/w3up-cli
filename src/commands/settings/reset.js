@@ -28,9 +28,9 @@ const handler = async (args) => {
     type: 'confirm',
     default: false,
   })
-
+  const settings = await client.settings
   if (reset) {
-    client.settings.clear()
+    settings.clear()
     view.succeed('Settings cleared.')
   } else {
     view.info('exiting')

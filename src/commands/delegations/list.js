@@ -17,8 +17,9 @@ import { buildSimpleConsoleTable } from '../../utils.js'
 const handler = async ({ profile }) => {
   const client = getClient(profile)
   const id = await client.account()
-  const selected = client.settings.get('delegation')
-  const delegations = client.settings.get('delegations')
+  const settings = await client.settings
+  const selected = settings.get('delegation')
+  const delegations = settings.get('delegations')
 
   const table = buildSimpleConsoleTable(['selected', 'alias', 'did'])
   for (const [did, del] of Object.entries(delegations)) {

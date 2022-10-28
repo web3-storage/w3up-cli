@@ -18,7 +18,8 @@ import listAccounts from './list.js'
  */
 const handler = async ({ did, alias, profile }) => {
   const client = getClient(profile)
-  const delegations = client.settings.get('delegations')
+  const settings = await client.settings
+  const delegations = settings.get('delegations')
   if (!delegations) {
     console.log('No delegations.')
     return
@@ -38,7 +39,7 @@ const handler = async ({ did, alias, profile }) => {
     const found = choices.find((x) => x.alias == alias)
     if (found) {
       const del = found.value
-      client.settings.set('delegation', del)
+      settings.set('delegation', del)
       console.log(`now using account: ${del}`)
     } else {
       console.log(
@@ -59,18 +60,19 @@ const handler = async ({ did, alias, profile }) => {
  * @param {any} client
  */
 async function inquirerPick(choices, client) {
+  const settings = await client.settings
   await inquirer
     .prompt([
       {
         type: 'list',
         name: 'Choose an account',
         choices,
-        default: client.settings.get('delegation'),
+        default: settings.get('delegation'),
       },
     ])
     .then((answers) => {
       const del = answers['Choose an account']
-      client.settings.set('delegation', del)
+      settings.set('delegation', del)
       console.log(`now using account: ${del}`)
     })
 }
