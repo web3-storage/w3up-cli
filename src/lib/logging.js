@@ -7,7 +7,7 @@ import fs from 'fs'
  * @param {Error|any} error - The error
  * @returns {Promise<void>}
  */
-export async function logToFile (action, error) {
+export async function logToFile(action, error) {
   await fs.promises.appendFile(
     'w3up-failure.log',
     `${new Date().toISOString()} [${action}]: ${error?.toString()}\n`

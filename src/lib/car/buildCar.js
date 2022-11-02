@@ -2,6 +2,7 @@
 import { isDirectory } from '../../utils.js'
 import { walkDir, wrapFilesWithDir } from './dir.js'
 import { streamFileToBlock } from './file.js'
+// @ts-ignore
 import * as CAR from '@ipld/car'
 import * as UnixFS from '@ipld/unixfs'
 import fs from 'fs'
@@ -24,7 +25,7 @@ const MAX_CARS_AT_ONCE = 8
  * @param {WritableStream} writable - The writable stream.
  * @returns {Promise<void>}
  */
-async function createReadableBlockStreamWithWrappingDir (pathName, writable) {
+async function createReadableBlockStreamWithWrappingDir(pathName, writable) {
   // Next we create a writer with filesystem like API for encoding files and
   // directories into IPLD blocks that will come out on `readable` end.
   const writer = UnixFS.createWriter({ writable })
@@ -62,7 +63,7 @@ async function createReadableBlockStreamWithWrappingDir (pathName, writable) {
  * @param {number} carsize - The maximum size of a generated car file.
  * @returns {CAR.CarBufferWriter}
  */
-function createCarWriter (carsize) {
+function createCarWriter(carsize) {
   const buffer = new ArrayBuffer(carsize)
   return CAR.CarBufferWriter.createWriter(buffer, { roots: [] })
 }
@@ -74,8 +75,9 @@ function createCarWriter (carsize) {
  * @param {boolean} [failAtSplit=false] - Should this fail if it tries to split into multiple cars.
  * @returns {Promise<buildCarOutput>}
  */
-export async function buildCar (pathName, carsize, failAtSplit = false) {
+export async function buildCar(pathName, carsize, failAtSplit = false) {
   // Create a redable & writable streams with internal queue
+  // eslint-disable-next-line no-undef
   const { readable, writable } = new TransformStream(
     {},
     UnixFS.withCapacity(CAPACITY)
@@ -87,6 +89,7 @@ export async function buildCar (pathName, carsize, failAtSplit = false) {
 
   // create the first buffer.
   let carWriter = createCarWriter(carsize)
+  // eslint-disable-next-line no-undef
   const carWriterStream = new TransformStream(
     {},
     {
@@ -98,14 +101,14 @@ export async function buildCar (pathName, carsize, failAtSplit = false) {
   )
   const carStreamWriter = carWriterStream.writable.getWriter()
 
-  async function readAll () {
+  async function readAll() {
     // Keep track of written cids, so that blocks are not duplicated across cars.
     const writtenCids = new Set()
 
     // track the last written block, so we know the root of the dag.
     /** @type Block */
     let root = { bytes: null, cid: null }
-    async function * iterator () {
+    async function* iterator() {
       while (true) {
         yield reader.read()
       }

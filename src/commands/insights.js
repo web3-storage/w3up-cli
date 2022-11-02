@@ -1,5 +1,6 @@
 import { getClient } from '../client.js'
 import { hasSetupAccount, isCID } from '../validation.js'
+// eslint-disable-next-line no-unused-vars
 import * as API from '@ucanto/interface'
 import { parseLink } from '@ucanto/server'
 import ora from 'ora'

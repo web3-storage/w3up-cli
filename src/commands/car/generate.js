@@ -5,6 +5,7 @@ import { bytesToCarCID } from '../../utils.js'
 import { isPath, resolvePath } from '../../validation.js'
 import fs from 'fs'
 // @ts-ignore
+// eslint-disable-next-line no-unused-vars
 import { CID } from 'multiformats/cid'
 import ora from 'ora'
 import path from 'path'

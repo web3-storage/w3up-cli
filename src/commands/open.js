@@ -1,6 +1,5 @@
 import { OPEN_WITH_SERVICE_URL } from '../settings.js'
 import { isCID } from '../validation.js'
-import * as API from '@ucanto/interface'
 import open from 'open'
 
 /**
@@ -17,7 +16,7 @@ const handler = async ({ cid }) => {
   try {
     open(`${OPEN_WITH_SERVICE_URL}${cid}`)
   } catch (err) {
-    throw `Could not open ${cid}: ${err}`
+    throw new Error(`Could not open ${cid}: ${err}`)
   }
 }
 

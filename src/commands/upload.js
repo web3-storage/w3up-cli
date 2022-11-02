@@ -2,9 +2,9 @@ import { getClient } from '../client.js'
 import { buildCar } from '../lib/car/buildCar.js'
 import { logToFile } from '../lib/logging.js'
 import { bytesToCarCID } from '../utils.js'
-import { checkPath, hasID, hasSetupAccount } from '../validation.js'
-import fs from 'fs'
+import { checkPath, hasSetupAccount } from '../validation.js'
 // @ts-ignore
+// eslint-disable-next-line no-unused-vars
 import { CID } from 'multiformats/cid'
 import ora from 'ora'
 import path from 'path'
@@ -22,7 +22,7 @@ import toIterator from 'stream-to-it'
  * @param {string} [profile]
  * @returns {Promise<void>}
  */
-async function generateCarUploads (filePath, view, chunkSize = 512, profile) {
+async function generateCarUploads(filePath, view, chunkSize = 512, profile) {
   const client = getClient(profile)
 
   chunkSize = Math.pow(1024, 2) * chunkSize
@@ -33,10 +33,10 @@ async function generateCarUploads (filePath, view, chunkSize = 512, profile) {
     let roots = []
     /** @type Array<CID> */
     const cids = []
-    let rootCarCID
+    // let rootCarCID
     let origin = null
 
-    const uploadPromises = []
+    // const uploadPromises = []
 
     for await (const car of toIterator(stream)) {
       roots = roots.concat(car.roots)
@@ -77,11 +77,11 @@ const handler = async (argv) => {
   const chunkSize = Number(argv.chunkSize) || 512
 
   if (chunkSize < 1 || chunkSize > 512) {
-    return Promise.reject('Chunk size must be between 1 and 512')
+    return Promise.reject(new Error('Chunk size must be between 1 and 512'))
   }
 
   if (!_path) {
-    return Promise.reject('You must Specify a Path')
+    return Promise.reject(new Error('You must Specify a Path'))
   }
 
   if (path.extname(_path) === '.car') {

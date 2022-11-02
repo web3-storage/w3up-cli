@@ -34,7 +34,7 @@ const handler = async ({ did, alias, profile }) => {
   }
 
   if (alias) {
-    const found = choices.find((x) => x.alias == alias)
+    const found = choices.find((x) => x.alias === alias)
     if (found) {
       const del = found.value
       client.settings.set('delegation', del)
@@ -48,6 +48,7 @@ const handler = async ({ did, alias, profile }) => {
       listAccounts.handler({ profile })
     }
   } else if (did) {
+    // empty placeholder for future functionality
   } else {
     await inquirerPick(choices, client)
   }
@@ -57,7 +58,7 @@ const handler = async ({ did, alias, profile }) => {
  * @param {{ name: string; value: any; }[]} choices
  * @param {any} client
  */
-async function inquirerPick (choices, client) {
+async function inquirerPick(choices, client) {
   await inquirer
     .prompt([
       {

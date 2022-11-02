@@ -1,5 +1,4 @@
 import { humanizeBytes } from './utils.js'
-import * as API from '@ucanto/interface'
 import { config } from 'dotenv'
 
 config()

@@ -1,5 +1,6 @@
 import { getClient } from '../../client.js'
-import { hasID, hasSetupAccount, isCID } from '../../validation.js'
+import { hasSetupAccount, isCID } from '../../validation.js'
+// eslint-disable-next-line no-unused-vars
 import * as API from '@ucanto/interface'
 // @ts-ignore
 import { parseLink } from '@ucanto/server'

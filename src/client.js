@@ -1,4 +1,4 @@
-import { default as cliSettings } from './settings.js'
+import cliSettings from './settings.js'
 import * as CBOR from '@ucanto/transport/cbor'
 import W3Client from '@web3-storage/w3up-client'
 import Conf from 'conf'
@@ -14,7 +14,7 @@ const deserialize = (text) => CBOR.codec.decode(Buffer.from(text, 'binary'))
 /**
  * @param {any} profileSettings
  */
-function mergeSettings (profileSettings) {
+function mergeSettings(profileSettings) {
   if (profileSettings.size) {
     return
   }
@@ -32,7 +32,7 @@ function mergeSettings (profileSettings) {
   }
 }
 
-export function getProfileSettings (profile = 'main') {
+export function getProfileSettings(profile = 'main') {
   // @ts-expect-error
   const profileSettings = new Conf({
     projectName: 'w3up',
@@ -49,7 +49,7 @@ export function getProfileSettings (profile = 'main') {
   return profileSettings
 }
 
-export function getClient (profile = 'main') {
+export function getClient(profile = 'main') {
   const settings = getProfileSettings(profile)
 
   const client = new W3Client({

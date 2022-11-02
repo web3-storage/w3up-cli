@@ -1,7 +1,6 @@
 // @ts-ignore
 import { getClient } from '../../client.js'
 import { buildSimpleConsoleTable } from '../../utils.js'
-import { Delegation, UCAN } from '@ucanto/server'
 
 /**
  * @typedef {{ profile?: string }} ListAccounts
@@ -15,13 +14,13 @@ import { Delegation, UCAN } from '@ucanto/server'
  */
 const handler = async ({ profile }) => {
   const client = getClient(profile)
-  const id = await client.account()
+  // const id = await client.account()
   const selected = client.settings.get('delegation')
   const delegations = client.settings.get('delegations')
 
   const table = buildSimpleConsoleTable(['selected', 'alias', 'did'])
   for (const [did, del] of Object.entries(delegations)) {
-    const cur = selected == did
+    const cur = selected === did
     table.push([cur ? '*' : '', del.alias, did])
   }
   console.log(table.toString())

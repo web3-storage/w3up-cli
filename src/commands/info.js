@@ -1,4 +1,4 @@
-import { default as info } from '../settings.js'
+import info from '../settings.js'
 
 /**
  * @async

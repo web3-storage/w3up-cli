@@ -1,4 +1,5 @@
 import { getProfileSettings } from './client.js'
+// eslint-disable-next-line no-unused-vars
 import * as API from '@ucanto/interface'
 // @ts-ignore
 import { parseLink } from '@ucanto/server'
@@ -23,7 +24,7 @@ export const isEmail = (email) => {
  */
 export const isCID = (cid) => {
   if (!cid) {
-    throw 'Empty CID was provided'
+    throw new Error('Empty CID was provided')
   }
   try {
     parseLink(cid?.toString() || '')
@@ -110,7 +111,7 @@ export const hasOtherDelegation = ({ profile }) => {
   const delegations = settings.get('delegations')
   const delegation = settings.get('delegation')
 
-  if (delegations[delegation].alias != 'self') {
+  if (delegations[delegation].alias !== 'self') {
     return true
   } else {
     return false
@@ -120,14 +121,14 @@ export const hasOtherDelegation = ({ profile }) => {
 /**
  * @param {import('yargs').Arguments<{profile?:string}>} argv
  */
-export function hasSetupAccount (argv) {
+export function hasSetupAccount(argv) {
   try {
     return hasID(argv) && hasEmail(argv)
   } catch (accountError) {
     if (hasOtherDelegation(argv)) {
       return true
     }
-    throw (
+    throw new Error(
       accountError + '\nYou can also import a delegation from another account.'
     )
   }

@@ -1,4 +1,3 @@
-// @ts-expect-error
 import { getClient } from '../client.js'
 import { getAllFiles, isDirectory } from '../lib/car/file.js'
 import { logToFile } from '../lib/logging.js'
@@ -6,11 +5,11 @@ import { MAX_CAR_SIZE } from '../settings.js'
 import { bytesToCarCID } from '../utils.js'
 import {
   checkPath,
-  hasID,
   hasSetupAccount,
   isCarFile,
   resolvePath
 } from '../validation.js'
+// @ts-ignore
 import * as CAR from '@ipld/car'
 import fs from 'fs'
 import ora from 'ora'
@@ -19,7 +18,7 @@ import path from 'path'
 import toIterator from 'stream-to-it'
 
 // gotta start somewhere. 3 is fine.
-const MAX_CONNECTION_POOL_SIZE = 3
+// const MAX_CONNECTION_POOL_SIZE = 3
 
 /**
  * @async
@@ -28,7 +27,7 @@ const MAX_CONNECTION_POOL_SIZE = 3
  * @param {import('ora').Ora} view
  * @returns {Promise<Buffer|void>}
  */
-export async function uploadExistingCar (filePath, client, view) {
+export async function uploadExistingCar(filePath, client, view) {
   try {
     const { size } = await fs.promises.stat(filePath)
     if (size > MAX_CAR_SIZE) {
@@ -72,11 +71,12 @@ const handler = async (argv) => {
   const client = getClient(argv.profile)
 
   if (!_path) {
-    return Promise.reject('You must Specify a Path')
+    return Promise.reject(new Error('You must Specify a Path'))
   }
 
   const targetPath = path.resolve(_path)
 
+  // eslint-disable-next-line no-undef
   const stream = new TransformStream(
     {},
     { highWaterMark: 1 },
