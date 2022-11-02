@@ -27,7 +27,7 @@ import toIterator from 'stream-to-it'
  * @param {import('ora').Ora} view
  * @returns {Promise<Buffer|void>}
  */
-export async function uploadExistingCar(filePath, client, view) {
+export async function uploadExistingCar (filePath, client, view) {
   try {
     const { size } = await fs.promises.stat(filePath)
     if (size > MAX_CAR_SIZE) {

@@ -14,7 +14,7 @@ import path from 'path'
  * @param {string} options.filename - The current filename
  * @returns {Promise<FileDesc>}
  */
-export async function walkDir({ writer, pathName, filename }) {
+export async function walkDir ({ writer, pathName, filename }) {
   const filePath = path.resolve(pathName, filename)
 
   if (isDirectory(filePath)) {
@@ -50,7 +50,7 @@ export async function walkDir({ writer, pathName, filename }) {
  * @param {string} options.dirName
  * @returns {Promise<{name:string, link:any}>}
  */
-export async function wrapFilesWithDir({ writer, files, dirName = '' }) {
+export async function wrapFilesWithDir ({ writer, files, dirName = '' }) {
   const dir = UnixFS.createDirectoryWriter(writer)
   files.forEach((file) => dir.set(file.name, file.link))
   const dirLink = await dir.close()

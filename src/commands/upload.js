@@ -22,7 +22,7 @@ import toIterator from 'stream-to-it'
  * @param {string} [profile]
  * @returns {Promise<void>}
  */
-async function generateCarUploads(filePath, view, chunkSize = 512, profile) {
+async function generateCarUploads (filePath, view, chunkSize = 512, profile) {
   const client = getClient(profile)
 
   chunkSize = Math.pow(1024, 2) * chunkSize

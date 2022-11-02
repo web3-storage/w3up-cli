@@ -14,7 +14,7 @@ const deserialize = (text) => CBOR.codec.decode(Buffer.from(text, 'binary'))
 /**
  * @param {any} profileSettings
  */
-function mergeSettings(profileSettings) {
+function mergeSettings (profileSettings) {
   if (profileSettings.size) {
     return
   }
@@ -32,7 +32,7 @@ function mergeSettings(profileSettings) {
   }
 }
 
-export function getProfileSettings(profile = 'main') {
+export function getProfileSettings (profile = 'main') {
   // @ts-expect-error
   const profileSettings = new Conf({
     projectName: 'w3up',
@@ -49,7 +49,7 @@ export function getProfileSettings(profile = 'main') {
   return profileSettings
 }
 
-export function getClient(profile = 'main') {
+export function getClient (profile = 'main') {
   const settings = getProfileSettings(profile)
 
   const client = new W3Client({

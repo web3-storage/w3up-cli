@@ -58,7 +58,7 @@ const handler = async ({ did, alias, profile }) => {
  * @param {{ name: string; value: any; }[]} choices
  * @param {any} client
  */
-async function inquirerPick(choices, client) {
+async function inquirerPick (choices, client) {
   await inquirer
     .prompt([
       {

@@ -46,7 +46,7 @@ export const nodeTypeNames = {
  * @throws {Error}
  * @returns {object}
  */
-export function decode(cid, bytes) {
+export function decode (cid, bytes) {
   if (!codecs[cid.code]) {
     throw new Error(`Unknown codec code: 0x${cid.code.toString(16)}`)
   }
@@ -66,7 +66,7 @@ export function decode(cid, bytes) {
  * @param {object} cid - the CID to format to a short form for output.
  * @returns {string} The shortned CID.
  */
-export function toShortCID(cid) {
+export function toShortCID (cid) {
   const str = cid.toString()
   return str.substring(0, 4) + '...' + str.substring(str.length - 4, str.length)
 }
@@ -74,7 +74,7 @@ export function toShortCID(cid) {
 /**
  * @param {CID} cid
  */
-export function toOutput(cid) {
+export function toOutput (cid) {
   const cidv1 = cid.toString()
   let cidv0 = 'N/A'
 
