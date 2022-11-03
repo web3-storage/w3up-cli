@@ -7,7 +7,7 @@ import {
   checkPath,
   hasSetupAccount,
   isCarFile,
-  resolvePath,
+  resolvePath
 } from '../validation.js'
 import { CarReader } from '@ipld/car/reader'
 import { TransformStream } from '@web-std/stream'
@@ -17,7 +17,7 @@ import path from 'path'
 // @ts-ignore
 import toIterator from 'stream-to-it'
 
-//gotta start somewhere. 3 is fine.
+// gotta start somewhere. 3 is fine.
 // const MAX_CONNECTION_POOL_SIZE = 3
 
 /**
@@ -27,7 +27,7 @@ import toIterator from 'stream-to-it'
  * @param {import('ora').Ora} view
  * @returns {Promise<Buffer|void>}
  */
-export async function uploadExistingCar(filePath, client, view) {
+export async function uploadExistingCar (filePath, client, view) {
   try {
     const { size } = await fs.promises.stat(filePath)
     if (size > MAX_CAR_SIZE) {
@@ -65,13 +65,13 @@ const handler = async (argv) => {
   const _path = argv.path
   const view = ora({
     text: `Uploading ${_path}...`,
-    spinner: 'line',
+    spinner: 'line'
   }).start()
 
   const client = getClient(argv.profile)
 
   if (!_path) {
-    return Promise.reject('You must Specify a Path')
+    throw new Error('You must Specify a Path')
   }
 
   const targetPath = path.resolve(_path)
@@ -83,7 +83,7 @@ const handler = async (argv) => {
   )
   const writer = stream.writable.getWriter()
 
-  let files = getAllFiles(targetPath)
+  const files = getAllFiles(targetPath)
 
   for (const file of files) {
     const _file = path.resolve(targetPath, file)
@@ -125,5 +125,5 @@ export default {
   builder,
   handler,
   exampleIn: '$0 upload-cars ducks/',
-  exampleOut: `<show all cars uploaded>`,
+  exampleOut: '<show all cars uploaded>'
 }

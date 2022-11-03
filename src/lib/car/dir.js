@@ -14,28 +14,28 @@ import path from 'path'
  * @param {string} options.filename - The current filename
  * @returns {Promise<FileDesc>}
  */
-export async function walkDir({ writer, pathName, filename }) {
+export async function walkDir ({ writer, pathName, filename }) {
   const filePath = path.resolve(pathName, filename)
 
   if (isDirectory(filePath)) {
     /** @type {Array<FileDesc>} */
-    let files = []
+    const files = []
     const fileNames = (await fs.promises.readdir(filePath)).filter(
       (x) => !x.startsWith('.')
     )
-    for (var name of fileNames) {
+    for (const name of fileNames) {
       files.push(
         await walkDir({
           writer,
           pathName: pathName + '/' + filename,
-          filename: name,
+          filename: name
         })
       )
     }
     return wrapFilesWithDir({
       writer,
       files,
-      dirName: filename,
+      dirName: filename
     })
   }
 
@@ -50,13 +50,13 @@ export async function walkDir({ writer, pathName, filename }) {
  * @param {string} options.dirName
  * @returns {Promise<{name:string, link:any}>}
  */
-export async function wrapFilesWithDir({ writer, files, dirName = '' }) {
+export async function wrapFilesWithDir ({ writer, files, dirName = '' }) {
   const dir = UnixFS.createDirectoryWriter(writer)
   files.forEach((file) => dir.set(file.name, file.link))
   const dirLink = await dir.close()
 
   return {
     name: dirName,
-    link: dirLink,
+    link: dirLink
   }
 }

@@ -50,5 +50,5 @@ export default {
   describe:
     'Import a delegation.car file for access to an account (and give it an optional alias).',
   builder,
-  handler,
+  handler
 }

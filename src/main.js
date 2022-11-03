@@ -28,24 +28,24 @@ export const main = async (args = hideBin(process.argv)) => {
       alias: 'profile',
       type: 'string',
       describe: 'Select profile configuration identifier.',
-      default: 'main',
+      default: 'main'
     })
     .group('profile', 'Global:')
     .command({
       command: '*',
-      handler() {
+      handler () {
         printQuickstart()
         yargs.showHelp()
-      },
+      }
     })
     .command({
       command: 'completion',
-      handler() {
+      handler () {
         yargs.showCompletionScript()
-      },
+      }
     })
 
-    //registration
+    // registration
     .command(id)
     .command(register)
     .command(whoami)

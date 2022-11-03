@@ -34,7 +34,7 @@ const builder = (yargs) =>
     type: 'boolean',
     alias: 'reset',
     showInHelp: true,
-    describe: 'reset settings and generate id.',
+    describe: 'reset settings and generate id.'
   })
 
 export default {
@@ -42,6 +42,6 @@ export default {
   describe: 'Generate a UCAN Identity',
   builder,
   handler,
-  exampleOut: `ID loaded: did:key:z6MkiWm...`,
-  exampleIn: '$0 id',
+  exampleOut: 'ID loaded: did:key:z6MkiWm...',
+  exampleIn: '$0 id'
 }

@@ -10,7 +10,7 @@ import path from 'path'
  * @param {any} options.bytes -
  * @returns {Promise<{name:string, link:any}>}
  */
-export async function fileToBlock({ writer, filename, bytes }) {
+export async function fileToBlock ({ writer, filename, bytes }) {
   // make file writer, write to it, and close it to get link/cid
   // @ts-ignore
   const file = UnixFS.createFileWriter(writer)
@@ -19,7 +19,7 @@ export async function fileToBlock({ writer, filename, bytes }) {
 
   return {
     name: filename,
-    link,
+    link
   }
 }
 
@@ -30,7 +30,7 @@ export async function fileToBlock({ writer, filename, bytes }) {
  * @param {string} options.filePath
  * @returns {Promise<{name:string, link:any}>}
  */
-export async function streamFileToBlock({ writer, filePath }) {
+export async function streamFileToBlock ({ writer, filePath }) {
   const stream = fs.createReadStream(filePath, { encoding: 'binary' })
   // @ts-ignore
   const file = UnixFS.createFileWriter(writer)
@@ -43,7 +43,7 @@ export async function streamFileToBlock({ writer, filePath }) {
 
   return {
     name: path.basename(filePath),
-    link,
+    link
   }
 }
 /**
@@ -52,7 +52,7 @@ export async function streamFileToBlock({ writer, filePath }) {
  * @returns {boolean}
  */
 export const isDirectory = (target) => {
-  return fs.lstatSync(target).isDirectory() == true
+  return fs.lstatSync(target).isDirectory() === true
 }
 
 /**

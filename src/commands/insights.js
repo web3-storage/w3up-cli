@@ -1,5 +1,6 @@
 import { getClient } from '../client.js'
 import { hasSetupAccount, isCID } from '../validation.js'
+// eslint-disable-next-line no-unused-vars
 import * as API from '@ucanto/interface'
 import { parseLink } from '@ucanto/server'
 import ora from 'ora'
@@ -19,7 +20,7 @@ const handler = async ({ cid, ws, subscribe, profile }) => {
   const shouldWS = ws || subscribe
 
   if (shouldWS) {
-    spinner.fail(`⚠️Subscriptions not yet supported ⚠️`)
+    spinner.fail('⚠️Subscriptions not yet supported ⚠️')
   } else {
     const client = getClient(profile)
     // @ts-expect-error
@@ -36,7 +37,7 @@ const builder = (yargs) =>
     type: 'boolean',
     alias: 'ws',
     showInHelp: true,
-    describe: 'Get a Subscription to incoming insights',
+    describe: 'Get a Subscription to incoming insights'
   })
 
 /**
@@ -49,6 +50,6 @@ export default {
   describe: 'Get insights for a CID',
   builder,
   handler,
-  exampleOut: `example output goes here`,
-  exampleIn: '$0 insights',
+  exampleOut: 'example output goes here',
+  exampleIn: '$0 insights'
 }

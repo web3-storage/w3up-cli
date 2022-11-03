@@ -9,6 +9,6 @@ export default {
   builder: (yargs) =>
     yargs.command([list, remove]).command({
       ...list,
-      command: '*',
-    }),
+      command: '*'
+    })
 }

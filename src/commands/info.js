@@ -1,4 +1,4 @@
-import { default as info } from '../settings.js'
+import info from '../settings.js'
 
 /**
  * @async
@@ -14,6 +14,6 @@ export default {
   describe: 'Print information about cli',
   builder: {},
   handler,
-  exampleOut: ``,
-  exampleIn: '$0 info',
+  exampleOut: '',
+  exampleIn: '$0 info'
 }

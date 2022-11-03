@@ -16,7 +16,7 @@ const handler = async ({ cid }) => {
   try {
     open(`${OPEN_WITH_SERVICE_URL}${cid}`)
   } catch (err) {
-    throw `Could not open ${cid}: ${err}`
+    throw new Error(`Could not open ${cid}: ${err}`)
   }
 }
 
@@ -31,7 +31,7 @@ const builder = (yargs) => yargs.check(checkTarget)
  */
 const checkTarget = ({ cid }) => {
   if (!cid) {
-    throw new Error(`No valid cid or item was provided to open.`)
+    throw new Error('No valid cid or item was provided to open.')
   }
 
   const _cid = cid.split('/')[0]
@@ -44,5 +44,5 @@ export default {
   builder,
   handler,
   exampleIn: '$0 open bafy...',
-  exampleOut: `# opens ${OPEN_WITH_SERVICE_URL}/bafy... in your browser`,
+  exampleOut: `# opens ${OPEN_WITH_SERVICE_URL}/bafy... in your browser`
 }

@@ -16,11 +16,10 @@
     "src"
   ],
   "scripts": {
-    "pretest": "npm run prettier && npm run typecheck",
+    "lint": "standard",
+    "pretest": "npm run typecheck && npm run lint",
     "test": "echo 'no tests exist'",
     "typecheck": "tsc",
-    "prettier": "prettier --ignore-unknown --ignore-path .gitignore --check ./src",
-    "prettier:fix": "prettier --ignore-unknown --write --ignore-path .gitignore .",
     "test:coverage": "vitest run --coverage",
     "test:dev": "vitest"
   },
@@ -30,41 +29,34 @@
     "@ipld/dag-json": "^9.0.1",
     "@ipld/dag-pb": "^3.0.0",
     "@ipld/unixfs": "^1.1.0-dev",
+    "@ucanto/core": "^1.0.1",
     "@ucanto/interface": "^1.0.0",
+    "@ucanto/principal": "^1.0.1",
     "@ucanto/server": "^1.0.2",
     "@ucanto/transport": "^1.0.1",
-    "@ucanto/core": "^1.0.1",
-    "uint8arrays": "^3.1.0",
-    "@ucanto/principal": "^1.0.1",
     "@web-std/stream": "^1.0.1",
     "@web3-storage/w3up-client": "^3.2.0",
     "archy": "^1.0.0",
     "cli-table": "^0.3.11",
     "conf": "^10.2.0",
     "dotenv": "^16.0.1",
+    "eslint": "^8.0.1",
     "inquirer": "^9.1.0",
     "multiformats": "^9.9.0",
     "open": "^8.4.0",
     "ora": "^6.1.2",
     "stream-to-it": "^0.2.4",
+    "uint8arrays": "^3.1.0",
     "uuid": "^8.3.2",
     "yargs": "^17.5.1"
   },
   "devDependencies": {
+    "standard": "^17.0.0",
     "@types/inquirer": "^9.0.1",
     "@types/yargs": "^17.0.11",
-    "prettier": "^2.7.1",
     "semantic-release": "^19.0.5",
     "typescript": "^4.8.3",
     "vitest": "^0.23.2"
-  },
-  "resolutions": {
-    "@ucanto/validator": "^1.0.2"
-  },
-  "exports": {
-    ".": {
-      "import": "./src/lib.js"
-    }
   },
   "publishConfig": {
     "access": "public"

@@ -21,13 +21,13 @@ const handler = async (argv) => {
 
   const view = ora({
     text: `Registering ${email}, check your email for the link.`,
-    spinner: 'line',
+    spinner: 'line'
   }).start()
 
   try {
     // @ts-expect-error
     hasID({ profile })
-    let result = await client.register(email)
+    const result = await client.register(email)
     saveSettings(client, profile)
     if (result) {
       view.succeed(`Registration succeeded: ${email}`)
@@ -60,5 +60,5 @@ export default {
   command: 'register <email>',
   describe: 'Register your UCAN Identity with w3up',
   builder,
-  handler,
+  handler
 }

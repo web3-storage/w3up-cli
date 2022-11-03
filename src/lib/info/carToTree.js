@@ -14,16 +14,16 @@ import archy from 'archy'
  * @param {Buffer|Uint8Array} bytes
  * @returns {Promise<string>} the DOT format output of the DAG in the car.
  */
-export async function run(bytes) {
+export async function run (bytes) {
   const indexer = await CarIndexer.fromBytes(bytes)
   const reader = await CarReader.fromBytes(bytes)
   /** @type Array<CID> */
   const roots = reader._header.roots // a little naughty but we need gory details
 
   /** @type TreeNode */
-  let output = {
+  const output = {
     label: 'roots',
-    nodes: [],
+    nodes: []
   }
 
   /** @type Array<Block> */
@@ -34,24 +34,24 @@ export async function run(bytes) {
   for await (const blockIndex of indexer) {
     const block = await reader.get(blockIndex.cid)
     if (!block?.bytes) {
-      throw 'no blocks'
+      throw new Error('no blocks')
     }
 
     /** @type {{Links?:Array<any>, entries?:Array<any>}} */
     const content = decode(blockIndex.cid, block.bytes)
 
-    const isRoot = roots.some((x) => x.toString() == blockIndex.cid.toString())
+    const isRoot = roots.some((x) => x.toString() === blockIndex.cid.toString())
     const links = content.Links || content?.entries || []
 
     blockMap.set(blockIndex.cid, {
       cid: blockIndex.cid,
-      links: links,
+      links
     })
 
     if (isRoot) {
       contentRoots.push({
         cid: blockIndex.cid,
-        links: links,
+        links
       })
     }
   }
@@ -69,7 +69,7 @@ export async function run(bytes) {
  * @param {Map<CID, Block>} blockMap
  * @return {TreeNode}
  */
-function walkTree(cid, name, blockMap) {
+function walkTree (cid, name, blockMap) {
   const block = blockMap.get(cid)
 
   const label = name.length > 0 ? name : cid?.toString()
@@ -84,6 +84,6 @@ function walkTree(cid, name, blockMap) {
       .map((x) =>
         walkTree(x.cid.toString(), x?.name || x?.Name || '', blockMap)
       )
-      .filter((x) => x),
+      .filter((x) => x)
   }
 }

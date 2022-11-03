@@ -8,5 +8,5 @@ export default {
   handler: () => {},
   // @ts-expect-error
   builder: (yargs) =>
-    yargs.command([exportSettings, importSettings, resetSettings]),
+    yargs.command([exportSettings, importSettings, resetSettings])
 }

@@ -19,7 +19,7 @@ const handler = async (args) => {
     const response = await client.whoami()
 
     if (response?.error) {
-      //@ts-expect-error
+      // @ts-expect-error
       view.fail(response?.message)
     } else if (response == null) {
       view.fail('Account not found.')
@@ -46,6 +46,6 @@ export default {
   describe: 'Show your current UCAN Identity',
   builder,
   handler,
-  exampleOut: `DID:12345...`,
-  exampleIn: '$0 whoami',
+  exampleOut: 'DID:12345...',
+  exampleIn: '$0 whoami'
 }

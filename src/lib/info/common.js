@@ -15,7 +15,7 @@ export const codecs = {
   [dagPb.code]: dagPb,
   [dagJson.code]: dagJson,
   [raw.code]: raw,
-  [json.code]: json,
+  [json.code]: json
 }
 
 export const codecNames = {
@@ -23,7 +23,7 @@ export const codecNames = {
   [dagPb.code]: 'dagPb',
   [dagJson.code]: 'dagJson',
   [raw.code]: 'raw',
-  [json.code]: 'json',
+  [json.code]: 'json'
   //   [0x202]: 'car',
 }
 
@@ -33,7 +33,7 @@ export const nodeTypeNames = {
   [UnixFS.NodeType.HAMTShard]: 'hamt',
   [UnixFS.NodeType.Metadata]: 'meta',
   [UnixFS.NodeType.Raw]: 'raw',
-  [UnixFS.NodeType.Symlink]: 'sym',
+  [UnixFS.NodeType.Symlink]: 'sym'
 }
 
 /**
@@ -42,12 +42,13 @@ export const nodeTypeNames = {
  * @throws {Error}
  * @returns {object}
  */
-export function decode(cid, bytes) {
+export function decode (cid, bytes) {
+  // @ts-ignore
   if (!codecs[cid.code]) {
     throw new Error(`Unknown codec code: 0x${cid.code.toString(16)}`)
   }
 
-  if (cid.code == dagPb.code) {
+  if (cid.code === dagPb.code) {
     try {
       return UnixFS.decode(bytes)
     } catch (err) {
@@ -55,6 +56,7 @@ export function decode(cid, bytes) {
     }
   }
 
+  // @ts-ignore
   return codecs[cid.code].decode(bytes)
 }
 
@@ -62,15 +64,15 @@ export function decode(cid, bytes) {
  * @param {object} cid - the CID to format to a short form for output.
  * @returns {string} The shortned CID.
  */
-export function toShortCID(cid) {
-  let str = cid.toString()
+export function toShortCID (cid) {
+  const str = cid.toString()
   return str.substring(0, 4) + '...' + str.substring(str.length - 4, str.length)
 }
 
 /**
  * @param {CID} cid
  */
-export function toOutput(cid) {
+export function toOutput (cid) {
   const cidv1 = cid.toString()
   let cidv0 = 'N/A'
 
