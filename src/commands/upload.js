@@ -1,11 +1,9 @@
 // @ts-ignore
-// eslint-disable-next-line no-unused-vars
 import { getClient } from '../client.js'
 import { buildCar } from '../lib/car/buildCar.js'
 import { logToFile } from '../lib/logging.js'
 import { bytesToCarCID } from '../utils.js'
 import { checkPath, hasSetupAccount } from '../validation.js'
-// eslint-disable-next-line no-unused-vars
 import { CID } from 'multiformats/cid'
 import ora from 'ora'
 import path from 'path'
@@ -23,7 +21,7 @@ import toIterator from 'stream-to-it'
  * @param {string} [profile]
  * @returns {Promise<void>}
  */
-async function generateCarUploads (filePath, view, chunkSize = 512, profile) {
+async function generateCarUploads(filePath, view, chunkSize = 512, profile) {
   const client = getClient(profile)
 
   chunkSize = Math.pow(1024, 2) * chunkSize
@@ -33,16 +31,15 @@ async function generateCarUploads (filePath, view, chunkSize = 512, profile) {
     /** @type Array<CID> */
     let roots = []
     /** @type Array<CID> */
-    const cids = []
-    let origin = null
+    let cids = []
+    let origin
 
     for await (const car of toIterator(stream)) {
       roots = roots.concat(car.roots)
       const cid = await bytesToCarCID(car.bytes)
       cids.push(cid)
 
-      // @ts-ignore
-      const result = await client.upload(car.bytes, origin)
+      const result = await client.upload(car.bytes, origin?.toString())
       if (result.error) {
         // @ts-expect-error
         throw new Error(result?.cause?.message)
@@ -51,7 +48,7 @@ async function generateCarUploads (filePath, view, chunkSize = 512, profile) {
       origin = cid
     }
 
-    // @ts-ignore
+    // @ts-expect-error
     const uploadAddResult = await client.uploadAdd(roots[0], cids)
     // @ts-expect-error
     if (uploadAddResult.error) {
@@ -86,16 +83,16 @@ const handler = async (argv) => {
   const chunkSize = Number(argv.chunkSize) || 512
 
   if (chunkSize < 1 || chunkSize > 512) {
-    return Promise.reject(new Error('Chunk size must be between 1 and 512'))
+    return Promise.reject('Chunk size must be between 1 and 512')
   }
 
   if (!_path) {
-    return Promise.reject(new Error('You must Specify a Path'))
+    return Promise.reject('You must Specify a Path')
   }
 
   if (path.extname(_path) === '.car') {
     console.warn(
-      'Your upload is already .car format\nYou may need the upload-cars command for existing .car files. This will wrap your .car file in another .car file'
+      `Your upload is already .car format\nYou may need the upload-cars command for existing .car files. This will wrap your .car file in another .car file`
     )
   }
   const view = ora({ text: `Uploading ${_path}...`, spinner: 'line' }).start()
@@ -112,13 +109,14 @@ const builder = (yargs) =>
     .check(hasSetupAccount)
     .check(checkPath)
     .option('chunk-size', {
-      type: 'number'
+      type: 'number',
     })
     .option('split', {
       type: 'boolean',
       alias: 'split',
       showInHelp: true,
-      describe: 'Split the data into multiple when cars when size limit is hit.'
+      describe:
+        'Split the data into multiple when cars when size limit is hit.',
     })
 
 export default {
@@ -128,5 +126,5 @@ export default {
   builder,
   handler,
   exampleIn: '$0 upload ../../duck.png',
-  exampleOut: 'uploaded bafy...'
+  exampleOut: `uploaded bafy...`,
 }

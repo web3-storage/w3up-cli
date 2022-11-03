@@ -1,9 +1,7 @@
 // @ts-ignore
 import Table from 'cli-table'
 import fs from 'fs'
-// @ts-ignore
 import { CID } from 'multiformats/cid'
-// @ts-ignore
 import { sha256 } from 'multiformats/hashes/sha2'
 
 /**

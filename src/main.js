@@ -50,11 +50,12 @@ export const main = async (args = hideBin(process.argv)) => {
     .command(register)
     .command(whoami)
 
+    // uploads
     .command(list)
-
-    //
     .command(upload)
     .command(uploadCars)
+
+    // utils
     .command(open)
 
     // subcommands

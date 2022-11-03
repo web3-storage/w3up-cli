@@ -1,5 +1,6 @@
 import { getClient } from '../../client.js'
-import { delegationToString } from '../../encoding.js'
+// import { delegationToString } from '../../encoding.js'
+// import { delegationToString } from '@web3-storage/w3up-client'
 import { hasSetupAccount } from '../../validation.js'
 import fs from 'fs'
 import ora from 'ora'
@@ -24,11 +25,7 @@ const handler = async ({ did, profile }) => {
   }
 
   const delegation = await client.makeDelegation({ to: did })
-  fs.writeFileSync(
-    'delegation.txt',
-    await delegationToString(delegation),
-    'utf8'
-  )
+  fs.writeFileSync('delegation.txt', delegation.toString(), 'utf8')
 
   view.succeed('Wrote delegation to delegation.txt')
 }
@@ -43,5 +40,5 @@ export default {
   command: 'to <did>',
   describe: 'Delegate permissions to another DID',
   builder,
-  handler
+  handler,
 }

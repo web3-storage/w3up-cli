@@ -1,11 +1,3 @@
-import { CarReader } from '@ipld/car/reader'
-import fs from 'fs'
-import ora from 'ora'
-import path from 'path'
-// @ts-ignore
-import toIterator from 'stream-to-it'
-import { TransformStream } from '@web-std/stream'
-
 import { getClient } from '../client.js'
 import { getAllFiles, isDirectory } from '../lib/car/file.js'
 import { logToFile } from '../lib/logging.js'
@@ -15,9 +7,17 @@ import {
   checkPath,
   hasSetupAccount,
   isCarFile,
-  resolvePath
+  resolvePath,
 } from '../validation.js'
-// gotta start somewhere. 3 is fine.
+import { CarReader } from '@ipld/car/reader'
+import { TransformStream } from '@web-std/stream'
+import fs from 'fs'
+import ora from 'ora'
+import path from 'path'
+// @ts-ignore
+import toIterator from 'stream-to-it'
+
+//gotta start somewhere. 3 is fine.
 // const MAX_CONNECTION_POOL_SIZE = 3
 
 /**
@@ -27,7 +27,7 @@ import {
  * @param {import('ora').Ora} view
  * @returns {Promise<Buffer|void>}
  */
-export async function uploadExistingCar (filePath, client, view) {
+export async function uploadExistingCar(filePath, client, view) {
   try {
     const { size } = await fs.promises.stat(filePath)
     if (size > MAX_CAR_SIZE) {
@@ -65,18 +65,17 @@ const handler = async (argv) => {
   const _path = argv.path
   const view = ora({
     text: `Uploading ${_path}...`,
-    spinner: 'line'
+    spinner: 'line',
   }).start()
 
   const client = getClient(argv.profile)
 
   if (!_path) {
-    return Promise.reject(new Error('You must Specify a Path'))
+    return Promise.reject('You must Specify a Path')
   }
 
   const targetPath = path.resolve(_path)
 
-  // eslint-disable-next-line no-undef
   const stream = new TransformStream(
     {},
     { highWaterMark: 1 },
@@ -84,7 +83,7 @@ const handler = async (argv) => {
   )
   const writer = stream.writable.getWriter()
 
-  const files = getAllFiles(targetPath)
+  let files = getAllFiles(targetPath)
 
   for (const file of files) {
     const _file = path.resolve(targetPath, file)
@@ -106,7 +105,7 @@ const handler = async (argv) => {
         const roots = await reader.getRoots()
         const cid = await bytesToCarCID(bytes)
         for (const root of roots) {
-          // @ts-ignore
+          // @ts-expect-error
           await client.uploadAdd(root, [cid])
         }
       }
@@ -126,5 +125,5 @@ export default {
   builder,
   handler,
   exampleIn: '$0 upload-cars ducks/',
-  exampleOut: '<show all cars uploaded>'
+  exampleOut: `<show all cars uploaded>`,
 }

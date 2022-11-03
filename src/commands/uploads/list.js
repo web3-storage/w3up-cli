@@ -1,5 +1,6 @@
 import { getClient } from '../../client.js'
 import { buildSimpleConsoleTable } from '../../utils.js'
+import { hasSetupAccount } from '../../validation.js'
 import ora, { oraPromise } from 'ora'
 
 /**
@@ -28,11 +29,11 @@ import ora, { oraPromise } from 'ora'
  * @param {number} date
  * @returns {string}
  */
-function parseDate (date) {
+function parseDate(date) {
   return new Intl.DateTimeFormat('en-US', {
     month: '2-digit',
     day: '2-digit',
-    year: 'numeric'
+    year: 'numeric',
   })
     .format(date)
     .toLocaleString()
@@ -43,9 +44,9 @@ function parseDate (date) {
  * @param {boolean} verbose
  * @returns {Array<any>}
  */
-function itemToTable (item, verbose = false) {
+function itemToTable(item, verbose = false) {
   const uploadedAt = parseDate(item.uploadedAt)
-  const out = [uploadedAt, item.dataCID]
+  let out = [uploadedAt, item.dataCID]
   if (verbose) {
     out.push(item.carCID)
   }
@@ -101,13 +102,13 @@ const handler = async (argv) => {
 
   /** @type any */
   const listResponse = await oraPromise(client.list(), {
-    text: 'Listing Uploads...',
-    spinner: 'line'
+    text: `Listing Uploads...`,
+    spinner: 'line',
   })
 
   if (!listResponse?.results?.length) {
     if (!listResponse.error) {
-      view.info("You don't seem to have any uploads yet!")
+      view.info(`You don't seem to have any uploads yet!`)
     } else {
       view.fail(listResponse.cause.message)
     }
@@ -119,23 +120,23 @@ const handler = async (argv) => {
 /** @type {import('yargs').CommandBuilder} yargs */
 const builder = (yargs) =>
   yargs
-    // .check(hasSetupAccount)
+    .check(hasSetupAccount)
     .option('verbose', {
       type: 'boolean',
       alias: 'verbose',
       showInHelp: true,
-      describe: 'Show more columns in the list, such as the Uploaded CAR CID'
+      describe: 'Show more columns in the list, such as the Uploaded CAR CID',
     })
     .option('stdout', {
       type: 'boolean',
       showInHelp: true,
-      describe: 'Output a machine readable format to stdout'
+      describe: 'Output a machine readable format to stdout',
     })
     .option('delim', {
       type: 'string',
       showInHelp: true,
       implies: 'stdout',
-      describe: 'The delimiter to use when using stdout'
+      describe: 'The delimiter to use when using stdout',
     })
 
 export default {
@@ -143,6 +144,6 @@ export default {
   describe: 'List your uploads',
   builder,
   handler,
-  exampleOut: 'bafy...\nbafy...',
-  exampleIn: '$0 list'
+  exampleOut: `bafy...\nbafy...`,
+  exampleIn: '$0 list',
 }

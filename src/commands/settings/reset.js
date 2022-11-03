@@ -1,4 +1,4 @@
-import { getClient } from '../../client.js'
+import { clearSettings, getClient } from '../../client.js'
 import Inquirer from 'inquirer'
 import ora from 'ora'
 
@@ -17,7 +17,7 @@ const handler = async (args) => {
     text: `This will delete your settings, are you sure?
   You will lose access to anything created with your previous key/did.
   If you want to keep the previous settings, use export-settings first.
-`
+`,
   })
 
   const client = getClient(args.profile)
@@ -25,12 +25,10 @@ const handler = async (args) => {
   const { reset } = await Inquirer.prompt({
     name: 'reset',
     type: 'confirm',
-    default: false
+    default: false,
   })
-  const settings = await client.settings
   if (reset) {
-    // @ts-ignore
-    settings.clear()
+    clearSettings(client, args.profile)
     view.succeed('Settings cleared.')
   } else {
     view.info('exiting')
@@ -42,6 +40,6 @@ export default {
   describe: 'Delete all local settings',
   builder: {},
   handler,
-  exampleOut: 'Settings cleared.',
-  exampleIn: '$0 reset-settings'
+  exampleOut: `Settings cleared.`,
+  exampleIn: '$0 reset-settings',
 }

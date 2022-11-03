@@ -5,7 +5,6 @@ import { bytesToCarCID } from '../../utils.js'
 import { isPath, resolvePath } from '../../validation.js'
 import fs from 'fs'
 // @ts-ignore
-// eslint-disable-next-line no-unused-vars
 import { CID } from 'multiformats/cid'
 import ora from 'ora'
 import path from 'path'
@@ -27,7 +26,7 @@ import toIterator from 'stream-to-it'
  */
 export const writeFileLocally = async (car, outPath = 'output.car') => {
   return fs.promises.writeFile(resolvePath(outPath), car, {
-    encoding: 'binary'
+    encoding: 'binary',
   })
 }
 
@@ -42,7 +41,7 @@ const handler = async ({ filePath = '', split = false }) => {
   /** @type import('ora').Options */
   const oraOpts = {
     text: `Generating Car from ${resolvedPath}`,
-    spinner: 'line'
+    spinner: 'line',
   }
   const view = ora(oraOpts).start()
 
@@ -50,10 +49,9 @@ const handler = async ({ filePath = '', split = false }) => {
     const { stream } = await buildCar(resolvedPath, MAX_CAR_SIZE, !split)
     /** @type Array<CID> */
     let roots = []
-
-    /** @type CID | null */
-    let rootCarCID = null
-    const carCIDS = []
+    /** @type CID */
+    let rootCarCID
+    let carCIDS = []
     let count = 0
 
     for await (const car of toIterator(stream)) {
@@ -73,16 +71,14 @@ const handler = async ({ filePath = '', split = false }) => {
     view.stop()
     console.log('roots:\n', roots.map((x) => x.toString()).join('\n'))
     if (count > 1) {
-      // @ts-ignore
+      // @ts-expect-error
       console.log('root car:\n', rootCarCID?.toString())
-      // TODO:
-      // client.link()
     }
   } catch (err) {
-    // @ts-ignore
+    // @ts-expect-error
     view.fail(err.toString())
     logToFile('generate-car', err)
-    process.exit(1) // force exit in case other async things are running.
+    process.exit(1) //force exit in case other async things are running.
   }
 }
 
@@ -92,7 +88,7 @@ const builder = (yargs) =>
     type: 'boolean',
     alias: 'split',
     showInHelp: true,
-    describe: 'Split the data into multiple when cars when size limit is hit.'
+    describe: 'Split the data into multiple when cars when size limit is hit.',
   })
 
 /**
@@ -106,5 +102,5 @@ export default {
   builder,
   handler,
   exampleIn: '$0 generate-car ../duck.png duck.car',
-  exampleOut: 'CAR created ../duck.png => duck.car'
+  exampleOut: `CAR created ../duck.png => duck.car`,
 }

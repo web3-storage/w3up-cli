@@ -4,3 +4,4 @@ dist
 .env
 w3up-failure.log
 settings.json
+*.car

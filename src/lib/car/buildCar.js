@@ -2,20 +2,19 @@
 import { isDirectory } from '../../utils.js'
 import { walkDir, wrapFilesWithDir } from './dir.js'
 import { streamFileToBlock } from './file.js'
-// @ts-ignore
 import * as CAR from '@ipld/car'
 import * as UnixFS from '@ipld/unixfs'
+import { TransformStream } from '@web-std/stream'
 import fs from 'fs'
 import path from 'path'
 
-import { TransformStream } from '@web-std/stream'
 // Internal unixfs read stream capacity that can hold around 32 blocks
 const CAPACITY = UnixFS.BLOCK_SIZE_LIMIT * 32
 const MAX_CARS_AT_ONCE = 8
 
 /**
  * @typedef {{stream: ReadableStream }} buildCarOutput
- * @typedef {{bytes: Uint8Array|null ,cid: object|null}} Block
+ * @typedef {{bytes: Uint8Array|null ,cid: import('multiformats/cid').CID}} Block
  */
 
 /**
@@ -25,7 +24,7 @@ const MAX_CARS_AT_ONCE = 8
  * @param {WritableStream} writable - The writable stream.
  * @returns {Promise<void>}
  */
-async function createReadableBlockStreamWithWrappingDir (pathName, writable) {
+async function createReadableBlockStreamWithWrappingDir(pathName, writable) {
   // Next we create a writer with filesystem like API for encoding files and
   // directories into IPLD blocks that will come out on `readable` end.
   const writer = UnixFS.createWriter({ writable })
@@ -41,12 +40,12 @@ async function createReadableBlockStreamWithWrappingDir (pathName, writable) {
     const fileNames = (await fs.promises.readdir(pathName)).filter(
       (x) => !x.startsWith('.')
     )
-    for (const name of fileNames) {
+    for (var name of fileNames) {
       files.push(
         await walkDir({
           writer,
-          pathName,
-          filename: name
+          pathName: pathName,
+          filename: name,
         })
       )
     }
@@ -61,11 +60,10 @@ async function createReadableBlockStreamWithWrappingDir (pathName, writable) {
 
 /**
  * @param {number} carsize - The maximum size of a generated car file.
- * @returns {CAR.CarBufferWriter}
+ * @returns {CAR.CarBufferWriter.Writer}
  */
-function createCarWriter (carsize) {
+function createCarWriter(carsize) {
   const buffer = new ArrayBuffer(carsize)
-  // @ts-ignore
   return CAR.CarBufferWriter.createWriter(buffer, { roots: [] })
 }
 
@@ -76,9 +74,8 @@ function createCarWriter (carsize) {
  * @param {boolean} [failAtSplit=false] - Should this fail if it tries to split into multiple cars.
  * @returns {Promise<buildCarOutput>}
  */
-export async function buildCar (pathName, carsize, failAtSplit = false) {
+export async function buildCar(pathName, carsize, failAtSplit = false) {
   // Create a redable & writable streams with internal queue
-  // eslint-disable-next-line no-undef
   const { readable, writable } = new TransformStream(
     {},
     UnixFS.withCapacity(CAPACITY)
@@ -90,26 +87,25 @@ export async function buildCar (pathName, carsize, failAtSplit = false) {
 
   // create the first buffer.
   let carWriter = createCarWriter(carsize)
-  // eslint-disable-next-line no-undef
-  const carWriterStream = new TransformStream(
+  let carWriterStream = new TransformStream(
     {},
     {
-      highWaterMark: MAX_CARS_AT_ONCE
+      highWaterMark: MAX_CARS_AT_ONCE,
     },
     {
-      highWaterMark: MAX_CARS_AT_ONCE
+      highWaterMark: MAX_CARS_AT_ONCE,
     }
   )
-  const carStreamWriter = carWriterStream.writable.getWriter()
+  let carStreamWriter = carWriterStream.writable.getWriter()
 
-  async function readAll () {
+  async function readAll() {
     // Keep track of written cids, so that blocks are not duplicated across cars.
-    const writtenCids = new Set()
+    let writtenCids = new Set()
 
     // track the last written block, so we know the root of the dag.
     /** @type Block */
-    let root = { bytes: null, cid: null }
-    async function * iterator () {
+    let root
+    async function* iterator() {
       while (true) {
         yield reader.read()
       }
@@ -125,38 +121,34 @@ export async function buildCar (pathName, carsize, failAtSplit = false) {
       }
 
       try {
-        // @ts-ignore
         carWriter.write(value)
         writtenCids.add(value.cid.toString())
       } catch (err) {
         if (failAtSplit) {
           throw new Error('Content too large for car.')
         }
-        // @ts-ignore
         const bytes = carWriter.close({ resize: true })
-        // @ts-ignore
+        // @ts-expect-error
         carStreamWriter.write({ bytes, roots: carWriter.roots })
         carWriter = createCarWriter(carsize)
-        // @ts-ignore
         carWriter.write(value)
       }
       root = value
     }
 
-    if (root) {
-      // @ts-ignore
-      carWriter.addRoot(root.cid, { resize: root.cid })
+    // @ts-expect-error
+    if (root?.cid) {
+      carWriter.addRoot(root.cid, { resize: true })
     }
 
-    // @ts-ignore
-    const bytes = await carWriter.close({ resize: true })
-    // @ts-ignore
+    const bytes = carWriter.close({ resize: true })
+    // @ts-expect-error
     carStreamWriter.write({ bytes, roots: carWriter.roots })
     carStreamWriter.close()
   }
   readAll()
 
   return {
-    stream: carWriterStream.readable
+    stream: carWriterStream.readable,
   }
 }

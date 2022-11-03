@@ -1,10 +1,9 @@
 // @ts-ignore
-import inquirer from 'inquirer'
-import { stringToDelegation } from '../../encoding.js'
-
 import { getClient, saveSettings } from '../../client.js'
 import { hasID } from '../../validation.js'
 import listAccounts from './list.js'
+import { stringToDelegation } from '@web3-storage/w3up-client'
+import inquirer from 'inquirer'
 
 /**
  * @typedef {{did?:string, alias?:string, profile?: string}} SwitchAccounts
@@ -16,7 +15,7 @@ import listAccounts from './list.js'
  * @param {SwitchAccountsArgs} argv
  * @returns {Promise<void>}
  */
-const handler = async ({ did, alias, profile }) => {
+const handler = async ({ did, alias, profile = 'main' }) => {
   const client = getClient(profile)
   const settings = client.settings
   const delegations = settings.delegations
@@ -24,19 +23,19 @@ const handler = async ({ did, alias, profile }) => {
     console.log('No delegations.')
     return
   }
-  const choices = []
+  let choices = []
 
   for (const del of Object.values(delegations)) {
     const imported = await stringToDelegation(del.ucan)
     choices.push({
       name: del.alias + '\t' + imported.issuer.did(),
       alias: del.alias,
-      value: imported.issuer.did()
+      value: imported.issuer.did(),
     })
   }
 
   if (alias) {
-    const found = choices.find((x) => x.alias === alias)
+    const found = choices.find((x) => x.alias == alias)
     if (found) {
       const del = found.value
       settings.account = del
@@ -51,17 +50,17 @@ const handler = async ({ did, alias, profile }) => {
       listAccounts.handler({ profile })
     }
   } else if (did) {
-    // empty placeholder for future functionality
   } else {
-    await inquirerPick(choices, client)
+    await inquirerPick(choices, client, profile)
   }
 }
 
 /**
  * @param {{ name: string; value: any; }[]} choices
  * @param {any} client
+ * @param {string} profile
  */
-async function inquirerPick (choices, client) {
+async function inquirerPick(choices, client, profile) {
   const settings = await client.settings
   await inquirer
     .prompt([
@@ -69,12 +68,13 @@ async function inquirerPick (choices, client) {
         type: 'list',
         name: 'Choose an account',
         choices,
-        default: settings.get('account')
-      }
+        default: settings.account,
+      },
     ])
     .then((answers) => {
       const del = answers['Choose an account']
-      settings.set('account', del)
+      settings.account = del
+      saveSettings(client, profile)
       console.log(`now using account: ${del}`)
     })
 }
@@ -87,12 +87,12 @@ const builder = (yargs) =>
   yargs.check(hasID).option('did', {
     type: 'string',
     showInHelp: true,
-    describe: 'select account by did'
+    describe: 'select account by did',
   })
 
 export default {
   command: 'switch [alias]',
   describe: 'Select from delegations, including imported ones.',
   builder,
-  handler
+  handler,
 }
