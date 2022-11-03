@@ -1,5 +1,9 @@
 // @ts-ignore
-import { getClient } from '../../client.js'
+import { Delegation } from '@ucanto/server'
+import inquirer from 'inquirer'
+import { stringToDelegation } from '../../encoding.js'
+
+import { getClient, saveSettings } from '../../client.js'
 import { hasID } from '../../validation.js'
 import listAccounts from './list.js'
 import { Delegation } from '@ucanto/server'
@@ -17,7 +21,8 @@ import inquirer from 'inquirer'
  */
 const handler = async ({ did, alias, profile }) => {
   const client = getClient(profile)
-  const delegations = client.settings.get('delegations')
+  const settings = client.settings
+  const delegations = settings.delegations
   if (!delegations) {
     console.log('No delegations.')
     return
@@ -25,7 +30,7 @@ const handler = async ({ did, alias, profile }) => {
   const choices = []
 
   for (const del of Object.values(delegations)) {
-    const imported = Delegation.import([del.ucan.root])
+    const imported = await stringToDelegation(del.ucan)
     choices.push({
       name: del.alias + '\t' + imported.issuer.did(),
       alias: del.alias,
@@ -37,7 +42,8 @@ const handler = async ({ did, alias, profile }) => {
     const found = choices.find((x) => x.alias === alias)
     if (found) {
       const del = found.value
-      client.settings.set('delegation', del)
+      settings.account = del
+      saveSettings(client, profile)
       console.log(`now using account: ${del}`)
     } else {
       console.log(
@@ -58,19 +64,20 @@ const handler = async ({ did, alias, profile }) => {
  * @param {{ name: string; value: any; }[]} choices
  * @param {any} client
  */
-async function inquirerPick (choices, client) {
+async function inquirerPick(choices, client) {
+  const settings = await client.settings
   await inquirer
     .prompt([
       {
         type: 'list',
         name: 'Choose an account',
         choices,
-        default: client.settings.get('delegation')
-      }
+        default: settings.get('account'),
+      },
     ])
     .then((answers) => {
       const del = answers['Choose an account']
-      client.settings.set('delegation', del)
+      settings.set('account', del)
       console.log(`now using account: ${del}`)
     })
 }

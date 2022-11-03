@@ -17,19 +17,18 @@ import _yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
 
 /**
- * @type {import('yargs').Argv<{}>} yargs
+ * @param {string[]} args
  */
-const yargs = _yargs(hideBin(process.argv))
-
-export const main = async () => {
+export const main = async (args = hideBin(process.argv)) => {
+  const yargs = _yargs(args)
   const argv = await yargs
     .scriptName('w3up')
     //     .usage('Usage:\n  $0 <cmd> [options]')
     .option('p', {
       alias: 'profile',
       type: 'string',
-      describe: 'Select profile.',
-      default: 'main'
+      describe: 'Select profile configuration identifier.',
+      default: 'main',
     })
     .group('profile', 'Global:')
     .command({

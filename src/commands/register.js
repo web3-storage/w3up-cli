@@ -1,4 +1,6 @@
-import { getClient } from '../client.js'
+import ora from 'ora'
+
+import { getClient, saveSettings } from '../client.js'
 import { logToFile } from '../lib/logging.js'
 import { hasID, isEmail } from '../validation.js'
 import ora from 'ora'
@@ -27,7 +29,8 @@ const handler = async (argv) => {
   try {
     // @ts-expect-error
     hasID({ profile })
-    const result = await client.register(email)
+    let result = await client.register(email)
+    saveSettings(client, profile)
     if (result) {
       view.succeed(`Registration succeeded: ${email}`)
     }

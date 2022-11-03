@@ -1,3 +1,5 @@
+import open from 'open'
+
 import { OPEN_WITH_SERVICE_URL } from '../settings.js'
 import { isCID } from '../validation.js'
 import open from 'open'

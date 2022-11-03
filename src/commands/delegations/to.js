@@ -1,4 +1,5 @@
 import { getClient } from '../../client.js'
+import { delegationToString } from '../../encoding.js'
 import { hasSetupAccount } from '../../validation.js'
 import fs from 'fs'
 import ora from 'ora'
@@ -23,9 +24,13 @@ const handler = async ({ did, profile }) => {
   }
 
   const delegation = await client.makeDelegation({ to: did })
-  fs.writeFileSync('delegation.car', delegation, 'binary')
+  fs.writeFileSync(
+    'delegation.txt',
+    await delegationToString(delegation),
+    'utf8'
+  )
 
-  view.succeed('Wrote delegation to delegation.car')
+  view.succeed('Wrote delegation to delegation.txt')
 }
 
 /**

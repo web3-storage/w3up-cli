@@ -100,7 +100,7 @@ Commands:
   w3up info                Print information about cli
 
 Global:
-  -p, --profile  Select profile.                                                                         [string] [default: "main"]
+  -p, --profile Select profile configuration identifier.                                                 [string] [default: "main"]
 
 Options:
       --version  Show version number                                                                                      [boolean]
@@ -270,10 +270,10 @@ As with the [`upload` command](#upload), two CIDs are printed in the `generate-c
 
 > Print the CID of all blocks in a CAR file.
 
-The `inspect-car` command takes the path to a CAR file and prints the CID of each block contained in the CAR.
+The `car inspect` command takes the path to a CAR file and prints the CID of each block contained in the CAR.
 
 ```sh
-w3up inspect-car test.car
+w3up car inspect test.car
 ```
 
 ```
@@ -284,7 +284,7 @@ bafybeig3v73gypy3wshzjdq6aopisk66hjdwdma4cg6q7eojiuhivorkyi	zQmd8DcmhjnfSBMLM7f9
 
 Note that each CID is printed twice, once in the current CID version 1 format, and once in the deprecated "v0" format. We strongly recommend using CIDv1 wherever possible, but the v0 CID may be useful for integration with existing systems.
 
-You can also see the tree structure of the CAR file by passing in the `--tree` flag to `inspect-car`:
+You can also see the tree structure of the CAR file by passing in the `--tree` flag to `car inspect`:
 
 ```sh
 w3up car inspect --tree test.car
@@ -307,22 +307,22 @@ Once you have an identity registered with w3up, you can delegate capabilities to
 > Delegate capabilities to an agent did.
 
 ```sh
-w3up delegate did:12345...
-✔ Wrote delegation to delegation.car
+w3up delegate to did:12345...
+✔ Wrote delegation to delegation.txt
 ```
 
-A `delegation.car` file is generated with the UCAN delegation provided to the other agent with did `did:12345...`.
+A `delegation.txt` file is generated with the UCAN delegation provided to the other agent with did `did:12345...`.
 
 #### `w3up delegate import <fileName> [alias]`
 
 > Import a UCAN delegation file to access capabilities delegated by other agent
 
 ```sh
-w3up import-delegation delegation.car delegator
-✔ Imported delegation for delegator did:key:z6M... from delegation.car successfully.
+w3up import-delegation delegation.txt delegator
+✔ Imported delegation for delegator did:key:z6M... from delegation.txt successfully.
 ```
 
-Once a `delegation.car` is imported, you can switch to the account delegated:
+Once a `delegation.txt` is imported, you can switch to the account delegated:
 
 #### `w3up delegate switch [alias]`
 

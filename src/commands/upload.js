@@ -1,8 +1,3 @@
-import { getClient } from '../client.js'
-import { buildCar } from '../lib/car/buildCar.js'
-import { logToFile } from '../lib/logging.js'
-import { bytesToCarCID } from '../utils.js'
-import { checkPath, hasSetupAccount } from '../validation.js'
 // @ts-ignore
 // eslint-disable-next-line no-unused-vars
 import { CID } from 'multiformats/cid'
@@ -10,6 +5,12 @@ import ora from 'ora'
 import path from 'path'
 // @ts-ignore
 import toIterator from 'stream-to-it'
+
+import { getClient } from '../client.js'
+import { buildCar } from '../lib/car/buildCar.js'
+import { logToFile } from '../lib/logging.js'
+import { bytesToCarCID } from '../utils.js'
+import { checkPath, hasSetupAccount } from '../validation.js'
 
 /**
  * @typedef {{path?: string, split?: boolean, profile?: string}} Upload
@@ -32,11 +33,8 @@ async function generateCarUploads (filePath, view, chunkSize = 512, profile) {
     /** @type Array<CID> */
     let roots = []
     /** @type Array<CID> */
-    const cids = []
-    // let rootCarCID
+    let cids = []
     let origin = null
-
-    // const uploadPromises = []
 
     for await (const car of toIterator(stream)) {
       roots = roots.concat(car.roots)
@@ -60,7 +58,11 @@ async function generateCarUploads (filePath, view, chunkSize = 512, profile) {
     }
 
     console.log('data CIDs:\n', roots.map((x) => x.toString()).join('\n'))
-    console.log('car CIDs:\n', cids.map((x) => x.toString()).join('\n'))
+    console.log('upload chunk(s) identifier:\n', cids.map((x) => x.toString()).join('\n'))
+
+    if (roots && roots.length) {
+      console.log(`IPFS Gateway url:\n https://w3s.link/ipfs/${roots[0].toString()}`)
+    }
   } catch (err) {
     view.fail('Upload did not complete successfully, check w3up-failure.log')
     logToFile('upload', err)

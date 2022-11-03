@@ -1,3 +1,7 @@
+// @ts-ignore
+import * as API from '@ucanto/interface'
+import { config } from 'dotenv'
+
 import { humanizeBytes } from './utils.js'
 import { config } from 'dotenv'
 

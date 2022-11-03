@@ -118,7 +118,7 @@ const handler = async (argv) => {
 /** @type {import('yargs').CommandBuilder} yargs */
 const builder = (yargs) =>
   yargs
-    .check(hasSetupAccount)
+    // .check(hasSetupAccount)
     .option('stdout', {
       type: 'boolean',
       showInHelp: true,

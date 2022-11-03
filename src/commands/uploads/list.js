@@ -120,7 +120,7 @@ const handler = async (argv) => {
 /** @type {import('yargs').CommandBuilder} yargs */
 const builder = (yargs) =>
   yargs
-    .check(hasSetupAccount)
+    // .check(hasSetupAccount)
     .option('verbose', {
       type: 'boolean',
       alias: 'verbose',

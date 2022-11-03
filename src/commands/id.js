@@ -1,5 +1,5 @@
-import { getClient, getProfileSettings } from '../client.js'
 import ora from 'ora'
+import { getClient, getProfileSettings, saveSettings } from '../client.js'
 
 /**
  * @typedef {{reset?:boolean, profile?: string}} Id
@@ -15,14 +15,15 @@ const handler = async (args) => {
   const view = ora({ spinner: 'line' })
 
   if (args.reset) {
-    getProfileSettings(args.profile)?.clear()
+    getProfileSettings(args.profile).clear()
   }
 
   const client = getClient(args.profile)
   const identity = await client.identity()
 
+  saveSettings(client, args.profile)
+
   view.succeed('Agent DID: ' + identity.agent.did())
-  view.succeed('Account DID: ' + identity.account.did())
 }
 /**
  * @type {import('yargs').CommandBuilder} yargs

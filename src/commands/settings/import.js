@@ -6,6 +6,9 @@ import fs from 'fs'
 import Inquirer from 'inquirer'
 import ora from 'ora'
 
+import { getClient, saveSettings } from '../../client.js'
+import { isPath } from '../../validation.js'
+
 /**
  * @typedef ImportSettings
  * @property {string} [fileName]
@@ -42,15 +45,10 @@ const handler = async ({ fileName, profile, yes = false }) => {
 
   if (show && fileName) {
     try {
-      client.settings.clear()
       const json = fs.readFileSync(fileName, { encoding: 'utf-8' })
-      const imported = await importSettings(json)
-
-      for (const [key, value] of imported.entries()) {
-        client.settings.set(key, value)
-      }
-
+      client.settings = JSON.parse(json)
       await client.identity()
+      saveSettings(client, profile)
 
       spinner.succeed(`Imported settings from ${fileName} successfully.`)
     } catch (err) {

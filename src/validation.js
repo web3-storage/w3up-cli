@@ -104,14 +104,14 @@ export const hasEmail = ({ profile }) => {
 export const hasOtherDelegation = ({ profile }) => {
   const settings = getProfileSettings(profile)
 
-  if (!settings.has('delegation')) {
+  if (!settings.has('account')) {
     return false
   }
 
   const delegations = settings.get('delegations')
-  const delegation = settings.get('delegation')
+  const account = settings.get('account')
 
-  if (delegations[delegation].alias !== 'self') {
+  if (delegations[account].alias != 'self') {
     return true
   } else {
     return false

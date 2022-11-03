@@ -1,4 +1,7 @@
-import { getClient } from '../../client.js'
+import fs from 'fs'
+import ora from 'ora'
+
+import { getClient, saveSettings } from '../../client.js'
 import { hasID, isPath } from '../../validation.js'
 import fs from 'fs'
 import ora from 'ora'
@@ -18,10 +21,11 @@ const handler = async ({ fileName, alias = '', profile }) => {
   const client = getClient(profile)
   if (fileName) {
     try {
-      const bytes = await fs.promises.readFile(fileName)
+      const bytes = await fs.promises.readFile(fileName, { encoding: 'utf8' })
       const imported = await client.importDelegation(bytes, alias)
       const did = imported?.issuer?.did()
 
+      saveSettings(client, profile)
       view.succeed(
         `Imported delegation for ${alias} ${did} from ${fileName} successfully.`
       )
