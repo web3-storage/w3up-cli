@@ -40,5 +40,5 @@ export default {
   command: 'to <did>',
   describe: 'Delegate permissions to another DID',
   builder,
-  handler,
+  handler
 }

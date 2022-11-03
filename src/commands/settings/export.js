@@ -36,11 +36,11 @@ const handler = async ({ filename, profile, stdout = false, yes = false }) => {
 
   if (!show) {
     view.stopAndPersist({
-      text: 'These values give anyone the power to act as you, are you sure you want to export them?',
+      text: 'These values give anyone the power to act as you, are you sure you want to export them?'
     })
     const input = await Inquirer.prompt({
       name: 'show',
-      type: 'confirm',
+      type: 'confirm'
     })
     show = input.show
   }
@@ -70,20 +70,20 @@ const builder = (yargs) =>
     .option('stdout', {
       type: 'boolean',
       showInHelp: true,
-      describe: 'Output a machine readable format to stdout',
+      describe: 'Output a machine readable format to stdout'
     })
     .option('yes', {
       type: 'boolean',
       alias: 'y',
       showInHelp: true,
-      describe: 'Skip any prompts with "yes" as input.',
+      describe: 'Skip any prompts with "yes" as input.'
     })
 
 export default {
-  command: 'export [filename]', //[] means optional arg.
+  command: 'export [filename]', // [] means optional arg.
   describe: 'Export a settings json file',
   builder,
   handler,
-  exampleOut: `DID:12345`,
-  exampleIn: '$0 export-settings',
+  exampleOut: 'DID:12345',
+  exampleIn: '$0 export-settings'
 }

@@ -13,28 +13,28 @@ const ignoredKeysForLabel = ['blockLength', 'offset', 'blockOffset']
  * @param {object} obj - The node data.
  * @returns {string} - The built label.
  */
-function buildLabel(obj) {
-  let label = Object.entries(obj)
+function buildLabel (obj) {
+  const label = Object.entries(obj)
     .map(([key, val]) => {
       if (ignoredKeysForLabel.includes(key)) {
         return ''
       }
-      if (key == 'cid') {
+      if (key === 'cid') {
         return toShortCID(val)
       }
-      if (typeof val == 'object') {
-        if (key == 'content') {
+      if (typeof val === 'object') {
+        if (key === 'content') {
           if (val?.type) {
-            const bytes = val['content']
-              ? `|{size|${humanizeBytes(val['content']?.byteLength)}}`
+            const bytes = val.content
+              ? `|{size|${humanizeBytes(val.content?.byteLength)}}`
               : ''
             // @ts-ignore
             return `{unixfs|${nodeTypeNames[val?.type]}}${bytes}`
           }
 
           // @ts-ignore
-          if (obj.type == 'dagCbor') {
-            let data = val?.id // has metadata id
+          if (obj.type === 'dagCbor') {
+            const data = val?.id // has metadata id
             if (data) {
               return `{session_id|${data}}`
             }
@@ -56,13 +56,13 @@ function buildLabel(obj) {
  * @param {boolean} vertical - should the graph output be 'vertical' (i.e. rankdir LR)
  * @returns {Promise<string>} the DOT format output of the DAG in the car.
  */
-export async function run(bytes, vertical) {
+export async function run (bytes, vertical) {
   const indexer = await CarIndexer.fromBytes(bytes)
   const reader = await CarReader.fromBytes(bytes)
   /** @type {{roots:Array<any>, blocks:any}} */
   const fixture = {
     roots: reader._header.roots, // a little naughty but we need gory details
-    blocks: [],
+    blocks: []
   }
 
   let dot = `digraph { 
@@ -90,7 +90,7 @@ export async function run(bytes, vertical) {
     const scid = toShortCID(cur.cid)
 
     const label = buildLabel(cur)
-    if (fixture.roots.some((x) => x.toString() == cur.cid.toString())) {
+    if (fixture.roots.some((x) => x.toString() === cur.cid.toString())) {
       if (links.length > 0) {
         dot += `\n\t"${scid}" [label="{${label}|{root}}" style="rounded" labeljust=l]`
       } else {

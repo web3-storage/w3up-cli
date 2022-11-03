@@ -19,7 +19,7 @@ const handler = async ({ profile }) => {
 
   const table = buildSimpleConsoleTable(['selected', 'alias', 'did'])
   for (const [did, del] of Object.entries(delegations)) {
-    const cur = selected == did
+    const cur = selected === did
     table.push([cur ? '*' : '', del.alias, did])
   }
   console.log(table.toString())
@@ -35,5 +35,5 @@ export default {
   command: 'list',
   describe: 'List all delegations (including from account to self).',
   builder,
-  handler,
+  handler
 }

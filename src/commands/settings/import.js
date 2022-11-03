@@ -27,12 +27,12 @@ const handler = async ({ fileName, profile, yes = false }) => {
 
   if (!overwrite) {
     spinner.stopAndPersist({
-      text: 'These values will overwrite your old id/account and you will lose access, are you sure you want to proceed?',
+      text: 'These values will overwrite your old id/account and you will lose access, are you sure you want to proceed?'
     })
 
     const input = await Inquirer.prompt({
       name: 'overwrite',
-      type: 'confirm',
+      type: 'confirm'
     })
 
     overwrite = input.overwrite
@@ -61,7 +61,7 @@ const builder = (yargs) =>
     type: 'boolean',
     alias: 'y',
     showInHelp: true,
-    describe: 'Skip any prompts with "yes" as input.',
+    describe: 'Skip any prompts with "yes" as input.'
   })
 
 /**
@@ -76,6 +76,6 @@ export default {
   describe: 'Import a settings.json file',
   builder,
   handler,
-  exampleOut: `You have successfully imported settings.json!`,
-  exampleIn: '$0 import-settings settings.json',
+  exampleOut: 'You have successfully imported settings.json!',
+  exampleIn: '$0 import-settings settings.json'
 }

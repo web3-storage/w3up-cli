@@ -4,7 +4,7 @@ import { MAX_CAR_SIZE } from '../../settings.js'
 import { bytesToCarCID } from '../../utils.js'
 import { isPath, resolvePath } from '../../validation.js'
 import fs from 'fs'
-// @ts-ignore
+// eslint-disable-next-line no-unused-vars
 import { CID } from 'multiformats/cid'
 import ora from 'ora'
 import path from 'path'
@@ -26,7 +26,7 @@ import toIterator from 'stream-to-it'
  */
 export const writeFileLocally = async (car, outPath = 'output.car') => {
   return fs.promises.writeFile(resolvePath(outPath), car, {
-    encoding: 'binary',
+    encoding: 'binary'
   })
 }
 
@@ -41,7 +41,7 @@ const handler = async ({ filePath = '', split = false }) => {
   /** @type import('ora').Options */
   const oraOpts = {
     text: `Generating Car from ${resolvedPath}`,
-    spinner: 'line',
+    spinner: 'line'
   }
   const view = ora(oraOpts).start()
 
@@ -51,7 +51,7 @@ const handler = async ({ filePath = '', split = false }) => {
     let roots = []
     /** @type CID */
     let rootCarCID
-    let carCIDS = []
+    const carCIDS = []
     let count = 0
 
     for await (const car of toIterator(stream)) {
@@ -78,7 +78,7 @@ const handler = async ({ filePath = '', split = false }) => {
     // @ts-expect-error
     view.fail(err.toString())
     logToFile('generate-car', err)
-    process.exit(1) //force exit in case other async things are running.
+    process.exit(1) // force exit in case other async things are running.
   }
 }
 
@@ -88,7 +88,7 @@ const builder = (yargs) =>
     type: 'boolean',
     alias: 'split',
     showInHelp: true,
-    describe: 'Split the data into multiple when cars when size limit is hit.',
+    describe: 'Split the data into multiple when cars when size limit is hit.'
   })
 
 /**
@@ -102,5 +102,5 @@ export default {
   builder,
   handler,
   exampleIn: '$0 generate-car ../duck.png duck.car',
-  exampleOut: `CAR created ../duck.png => duck.car`,
+  exampleOut: 'CAR created ../duck.png => duck.car'
 }

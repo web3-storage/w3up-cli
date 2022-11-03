@@ -23,19 +23,19 @@ const handler = async ({ did, alias, profile = 'main' }) => {
     console.log('No delegations.')
     return
   }
-  let choices = []
+  const choices = []
 
   for (const del of Object.values(delegations)) {
     const imported = await stringToDelegation(del.ucan)
     choices.push({
       name: del.alias + '\t' + imported.issuer.did(),
       alias: del.alias,
-      value: imported.issuer.did(),
+      value: imported.issuer.did()
     })
   }
 
   if (alias) {
-    const found = choices.find((x) => x.alias == alias)
+    const found = choices.find((x) => x.alias === alias)
     if (found) {
       const del = found.value
       settings.account = del
@@ -49,7 +49,6 @@ const handler = async ({ did, alias, profile = 'main' }) => {
       // @ts-expect-error
       listAccounts.handler({ profile })
     }
-  } else if (did) {
   } else {
     await inquirerPick(choices, client, profile)
   }
@@ -60,7 +59,7 @@ const handler = async ({ did, alias, profile = 'main' }) => {
  * @param {any} client
  * @param {string} profile
  */
-async function inquirerPick(choices, client, profile) {
+async function inquirerPick (choices, client, profile) {
   const settings = await client.settings
   await inquirer
     .prompt([
@@ -68,8 +67,8 @@ async function inquirerPick(choices, client, profile) {
         type: 'list',
         name: 'Choose an account',
         choices,
-        default: settings.account,
-      },
+        default: settings.account
+      }
     ])
     .then((answers) => {
       const del = answers['Choose an account']
@@ -87,12 +86,12 @@ const builder = (yargs) =>
   yargs.check(hasID).option('did', {
     type: 'string',
     showInHelp: true,
-    describe: 'select account by did',
+    describe: 'select account by did'
   })
 
 export default {
   command: 'switch [alias]',
   describe: 'Select from delegations, including imported ones.',
   builder,
-  handler,
+  handler
 }
