@@ -1,13 +1,10 @@
 // @ts-ignore
-import { Delegation } from '@ucanto/server'
 import inquirer from 'inquirer'
 import { stringToDelegation } from '../../encoding.js'
 
 import { getClient, saveSettings } from '../../client.js'
 import { hasID } from '../../validation.js'
 import listAccounts from './list.js'
-import { Delegation } from '@ucanto/server'
-import inquirer from 'inquirer'
 
 /**
  * @typedef {{did?:string, alias?:string, profile?: string}} SwitchAccounts
@@ -64,7 +61,7 @@ const handler = async ({ did, alias, profile }) => {
  * @param {{ name: string; value: any; }[]} choices
  * @param {any} client
  */
-async function inquirerPick(choices, client) {
+async function inquirerPick (choices, client) {
   const settings = await client.settings
   await inquirer
     .prompt([
@@ -72,8 +69,8 @@ async function inquirerPick(choices, client) {
         type: 'list',
         name: 'Choose an account',
         choices,
-        default: settings.get('account'),
-      },
+        default: settings.get('account')
+      }
     ])
     .then((answers) => {
       const del = answers['Choose an account']

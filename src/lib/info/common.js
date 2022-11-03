@@ -47,6 +47,7 @@ export const nodeTypeNames = {
  * @returns {object}
  */
 export function decode (cid, bytes) {
+  // @ts-ignore
   if (!codecs[cid.code]) {
     throw new Error(`Unknown codec code: 0x${cid.code.toString(16)}`)
   }
@@ -59,6 +60,7 @@ export function decode (cid, bytes) {
     }
   }
 
+  // @ts-ignore
   return codecs[cid.code].decode(bytes)
 }
 

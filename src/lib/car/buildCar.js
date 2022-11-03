@@ -8,9 +8,6 @@ import * as UnixFS from '@ipld/unixfs'
 import fs from 'fs'
 import path from 'path'
 
-import { isDirectory } from '../../utils.js'
-import { walkDir, wrapFilesWithDir } from './dir.js'
-import { streamFileToBlock } from './file.js'
 import { TransformStream } from '@web-std/stream'
 // Internal unixfs read stream capacity that can hold around 32 blocks
 const CAPACITY = UnixFS.BLOCK_SIZE_LIMIT * 32
@@ -68,6 +65,7 @@ async function createReadableBlockStreamWithWrappingDir (pathName, writable) {
  */
 function createCarWriter (carsize) {
   const buffer = new ArrayBuffer(carsize)
+  // @ts-ignore
   return CAR.CarBufferWriter.createWriter(buffer, { roots: [] })
 }
 
@@ -127,25 +125,32 @@ export async function buildCar (pathName, carsize, failAtSplit = false) {
       }
 
       try {
+        // @ts-ignore
         carWriter.write(value)
         writtenCids.add(value.cid.toString())
       } catch (err) {
         if (failAtSplit) {
           throw new Error('Content too large for car.')
         }
+        // @ts-ignore
         const bytes = carWriter.close({ resize: true })
+        // @ts-ignore
         carStreamWriter.write({ bytes, roots: carWriter.roots })
         carWriter = createCarWriter(carsize)
+        // @ts-ignore
         carWriter.write(value)
       }
       root = value
     }
 
     if (root) {
+      // @ts-ignore
       carWriter.addRoot(root.cid, { resize: root.cid })
     }
 
+    // @ts-ignore
     const bytes = await carWriter.close({ resize: true })
+    // @ts-ignore
     carStreamWriter.write({ bytes, roots: carWriter.roots })
     carStreamWriter.close()
   }

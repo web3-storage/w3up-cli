@@ -1,6 +1,5 @@
 import { getClient } from '../../client.js'
 import { buildSimpleConsoleTable } from '../../utils.js'
-import { hasSetupAccount } from '../../validation.js'
 import ora, { oraPromise } from 'ora'
 
 /**

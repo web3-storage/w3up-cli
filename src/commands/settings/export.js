@@ -1,6 +1,8 @@
 import fs from 'fs'
 import Inquirer from 'inquirer'
 import ora from 'ora'
+import { getClient } from '../../client'
+import { resolvePath } from '../../validation'
 
 /**
  * @typedef ExportSettings

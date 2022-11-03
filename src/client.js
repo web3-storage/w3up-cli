@@ -1,14 +1,13 @@
+import cliSettings from './settings.js'
 import W3Client from '@web3-storage/w3up-client'
 import Conf from 'conf'
 
-import { default as cliSettings } from './settings.js'
-
-export function getProfileSettings(profile = 'main') {
+export function getProfileSettings (profile = 'main') {
   const profileSettings = new Conf({
     projectName: 'w3up',
     projectSuffix: '',
     configName: profile,
-    fileExtension: 'json',
+    fileExtension: 'json'
   })
 
   return profileSettings
@@ -25,7 +24,7 @@ export function getClient (profile = 'main') {
     accessDID: cliSettings.ACCESS_DID,
     accessURL: cliSettings.ACCESS_URL,
     // @ts-ignore
-    settings: settings.store,
+    settings: settings.store
   })
 
   return client
@@ -35,7 +34,7 @@ export function getClient (profile = 'main') {
  * @param {W3Client} client
  * @param {string} profile
  */
-export function saveSettings(client, profile = 'main') {
+export function saveSettings (client, profile = 'main') {
   const conf = getProfileSettings(profile)
   // @ts-ignore
   conf.set(client.settings)

@@ -1,13 +1,9 @@
 // @ts-ignore
-import { getClient } from '../../client.js'
+import { getClient, saveSettings } from '../../client.js'
 import { isPath } from '../../validation.js'
-import { importSettings } from '@web3-storage/w3up-client'
 import fs from 'fs'
 import Inquirer from 'inquirer'
 import ora from 'ora'
-
-import { getClient, saveSettings } from '../../client.js'
-import { isPath } from '../../validation.js'
 
 /**
  * @typedef ImportSettings

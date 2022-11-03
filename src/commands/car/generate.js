@@ -50,7 +50,9 @@ const handler = async ({ filePath = '', split = false }) => {
     const { stream } = await buildCar(resolvedPath, MAX_CAR_SIZE, !split)
     /** @type Array<CID> */
     let roots = []
-    let rootCarCID = ''
+
+    /** @type CID | null */
+    let rootCarCID = null
     const carCIDS = []
     let count = 0
 
@@ -71,6 +73,7 @@ const handler = async ({ filePath = '', split = false }) => {
     view.stop()
     console.log('roots:\n', roots.map((x) => x.toString()).join('\n'))
     if (count > 1) {
+      // @ts-ignore
       console.log('root car:\n', rootCarCID?.toString())
       // TODO:
       // client.link()

@@ -29,6 +29,7 @@ const handler = async (args) => {
   })
   const settings = await client.settings
   if (reset) {
+    // @ts-ignore
     settings.clear()
     view.succeed('Settings cleared.')
   } else {

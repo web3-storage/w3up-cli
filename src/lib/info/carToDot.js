@@ -81,6 +81,7 @@ export async function run (bytes, vertical) {
     /** @type any */
     const cur = { ...block }
 
+    // @ts-ignore
     cur.type = codecNames[blockIndex.cid.code]
     cur.content = decode(blockIndex.cid, cur.bytes)
 

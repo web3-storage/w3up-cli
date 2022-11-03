@@ -111,7 +111,8 @@ export const hasOtherDelegation = ({ profile }) => {
   const delegations = settings.get('delegations')
   const account = settings.get('account')
 
-  if (delegations[account].alias != 'self') {
+  // @ts-ignore
+  if (delegations[account].alias !== 'self') {
     return true
   } else {
     return false

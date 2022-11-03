@@ -44,12 +44,14 @@ export async function run (bytes) {
     const links = content.Links || content?.entries || []
 
     blockMap.set(blockIndex.cid.toString(), {
+      // @ts-ignore
       cid: blockIndex.cid.toString(),
       links
     })
 
     if (isRoot) {
       contentRoots.push({
+        // @ts-ignore
         cid: blockIndex.cid.toString(),
         links
       })
@@ -57,6 +59,7 @@ export async function run (bytes) {
   }
 
   for (const root of contentRoots) {
+    // @ts-ignore
     output.nodes.push(walkTree(root.cid, '', blockMap))
   }
 
@@ -79,6 +82,7 @@ function walkTree (cid, name, blockMap) {
   }
 
   return {
+    // @ts-ignore
     label,
     nodes: block.links
       .map((x) =>

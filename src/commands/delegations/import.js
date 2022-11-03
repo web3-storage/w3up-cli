@@ -1,6 +1,3 @@
-import fs from 'fs'
-import ora from 'ora'
-
 import { getClient, saveSettings } from '../../client.js'
 import { hasID, isPath } from '../../validation.js'
 import fs from 'fs'

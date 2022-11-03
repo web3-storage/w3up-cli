@@ -17,14 +17,6 @@ import {
   isCarFile,
   resolvePath
 } from '../validation.js'
-// @ts-ignore
-import * as CAR from '@ipld/car'
-import fs from 'fs'
-import ora from 'ora'
-import path from 'path'
-// @ts-ignore
-import toIterator from 'stream-to-it'
-
 // gotta start somewhere. 3 is fine.
 // const MAX_CONNECTION_POOL_SIZE = 3
 
@@ -114,6 +106,7 @@ const handler = async (argv) => {
         const roots = await reader.getRoots()
         const cid = await bytesToCarCID(bytes)
         for (const root of roots) {
+          // @ts-ignore
           await client.uploadAdd(root, [cid])
         }
       }
