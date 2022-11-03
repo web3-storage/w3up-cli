@@ -1,8 +1,7 @@
-import { CarIndexer } from '@ipld/car/indexer'
-import { CarReader } from '@ipld/car/reader'
-
 import { humanizeBytes } from '../../utils.js'
 import { codecNames, decode, nodeTypeNames, toShortCID } from './common.js'
+import { CarIndexer } from '@ipld/car/indexer'
+import { CarReader } from '@ipld/car/reader'
 
 const ignoredKeysForLabel = ['blockLength', 'offset', 'blockOffset']
 
@@ -77,12 +76,12 @@ export async function run(bytes, vertical) {
 `
   let linkDot = ''
 
-  let i = 0
   for await (const blockIndex of indexer) {
     const block = await reader.get(blockIndex.cid)
     /** @type any */
     const cur = { ...block }
 
+    // @ts-expect-error
     cur.type = codecNames[blockIndex.cid.code]
     cur.content = decode(blockIndex.cid, cur.bytes)
 
@@ -111,8 +110,6 @@ export async function run(bytes, vertical) {
 
       linkDot += `[headlabel="${name}" ${ports}]`
     })
-
-    i++
   }
 
   if (linkDot) {

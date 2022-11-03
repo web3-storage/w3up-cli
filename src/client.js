@@ -1,7 +1,6 @@
+import { default as cliSettings } from './settings.js'
 import W3Client from '@web3-storage/w3up-client'
 import Conf from 'conf'
-
-import { default as cliSettings } from './settings.js'
 
 export function getProfileSettings(profile = 'main') {
   const profileSettings = new Conf({
@@ -37,6 +36,17 @@ export function getClient(profile = 'main') {
  */
 export function saveSettings(client, profile = 'main') {
   const conf = getProfileSettings(profile)
-  // @ts-ignore
+  // @ts-expect-error
   conf.set(client.settings)
+}
+
+/**
+ * @param {W3Client} client
+ * @param {string} profile
+ */
+export function clearSettings(client, profile = 'main') {
+  const conf = getProfileSettings(profile)
+  // @ts-expect-error
+  client.settings = {}
+  conf.clear()
 }

@@ -1,11 +1,9 @@
 // @ts-ignore
-import { Delegation } from '@ucanto/server'
-import inquirer from 'inquirer'
-import { stringToDelegation } from '../../encoding.js'
-
 import { getClient, saveSettings } from '../../client.js'
 import { hasID } from '../../validation.js'
 import listAccounts from './list.js'
+import { stringToDelegation } from '@web3-storage/w3up-client'
+import inquirer from 'inquirer'
 
 /**
  * @typedef {{did?:string, alias?:string, profile?: string}} SwitchAccounts
@@ -17,7 +15,7 @@ import listAccounts from './list.js'
  * @param {SwitchAccountsArgs} argv
  * @returns {Promise<void>}
  */
-const handler = async ({ did, alias, profile }) => {
+const handler = async ({ did, alias, profile = 'main' }) => {
   const client = getClient(profile)
   const settings = client.settings
   const delegations = settings.delegations
@@ -53,15 +51,16 @@ const handler = async ({ did, alias, profile }) => {
     }
   } else if (did) {
   } else {
-    await inquirerPick(choices, client)
+    await inquirerPick(choices, client, profile)
   }
 }
 
 /**
  * @param {{ name: string; value: any; }[]} choices
  * @param {any} client
+ * @param {string} profile
  */
-async function inquirerPick(choices, client) {
+async function inquirerPick(choices, client, profile) {
   const settings = await client.settings
   await inquirer
     .prompt([
@@ -69,12 +68,13 @@ async function inquirerPick(choices, client) {
         type: 'list',
         name: 'Choose an account',
         choices,
-        default: settings.get('account'),
+        default: settings.account,
       },
     ])
     .then((answers) => {
       const del = answers['Choose an account']
-      settings.set('account', del)
+      settings.account = del
+      saveSettings(client, profile)
       console.log(`now using account: ${del}`)
     })
 }

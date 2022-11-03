@@ -1,8 +1,7 @@
-import ora, { oraPromise } from 'ora'
-
 import { getClient } from '../../client.js'
 import { buildSimpleConsoleTable } from '../../utils.js'
 import { hasSetupAccount } from '../../validation.js'
+import ora, { oraPromise } from 'ora'
 
 /**
  * @typedef {{verbose?:boolean, delim?:string, stdout?:boolean, profile?: string}} List
@@ -121,7 +120,7 @@ const handler = async (argv) => {
 /** @type {import('yargs').CommandBuilder} yargs */
 const builder = (yargs) =>
   yargs
-    // .check(hasSetupAccount)
+    .check(hasSetupAccount)
     .option('verbose', {
       type: 'boolean',
       alias: 'verbose',

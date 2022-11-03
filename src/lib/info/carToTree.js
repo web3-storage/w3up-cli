@@ -1,9 +1,8 @@
+import { decode } from './common.js'
 import { CarIndexer } from '@ipld/car/indexer'
 import { CarReader } from '@ipld/car/reader'
 // @ts-ignore
 import archy from 'archy'
-
-import { decode } from './common.js'
 
 // @ts-ignore
 /** @typedef {import('multiformats/cid').CID} CID */
@@ -29,7 +28,7 @@ export async function run(bytes) {
 
   /** @type Array<Block> */
   const contentRoots = []
-  /** @type Map<string, Block> */
+  /** @type Map<CID, Block> */
   const blockMap = new Map()
 
   for await (const blockIndex of indexer) {
@@ -44,14 +43,14 @@ export async function run(bytes) {
     const isRoot = roots.some((x) => x.toString() == blockIndex.cid.toString())
     const links = content.Links || content?.entries || []
 
-    blockMap.set(blockIndex.cid.toString(), {
-      cid: blockIndex.cid.toString(),
+    blockMap.set(blockIndex.cid, {
+      cid: blockIndex.cid,
       links: links,
     })
 
     if (isRoot) {
       contentRoots.push({
-        cid: blockIndex.cid.toString(),
+        cid: blockIndex.cid,
         links: links,
       })
     }
@@ -73,7 +72,7 @@ export async function run(bytes) {
 function walkTree(cid, name, blockMap) {
   const block = blockMap.get(cid)
 
-  const label = name.length > 0 ? name : cid
+  const label = name.length > 0 ? name : cid?.toString()
 
   if (!block) {
     return { label: label + 'not found', nodes: [] }

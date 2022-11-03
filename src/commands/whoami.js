@@ -1,7 +1,6 @@
-import ora from 'ora'
-
 import { getClient } from '../client.js'
 import { hasSetupAccount } from '../validation.js'
+import ora from 'ora'
 
 /**
  * @typedef {{profile?: string}} WhoAmI

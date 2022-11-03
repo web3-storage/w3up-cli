@@ -1,8 +1,7 @@
-import ora from 'ora'
-
 import { getClient, saveSettings } from '../client.js'
 import { logToFile } from '../lib/logging.js'
 import { hasID, isEmail } from '../validation.js'
+import ora from 'ora'
 
 /**
  * @typedef {{email?:string, profile?: string}} Register

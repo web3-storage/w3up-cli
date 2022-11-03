@@ -1,15 +1,14 @@
 // @ts-ignore
-import { CID } from 'multiformats/cid'
-import ora from 'ora'
-import path from 'path'
-// @ts-ignore
-import toIterator from 'stream-to-it'
-
 import { getClient } from '../client.js'
 import { buildCar } from '../lib/car/buildCar.js'
 import { logToFile } from '../lib/logging.js'
 import { bytesToCarCID } from '../utils.js'
 import { checkPath, hasSetupAccount } from '../validation.js'
+import { CID } from 'multiformats/cid'
+import ora from 'ora'
+import path from 'path'
+// @ts-ignore
+import toIterator from 'stream-to-it'
 
 /**
  * @typedef {{path?: string, split?: boolean, profile?: string}} Upload
@@ -33,14 +32,14 @@ async function generateCarUploads(filePath, view, chunkSize = 512, profile) {
     let roots = []
     /** @type Array<CID> */
     let cids = []
-    let origin = null
+    let origin
 
     for await (const car of toIterator(stream)) {
       roots = roots.concat(car.roots)
       const cid = await bytesToCarCID(car.bytes)
       cids.push(cid)
 
-      const result = await client.upload(car.bytes, origin)
+      const result = await client.upload(car.bytes, origin?.toString())
       if (result.error) {
         // @ts-expect-error
         throw new Error(result?.cause?.message)
@@ -49,6 +48,7 @@ async function generateCarUploads(filePath, view, chunkSize = 512, profile) {
       origin = cid
     }
 
+    // @ts-expect-error
     const uploadAddResult = await client.uploadAdd(roots[0], cids)
     // @ts-expect-error
     if (uploadAddResult.error) {
@@ -57,10 +57,15 @@ async function generateCarUploads(filePath, view, chunkSize = 512, profile) {
     }
 
     console.log('data CIDs:\n', roots.map((x) => x.toString()).join('\n'))
-    console.log('upload chunk(s) identifier:\n', cids.map((x) => x.toString()).join('\n'))
+    console.log(
+      'upload chunk(s) identifier:\n',
+      cids.map((x) => x.toString()).join('\n')
+    )
 
     if (roots && roots.length) {
-      console.log(`IPFS Gateway url:\n https://w3s.link/ipfs/${roots[0].toString()}`)
+      console.log(
+        `IPFS Gateway url:\n https://w3s.link/ipfs/${roots[0].toString()}`
+      )
     }
   } catch (err) {
     view.fail('Upload did not complete successfully, check w3up-failure.log')

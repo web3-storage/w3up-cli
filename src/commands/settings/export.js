@@ -1,9 +1,8 @@
+import { getClient } from '../../client.js'
+import { resolvePath } from '../../validation.js'
 import fs from 'fs'
 import Inquirer from 'inquirer'
 import ora from 'ora'
-
-import { getClient } from '../../client.js'
-import { resolvePath } from '../../validation.js'
 
 /**
  * @typedef ExportSettings
@@ -52,10 +51,10 @@ const handler = async ({ filename, profile, stdout = false, yes = false }) => {
 
     if (filename) {
       fs.writeFileSync(resolvePath(filename), settingsJson)
-      view.succeed('Settings written to:' + filename)
+      view.succeed(`Settings written to: ${filename}`)
     } else {
       view.succeed(
-        'No file name provided, printing config to console:\n' + settingsJson
+        `No file name provided, printing config to console:\n${settingsJson}`
       )
     }
   } else {

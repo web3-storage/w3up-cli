@@ -1,7 +1,6 @@
+import { toOutput } from './common.js'
 import { CarIndexer } from '@ipld/car/indexer'
 import { CarReader } from '@ipld/car/reader'
-
-import { toOutput } from './common.js'
 
 /**
  * @async

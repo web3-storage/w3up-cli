@@ -1,5 +1,5 @@
-import ora from 'ora'
 import { getClient, getProfileSettings, saveSettings } from '../client.js'
+import ora from 'ora'
 
 /**
  * @typedef {{reset?:boolean, profile?: string}} Id
