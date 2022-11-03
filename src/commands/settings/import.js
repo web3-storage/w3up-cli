@@ -1,11 +1,8 @@
-// @ts-ignore
-import { importSettings } from '@web3-storage/w3up-client'
+import { getClient, saveSettings } from '../../client.js'
+import { isPath } from '../../validation.js'
 import fs from 'fs'
 import Inquirer from 'inquirer'
 import ora from 'ora'
-
-import { getClient, saveSettings } from '../../client.js'
-import { isPath } from '../../validation.js'
 
 /**
  * @typedef ImportSettings
@@ -26,22 +23,22 @@ import { isPath } from '../../validation.js'
 const handler = async ({ fileName, profile, yes = false }) => {
   const spinner = ora('export')
   const client = getClient(profile)
-  let show = yes
+  let overwrite = yes
 
-  if (!show) {
+  if (!overwrite) {
     spinner.stopAndPersist({
       text: 'These values will overwrite your old id/account and you will lose access, are you sure you want to proceed?',
     })
 
     const input = await Inquirer.prompt({
-      name: 'show',
+      name: 'overwrite',
       type: 'confirm',
     })
 
-    show = input.show
+    overwrite = input.overwrite
   }
 
-  if (show && fileName) {
+  if (overwrite && fileName) {
     try {
       const json = fs.readFileSync(fileName, { encoding: 'utf-8' })
       client.settings = JSON.parse(json)

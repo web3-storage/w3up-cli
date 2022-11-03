@@ -1,3 +1,8 @@
+import { buildCar } from '../../lib/car/buildCar.js'
+import { logToFile } from '../../lib/logging.js'
+import { MAX_CAR_SIZE } from '../../settings.js'
+import { bytesToCarCID } from '../../utils.js'
+import { isPath, resolvePath } from '../../validation.js'
 import fs from 'fs'
 // @ts-ignore
 import { CID } from 'multiformats/cid'
@@ -5,12 +10,6 @@ import ora from 'ora'
 import path from 'path'
 // @ts-ignore
 import toIterator from 'stream-to-it'
-
-import { buildCar } from '../../lib/car/buildCar.js'
-import { logToFile } from '../../lib/logging.js'
-import { MAX_CAR_SIZE } from '../../settings.js'
-import { bytesToCarCID } from '../../utils.js'
-import { isPath, resolvePath } from '../../validation.js'
 
 /**
  * @typedef {object} GenerateCar
@@ -50,7 +49,8 @@ const handler = async ({ filePath = '', split = false }) => {
     const { stream } = await buildCar(resolvedPath, MAX_CAR_SIZE, !split)
     /** @type Array<CID> */
     let roots = []
-    let rootCarCID = ''
+    /** @type CID */
+    let rootCarCID
     let carCIDS = []
     let count = 0
 
@@ -71,12 +71,11 @@ const handler = async ({ filePath = '', split = false }) => {
     view.stop()
     console.log('roots:\n', roots.map((x) => x.toString()).join('\n'))
     if (count > 1) {
+      // @ts-expect-error
       console.log('root car:\n', rootCarCID?.toString())
-      //TODO:
-      //client.link()
     }
   } catch (err) {
-    // @ts-ignore
+    // @ts-expect-error
     view.fail(err.toString())
     logToFile('generate-car', err)
     process.exit(1) //force exit in case other async things are running.

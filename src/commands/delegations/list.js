@@ -1,5 +1,3 @@
-// @ts-ignore
-import { Delegation, UCAN } from '@ucanto/server'
 import { getClient } from '../../client.js'
 import { buildSimpleConsoleTable } from '../../utils.js'
 

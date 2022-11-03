@@ -1,7 +1,6 @@
+import { clearSettings, getClient } from '../../client.js'
 import Inquirer from 'inquirer'
 import ora from 'ora'
-
-import { getClient } from '../../client.js'
 
 /**
  * @typedef {{profile?: string}} ResetSettings
@@ -28,9 +27,8 @@ const handler = async (args) => {
     type: 'confirm',
     default: false,
   })
-  const settings = await client.settings
   if (reset) {
-    settings.clear()
+    clearSettings(client, args.profile)
     view.succeed('Settings cleared.')
   } else {
     view.info('exiting')

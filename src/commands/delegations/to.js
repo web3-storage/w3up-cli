@@ -1,9 +1,9 @@
+import { getClient } from '../../client.js'
+// import { delegationToString } from '../../encoding.js'
+// import { delegationToString } from '@web3-storage/w3up-client'
+import { hasSetupAccount } from '../../validation.js'
 import fs from 'fs'
 import ora from 'ora'
-
-import { getClient } from '../../client.js'
-import { delegationToString } from '../../encoding.js'
-import { hasSetupAccount } from '../../validation.js'
 
 /**
  * @typedef {{did?:`did:${string}`, profile?: string}} Delegate
@@ -25,11 +25,7 @@ const handler = async ({ did, profile }) => {
   }
 
   const delegation = await client.makeDelegation({ to: did })
-  fs.writeFileSync(
-    'delegation.txt',
-    await delegationToString(delegation),
-    'utf8'
-  )
+  fs.writeFileSync('delegation.txt', delegation.toString(), 'utf8')
 
   view.succeed('Wrote delegation to delegation.txt')
 }

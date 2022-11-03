@@ -1,6 +1,3 @@
-import _yargs from 'yargs'
-import { hideBin } from 'yargs/helpers'
-
 import car from './commands/car/index.js'
 import delegations from './commands/delegations/index.js'
 import id from './commands/id.js'
@@ -16,6 +13,8 @@ import uploads from './commands/uploads/index.js'
 import list from './commands/uploads/list.js'
 import whoami from './commands/whoami.js'
 import printQuickstart from './quickstart.js'
+import _yargs from 'yargs'
+import { hideBin } from 'yargs/helpers'
 
 /**
  * @param {string[]} args
@@ -51,11 +50,12 @@ export const main = async (args = hideBin(process.argv)) => {
     .command(register)
     .command(whoami)
 
+    // uploads
     .command(list)
-
-    //
     .command(upload)
     .command(uploadCars)
+
+    // utils
     .command(open)
 
     // subcommands

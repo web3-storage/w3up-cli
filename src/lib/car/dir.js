@@ -1,9 +1,8 @@
+import { isDirectory } from '../../utils.js'
+import { streamFileToBlock } from './file.js'
 import * as UnixFS from '@ipld/unixfs'
 import fs from 'fs'
 import path from 'path'
-
-import { isDirectory } from '../../utils.js'
-import { streamFileToBlock } from './file.js'
 
 /** @typedef {{name: string, link: any}} FileDesc */
 

@@ -1,9 +1,8 @@
+import { getClient } from '../client.js'
+import { hasSetupAccount, isCID } from '../validation.js'
 import * as API from '@ucanto/interface'
 import { parseLink } from '@ucanto/server'
 import ora from 'ora'
-
-import { getClient } from '../client.js'
-import { hasSetupAccount, isCID } from '../validation.js'
 
 /**
  * @typedef {{cid?:API.Link, ws?:boolean, subscribe?:boolean, insight_data?: any, profile?:string}} Insights

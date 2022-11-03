@@ -1,20 +1,20 @@
 // @ts-ignore
-import * as CAR from '@ipld/car'
-import * as UnixFS from '@ipld/unixfs'
-import fs from 'fs'
-import path from 'path'
-
 import { isDirectory } from '../../utils.js'
 import { walkDir, wrapFilesWithDir } from './dir.js'
 import { streamFileToBlock } from './file.js'
+import * as CAR from '@ipld/car'
+import * as UnixFS from '@ipld/unixfs'
 import { TransformStream } from '@web-std/stream'
+import fs from 'fs'
+import path from 'path'
+
 // Internal unixfs read stream capacity that can hold around 32 blocks
 const CAPACITY = UnixFS.BLOCK_SIZE_LIMIT * 32
 const MAX_CARS_AT_ONCE = 8
 
 /**
  * @typedef {{stream: ReadableStream }} buildCarOutput
- * @typedef {{bytes: Uint8Array|null ,cid: object|null}} Block
+ * @typedef {{bytes: Uint8Array|null ,cid: import('multiformats/cid').CID}} Block
  */
 
 /**
@@ -60,7 +60,7 @@ async function createReadableBlockStreamWithWrappingDir(pathName, writable) {
 
 /**
  * @param {number} carsize - The maximum size of a generated car file.
- * @returns {CAR.CarBufferWriter}
+ * @returns {CAR.CarBufferWriter.Writer}
  */
 function createCarWriter(carsize) {
   const buffer = new ArrayBuffer(carsize)
@@ -104,7 +104,7 @@ export async function buildCar(pathName, carsize, failAtSplit = false) {
 
     // track the last written block, so we know the root of the dag.
     /** @type Block */
-    let root = { bytes: null, cid: null }
+    let root
     async function* iterator() {
       while (true) {
         yield reader.read()
@@ -128,6 +128,7 @@ export async function buildCar(pathName, carsize, failAtSplit = false) {
           throw new Error('Content too large for car.')
         }
         const bytes = carWriter.close({ resize: true })
+        // @ts-expect-error
         carStreamWriter.write({ bytes, roots: carWriter.roots })
         carWriter = createCarWriter(carsize)
         carWriter.write(value)
@@ -135,11 +136,13 @@ export async function buildCar(pathName, carsize, failAtSplit = false) {
       root = value
     }
 
-    if (root) {
-      carWriter.addRoot(root.cid, { resize: root.cid })
+    // @ts-expect-error
+    if (root?.cid) {
+      carWriter.addRoot(root.cid, { resize: true })
     }
 
-    const bytes = await carWriter.close({ resize: true })
+    const bytes = carWriter.close({ resize: true })
+    // @ts-expect-error
     carStreamWriter.write({ bytes, roots: carWriter.roots })
     carStreamWriter.close()
   }

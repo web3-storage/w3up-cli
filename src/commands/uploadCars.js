@@ -1,11 +1,3 @@
-import { CarReader } from '@ipld/car/reader'
-import fs from 'fs'
-import ora from 'ora'
-import path from 'path'
-// @ts-ignore
-import toIterator from 'stream-to-it'
-import { TransformStream } from '@web-std/stream'
-
 import { getClient } from '../client.js'
 import { getAllFiles, isDirectory } from '../lib/car/file.js'
 import { logToFile } from '../lib/logging.js'
@@ -13,14 +5,20 @@ import { MAX_CAR_SIZE } from '../settings.js'
 import { bytesToCarCID } from '../utils.js'
 import {
   checkPath,
-  hasID,
   hasSetupAccount,
   isCarFile,
   resolvePath,
 } from '../validation.js'
+import { CarReader } from '@ipld/car/reader'
+import { TransformStream } from '@web-std/stream'
+import fs from 'fs'
+import ora from 'ora'
+import path from 'path'
+// @ts-ignore
+import toIterator from 'stream-to-it'
 
 //gotta start somewhere. 3 is fine.
-const MAX_CONNECTION_POOL_SIZE = 3
+// const MAX_CONNECTION_POOL_SIZE = 3
 
 /**
  * @async
@@ -107,6 +105,7 @@ const handler = async (argv) => {
         const roots = await reader.getRoots()
         const cid = await bytesToCarCID(bytes)
         for (const root of roots) {
+          // @ts-expect-error
           await client.uploadAdd(root, [cid])
         }
       }
