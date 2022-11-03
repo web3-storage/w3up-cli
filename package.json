@@ -58,14 +58,6 @@
     "typescript": "^4.8.3",
     "vitest": "^0.23.2"
   },
-  "resolutions": {
-    "@ucanto/validator": "^1.0.2"
-  },
-  "exports": {
-    ".": {
-      "import": "./src/lib.js"
-    }
-  },
   "publishConfig": {
     "access": "public"
   },
