@@ -1,7 +1,7 @@
 import * as dagCbor from '@ipld/dag-cbor'
 import * as dagJson from '@ipld/dag-json'
 import * as dagPb from '@ipld/dag-pb'
-import * as UnixFS from '@ipld/unixfs'
+import * as unixFS from '@ipld/unixfs'
 import * as json from 'multiformats/codecs/json'
 import * as raw from 'multiformats/codecs/raw'
 
@@ -28,12 +28,12 @@ export const codecNames = {
 }
 
 export const nodeTypeNames = {
-  [UnixFS.NodeType.Directory]: 'dir',
-  [UnixFS.NodeType.File]: 'file',
-  [UnixFS.NodeType.HAMTShard]: 'hamt',
-  [UnixFS.NodeType.Metadata]: 'meta',
-  [UnixFS.NodeType.Raw]: 'raw',
-  [UnixFS.NodeType.Symlink]: 'sym'
+  [unixFS.NodeType.Directory]: 'dir',
+  [unixFS.NodeType.File]: 'file',
+  [unixFS.NodeType.HAMTShard]: 'hamt',
+  [unixFS.NodeType.Metadata]: 'meta',
+  [unixFS.NodeType.Raw]: 'raw',
+  [unixFS.NodeType.Symlink]: 'sym'
 }
 
 /**
@@ -50,7 +50,7 @@ export function decode (cid, bytes) {
 
   if (cid.code === dagPb.code) {
     try {
-      return UnixFS.decode(bytes)
+      return unixFS.decode(bytes)
     } catch (err) {
       return codecs[cid.code].decode(bytes)
     }
