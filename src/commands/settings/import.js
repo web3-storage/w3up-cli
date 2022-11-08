@@ -47,7 +47,8 @@ const handler = async ({ fileName, profile, yes = false }) => {
 
       spinner.succeed(`Imported settings from ${fileName} successfully.`)
     } catch (err) {
-      spinner.fail('error:' + err)
+      // @ts-expect-error
+      spinner.fail(err.toString())
     }
   }
 }

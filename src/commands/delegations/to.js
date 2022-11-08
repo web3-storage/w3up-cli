@@ -6,7 +6,7 @@ import fs from 'fs'
 import ora from 'ora'
 
 /**
- * @typedef {{did?:`did:${string}`, profile?: string}} Delegate
+ * @typedef {{did?:`did:${string}:${string}`, profile?: string}} Delegate
  * @typedef {import('yargs').Arguments<Delegate>} DelegateArgs
  */
 
