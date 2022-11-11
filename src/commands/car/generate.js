@@ -14,7 +14,6 @@ import toIterator from 'stream-to-it'
 /**
  * @typedef {object} GenerateCar
  * @property {string} [filePath='']
- * @property {boolean} [split=false]
  * @typedef {import('yargs').Arguments<GenerateCar>} GenerateCarArgs
  */
 
@@ -35,7 +34,7 @@ export const writeFileLocally = async (car, outPath = 'output.car') => {
  * @param {GenerateCarArgs} argv
  * @returns {Promise<void>}
  */
-const handler = async ({ filePath = '', split = false }) => {
+const handler = async ({ filePath = '' }) => {
   const resolvedPath = path.normalize(filePath)
 
   /** @type import('ora').Options */
@@ -46,7 +45,7 @@ const handler = async ({ filePath = '', split = false }) => {
   const view = ora(oraOpts).start()
 
   try {
-    const { stream } = await buildCar(resolvedPath, MAX_CAR_SIZE, !split)
+    const { stream } = await buildCar(resolvedPath, MAX_CAR_SIZE, false)
     /** @type Array<CID> */
     let roots = []
     /** @type CID */
