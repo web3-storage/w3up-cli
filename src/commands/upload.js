@@ -12,7 +12,7 @@ import path from 'path'
 import toIterator from 'stream-to-it'
 
 /**
- * @typedef {{path?: string, split?: boolean, profile?: string}} Upload
+ * @typedef {{path?: string, profile?: string}} Upload
  * @typedef {import('yargs').Arguments<Upload>} UploadArgs
  */
 
@@ -40,7 +40,8 @@ async function generateCarUploads (filePath, view, chunkSize = 512, profile) {
       const cid = await bytesToCarCID(car.bytes)
       cids.push(cid)
 
-      const result = await client.upload(car.bytes, origin?.toString())
+      // @ts-expect-error
+      const result = await client.upload(car.bytes, origin)
       if (result.error) {
         // @ts-expect-error
         throw new Error(result?.cause?.message)
@@ -111,13 +112,6 @@ const builder = (yargs) =>
     .check(checkPath)
     .option('chunk-size', {
       type: 'number'
-    })
-    .option('split', {
-      type: 'boolean',
-      alias: 'split',
-      showInHelp: true,
-      describe:
-        'Split the data into multiple when cars when size limit is hit.'
     })
 
 export default {
