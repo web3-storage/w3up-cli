@@ -18,7 +18,7 @@ export function getProfileSettings (profile = 'main') {
 
 export function getClient (profile = 'main') {
   const settings = getProfileSettings(profile)
-  // console.log(settings.path)
+
   const client = new W3Client({
     // @ts-ignore
     serviceDID: cliSettings.W3_STORE_DID,
