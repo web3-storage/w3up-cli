@@ -1,3 +1,7 @@
+### ⚠️ DEPRECATED - please use [w3cli](https://github.com/web3-storage/w3cli)
+
+---
+
 <h1 align="center">w3up-cli 🆙</h1>
 <p>
   <img alt="Version" src="https://img.shields.io/badge/version-0.1.1-blue.svg?cacheSeconds=2592000" />
